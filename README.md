@@ -26,7 +26,8 @@
     - Spring 3.3.2
 ### 2. Front-end
     - Thymeleaf
-    - HTML, CSS : bootstrap
+    - HTML
+    - CSS : bootstrap
 ### 3. Database
     - MySQL
 

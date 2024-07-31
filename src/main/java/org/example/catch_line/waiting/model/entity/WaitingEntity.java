@@ -2,6 +2,7 @@ package org.example.catch_line.waiting.model.entity;
 
 import java.time.LocalDateTime;
 
+import org.example.catch_line.common.BaseTimeEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,12 +16,23 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Data
-public class Waiting {
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
+@Table(name = "waiting")
+public class Waiting extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,14 +50,5 @@ public class Waiting {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private WaitingStatus status;
-
-	@CreatedDate
-	@Column(updatable = false)
-	private LocalDateTime createdAt;
-
-	@LastModifiedDate
-	private LocalDateTime updateAt;
-
-
 
 }

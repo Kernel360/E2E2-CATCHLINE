@@ -23,7 +23,8 @@
 ## 기술 스택
 ### 1. Back-end
     - JAVA 17
-    - Spring 3.3.2
+    - Spring Boot 3.3.2
+    - Spring Data JPA
 ### 2. Front-end
     - Thymeleaf
     - HTML

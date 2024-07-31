@@ -1,7 +1,6 @@
 package org.example.catch_line.common;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -22,5 +21,5 @@ public class BaseTimeEntity {
     @LastModifiedDate
     @Column(name = "modified_at", nullable = false)
     private LocalDateTime modifiedAt;
-    
+
 }

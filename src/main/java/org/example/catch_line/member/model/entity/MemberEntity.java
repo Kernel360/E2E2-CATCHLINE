@@ -30,6 +30,7 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private String phone_number;
 
     @Enumerated(EnumType.STRING)

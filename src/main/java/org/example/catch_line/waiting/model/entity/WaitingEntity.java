@@ -1,11 +1,6 @@
 package org.example.catch_line.waiting.model.entity;
 
-import java.time.LocalDateTime;
-
 import org.example.catch_line.common.BaseTimeEntity;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
@@ -19,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,7 +26,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @Table(name = "waiting")
-public class Waiting extends BaseTimeEntity {
+public class WaitingEntity extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

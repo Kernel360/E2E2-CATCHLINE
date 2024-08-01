@@ -14,16 +14,10 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 @Service
-
+@RequiredArgsConstructor
 public class WaitingService {
 
-
 	private final WaitingRepository waitingRepository;
-
-	@Autowired
-	public WaitingService(WaitingRepository waitingRepository) {
-		this.waitingRepository = waitingRepository;
-	}
 
 	public WaitingRequest addWaiting(int memberCount, WaitingType waitingType) {
 		WaitingEntity waiting = WaitingEntity.builder()
@@ -46,13 +40,12 @@ public class WaitingService {
 
 	private WaitingRequest convertToRequest(WaitingEntity entity) {
 
-		WaitingRequest request = new WaitingRequest();
-		request.setWaitingId(entity.getWaitingId());
-		request.setMemberCount(entity.getMemberCount());
-		request.setWaitingStatus(entity.getWaitingStatus());
-		request.setWaitingType(entity.getWaitingType());
-
-		return request;
+		return WaitingRequest.builder()
+			.waitingId(entity.getWaitingId())
+			.memberCount(entity.getMemberCount())
+			.waitingStatus(entity.getWaitingStatus())
+			.waitingType(entity.getWaitingType())
+			.build();
 	}
 
 }

@@ -30,19 +30,17 @@ public class WaitingEntity extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(nullable = false)
-	private Long memberId;
-
-	@Column(nullable = false)
-	private Long restaurantId;
+	private Long waitingId;
 
 	@Column(nullable = false)
 	private int memberCount;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private WaitingStatus status;
+	private WaitingStatus waitingStatus;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private WaitingType waitingType;
 
 }

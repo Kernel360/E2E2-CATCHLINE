@@ -16,7 +16,7 @@ public class MemberEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long member_id;
+    private Long memberId;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -31,7 +31,7 @@ public class MemberEntity extends BaseTimeEntity {
     private String password;
 
     @Column(nullable = false)
-    private String phone_number;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

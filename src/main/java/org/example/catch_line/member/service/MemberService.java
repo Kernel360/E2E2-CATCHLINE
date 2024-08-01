@@ -1,6 +1,8 @@
 package org.example.catch_line.member.service;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.example.catch_line.member.model.dto.LoginRequest;
 import org.example.catch_line.member.model.dto.SignUpRequest;
 import org.example.catch_line.member.model.dto.MemberResponse;
 import org.example.catch_line.member.model.entity.MemberEntity;
@@ -29,6 +31,22 @@ public class MemberService {
         memberRepository.save(member);
 
         return memberResponseMapper.toDto(member);
+
+
+    }
+
+    public MemberResponse login(LoginRequest loginRequest) {
+
+        return memberRepository.findByEmail(loginRequest.getEmail())
+                .filter(member -> loginRequest.getPassword().equals(member.getPassword()))
+                .map(member -> MemberResponse.builder()
+                        .email(member.getEmail())
+                        .name(member.getName())
+                        .role(member.getRole())
+                        .nickname(member.getNickname())
+                        .phoneNumber(member.getPhoneNumber())
+                        .build())
+                .orElseThrow(() -> new IllegalArgumentException("로그인 실패"));
 
 
     }

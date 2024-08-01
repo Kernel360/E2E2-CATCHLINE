@@ -1,8 +1,6 @@
 package org.example.catch_line.member.model.mapper;
 
-import lombok.AllArgsConstructor;
 import org.example.catch_line.member.model.dto.MemberResponse;
-import org.example.catch_line.member.model.dto.SignUpRequest;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.springframework.stereotype.Service;
 

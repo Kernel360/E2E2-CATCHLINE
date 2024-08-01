@@ -12,6 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,19 +32,19 @@ public class WaitingEntity extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(nullable = false)
+	private Long waitingId;
 
 	@Column(nullable = false)
-	private Long memberId;
-
-	@Column(nullable = false)
-	private Long restaurantId;
-
-	@Column(nullable = false)
+	@Min(value = 1, message = "최소 인원 수는 1명입니다")
 	private int memberCount;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private WaitingStatus status;
+	private WaitingStatus waitingStatus;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private WaitingType waitingType;
 
 }

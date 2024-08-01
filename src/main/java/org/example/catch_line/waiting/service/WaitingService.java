@@ -4,48 +4,49 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.example.catch_line.waiting.model.dto.WaitingRequest;
+import org.example.catch_line.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.waiting.model.entity.WaitingStatus;
-import org.example.catch_line.waiting.model.entity.WaitingType;
+import org.example.catch_line.waiting.model.mapper.WaitingResponseMapper;
 import org.example.catch_line.waiting.repository.WaitingRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WaitingService {
 
 	private final WaitingRepository waitingRepository;
+	private final WaitingResponseMapper waitingResponseMapper;
 
-	public WaitingRequest addWaiting(int memberCount, WaitingType waitingType) {
+	public WaitingResponse addWaiting(WaitingRequest waitingRequest) {
 		WaitingEntity waiting = WaitingEntity.builder()
-			.memberCount(memberCount)
+			.memberCount(waitingRequest.getMemberCount())
 			.waitingStatus(WaitingStatus.SCHEDULED)
-			.waitingType(waitingType)
+			.waitingType(waitingRequest.getWaitingType())
 			.build();
-		waitingRepository.save(waiting);
+		WaitingEntity savedEntity = waitingRepository.save(waiting);
 
-		return convertToRequest(waiting);
+		return waitingResponseMapper.convertToResponse(savedEntity);
 	}
 
-	public List<WaitingRequest> getAllWaiting() {
+	public List<WaitingResponse> getAllWaiting() {
 		List<WaitingEntity> waitingEntities = waitingRepository.findAll();
 
 		return waitingEntities.stream()
-			.map(this::convertToRequest)
+			.map(waitingResponseMapper::convertToResponse)
 			.collect(Collectors.toList());
 	}
 
-	private WaitingRequest convertToRequest(WaitingEntity entity) {
-
-		return WaitingRequest.builder()
-			.waitingId(entity.getWaitingId())
-			.memberCount(entity.getMemberCount())
-			.waitingStatus(entity.getWaitingStatus())
-			.waitingType(entity.getWaitingType())
-			.build();
+	public WaitingResponse getWaitingById(Long id){
+		WaitingEntity waitingEntity = waitingRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("정확한 아이디가 아닙니다: "+id));
+		return waitingResponseMapper.convertToResponse(waitingEntity);
 	}
+
+	
 
 }

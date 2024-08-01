@@ -47,6 +47,13 @@ public class WaitingService {
 		return waitingResponseMapper.convertToResponse(waitingEntity);
 	}
 
-	
+	public void cancelWaiting(Long id) {
+		WaitingEntity entity = waitingRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("웨이팅 아이디가 다릅니다: "+id));
+		entity.setWaitingStatus(WaitingStatus.CANCELED);
+		waitingRepository.save(entity);
+	}
+
+
 
 }

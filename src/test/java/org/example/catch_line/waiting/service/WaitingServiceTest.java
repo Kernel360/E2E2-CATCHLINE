@@ -103,4 +103,22 @@ class WaitingServiceTest {
 		assertThat(response.getWaitingStatus()).isEqualTo(WaitingStatus.SCHEDULED);
 	}
 
+	@Test
+	@DisplayName("웨이팅 취소 테스트")
+	void testCancelWaiting() {
+		WaitingRequest request = WaitingRequest.builder()
+			.waitingType(WaitingType.DINE_IN)
+			.memberCount(4)
+			.build();
+
+		WaitingResponse response = waitingService.addWaiting(request);
+		Long id = response.getWaitingId();
+
+		waitingService.cancelWaiting(id);
+
+		WaitingEntity cancelledEntity = waitingRepository.findById(id).orElseThrow();
+
+		Assertions.assertThat(cancelledEntity.getWaitingStatus()).isEqualTo(WaitingStatus.CANCELED);
+	}
+
 }

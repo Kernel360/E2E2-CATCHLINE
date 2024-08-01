@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.example.catch_line.waiting.model.dto.WaitingRequest;
+<<<<<<< HEAD
 import org.example.catch_line.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.waiting.model.entity.WaitingStatus;
@@ -15,11 +16,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+=======
+import org.example.catch_line.waiting.model.entity.WaitingEntity;
+import org.example.catch_line.waiting.model.entity.WaitingStatus;
+import org.example.catch_line.waiting.model.entity.WaitingType;
+import org.example.catch_line.waiting.repository.WaitingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+
+>>>>>>> 3c60282f0c8264a62e98221854c3026b2536d8ca
 @Service
 @RequiredArgsConstructor
 public class WaitingService {
 
 	private final WaitingRepository waitingRepository;
+<<<<<<< HEAD
 	private final WaitingResponseMapper waitingResponseMapper;
 
 	public WaitingResponse addWaiting(WaitingRequest waitingRequest) {
@@ -56,4 +69,36 @@ public class WaitingService {
 
 
 
+=======
+
+	public WaitingRequest addWaiting(int memberCount, WaitingType waitingType) {
+		WaitingEntity waiting = WaitingEntity.builder()
+			.memberCount(memberCount)
+			.waitingStatus(WaitingStatus.SCHEDULED)
+			.waitingType(waitingType)
+			.build();
+		waitingRepository.save(waiting);
+
+		return convertToRequest(waiting);
+	}
+
+	public List<WaitingRequest> getAllWaiting() {
+		List<WaitingEntity> waitingEntities = waitingRepository.findAll();
+
+		return waitingEntities.stream()
+			.map(this::convertToRequest)
+			.collect(Collectors.toList());
+	}
+
+	private WaitingRequest convertToRequest(WaitingEntity entity) {
+
+		return WaitingRequest.builder()
+			.waitingId(entity.getWaitingId())
+			.memberCount(entity.getMemberCount())
+			.waitingStatus(entity.getWaitingStatus())
+			.waitingType(entity.getWaitingType())
+			.build();
+	}
+
+>>>>>>> 3c60282f0c8264a62e98221854c3026b2536d8ca
 }

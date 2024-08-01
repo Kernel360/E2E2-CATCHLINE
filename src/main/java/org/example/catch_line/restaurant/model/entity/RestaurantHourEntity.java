@@ -7,7 +7,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "restaurant")
+@Table(name = "restaurant_hour")
 @Getter
 @Setter
 @NoArgsConstructor

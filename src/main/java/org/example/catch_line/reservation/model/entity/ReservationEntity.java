@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import org.example.catch_line.common.BaseTimeEntity;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.reservation.validation.ValidReservationDate;
 
 import jakarta.persistence.Column;
@@ -50,5 +51,13 @@ public class ReservationEntity extends BaseTimeEntity {
 		this.status = status;
 		this.reservationDate = reservationDate;
 	}
+
+	public void updateReservation(ReservationRequest reservationRequest) {
+		this.memberCount = reservationRequest.getMemberCount();
+		this.reservationDate = reservationRequest.getReservationDate();
+		this.status = reservationRequest.getStatus();
+	}
+
+
 
 }

@@ -54,8 +54,8 @@ public class RestaurantEntity extends BaseTimeEntity {
         this.phoneNumber = phoneNumber;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.scrapCount = scrapCount;
-        this.reviewCount = reviewCount;
+        this.scrapCount = 0L;
+        this.reviewCount = 0L;
         this.foodType = foodType;
         this.serviceType = serviceType;
     }

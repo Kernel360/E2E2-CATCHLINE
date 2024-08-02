@@ -1,9 +1,6 @@
 package org.example.catch_line.restaurant.model.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.example.catch_line.restaurant.model.entity.FoodType;
 import org.example.catch_line.restaurant.model.entity.ServiceType;
@@ -40,11 +37,21 @@ public class RestaurantResponse {
     @Min(0) @Max(5)
     private BigDecimal longitude;
 
-
+    @NotEmpty
     private Long scrapCount;
+
+    @NotEmpty
     private Long reviewCount;
+
+    @NotNull(message = "한식, 중식, 일식, 양식 중에 선택해주세요.")
     private FoodType foodType;
+
+    @NotNull(message = "줄서기, 예약 중에 선택해주세요.")
     private ServiceType serviceType;
+
+    @NotEmpty
     private LocalDateTime createdAt;
+
+    @NotEmpty
     private LocalDateTime modifiedAt;
 }

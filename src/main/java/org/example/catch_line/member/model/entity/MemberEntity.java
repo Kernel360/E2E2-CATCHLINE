@@ -7,16 +7,13 @@ import org.example.catch_line.common.constant.Role;
 
 @Entity
 @Table(name = "member")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-@Builder
 public class MemberEntity extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long member_id;
+    private Long memberId;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -31,10 +28,22 @@ public class MemberEntity extends BaseTimeEntity {
     private String password;
 
     @Column(nullable = false)
-    private String phone_number;
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
+    private Boolean memberStatus = false;
+
+    @Builder
+    public MemberEntity(String email, String name, String nickname, String password, String phoneNumber, Role role, Boolean memberStatus) {
+        this.email = email;
+        this.name = name;
+        this.nickname = nickname;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.memberStatus = memberStatus;
+    }
 }

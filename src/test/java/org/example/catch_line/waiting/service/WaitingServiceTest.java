@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.waiting.model.entity.WaitingEntity;
-import org.example.catch_line.waiting.model.entity.WaitingStatus;
 import org.example.catch_line.waiting.model.entity.WaitingType;
 import org.example.catch_line.waiting.repository.WaitingRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +43,7 @@ class WaitingServiceTest {
 		WaitingEntity entity = waitingRepository.findById(response.getWaitingId()).orElseThrow();
 
 		assertThat(response.getWaitingId()).isEqualTo(entity.getWaitingId());
-		assertThat(response.getWaitingStatus()).isEqualTo(entity.getWaitingStatus());
+		assertThat(response.getStatus()).isEqualTo(entity.getStatus());
 		assertThat(response.getWaitingType()).isEqualTo(entity.getWaitingType());
 		assertThat(response.getMemberCount()).isEqualTo(entity.getMemberCount());
 
@@ -72,11 +72,11 @@ class WaitingServiceTest {
 
 		assertThat(response1.getMemberCount()).isIn(2, 3);
 		assertThat(response1.getWaitingType()).isIn(WaitingType.DINE_IN, WaitingType.TAKE_OUT);
-		assertThat(response1.getWaitingStatus()).isEqualTo(WaitingStatus.SCHEDULED);
+		assertThat(response1.getStatus()).isEqualTo(Status.SCHEDULED);
 
 		assertThat(response2.getMemberCount()).isIn(2, 3);
 		assertThat(response2.getWaitingType()).isIn(WaitingType.DINE_IN, WaitingType.TAKE_OUT);
-		assertThat(response2.getWaitingStatus()).isEqualTo(WaitingStatus.SCHEDULED);
+		assertThat(response2.getStatus()).isEqualTo(Status.SCHEDULED);
 
 	}
 
@@ -96,7 +96,7 @@ class WaitingServiceTest {
 		assertThat(response.getWaitingId()).isEqualTo(id);
 		assertThat(response.getMemberCount()).isEqualTo(request.getMemberCount());
 		assertThat(response.getWaitingType()).isEqualTo(request.getWaitingType());
-		assertThat(response.getWaitingStatus()).isEqualTo(WaitingStatus.SCHEDULED);
+		assertThat(response.getStatus()).isEqualTo(Status.SCHEDULED);
 	}
 
 	@Test
@@ -114,7 +114,7 @@ class WaitingServiceTest {
 
 		WaitingEntity cancelledEntity = waitingRepository.findById(id).orElseThrow();
 
-		Assertions.assertThat(cancelledEntity.getWaitingStatus()).isEqualTo(WaitingStatus.CANCELED);
+		Assertions.assertThat(cancelledEntity.getStatus()).isEqualTo(Status.CANCELED);
 	}
 
 }

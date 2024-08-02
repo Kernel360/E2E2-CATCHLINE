@@ -1,7 +1,10 @@
-package org.example.catch_line.waiting.model.entity;
+package org.example.catch_line.reservation.model.entity;
+
+import java.time.LocalDateTime;
 
 import org.example.catch_line.common.BaseTimeEntity;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.reservation.validation.ValidReservationDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,20 +24,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "waiting")
-public class WaitingEntity extends BaseTimeEntity {
-
-	@Builder
-	public WaitingEntity(int memberCount, Status status, WaitingType waitingType) {
-		this.memberCount = memberCount;
-		this.status = status;
-		this.waitingType = waitingType;
-	}
+@Table(name = "reservation")
+public class ReservationEntity extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false)
-	private Long waitingId;
+	private Long reservationId;
 
 	@Column(nullable = false)
 	@Min(value = 1, message = "최소 인원 수는 1명입니다")
@@ -44,8 +40,15 @@ public class WaitingEntity extends BaseTimeEntity {
 	@Column(nullable = false)
 	private Status status;
 
-	@Enumerated(EnumType.STRING)
+	@ValidReservationDate
 	@Column(nullable = false)
-	private WaitingType waitingType;
+	private LocalDateTime reservationDate;
+
+	@Builder
+	public ReservationEntity(int memberCount, Status status, LocalDateTime reservationDate) {
+		this.memberCount = memberCount;
+		this.status = status;
+		this.reservationDate = reservationDate;
+	}
 
 }

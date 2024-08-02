@@ -1,6 +1,8 @@
-package org.example.catch_line.waiting.model.dto;
+package org.example.catch_line.reservation.model.dto;
 
-import org.example.catch_line.waiting.model.entity.WaitingType;
+import java.time.LocalDateTime;
+
+import org.example.catch_line.reservation.validation.ValidReservationDate;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -15,12 +17,13 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WaitingRequest {
+public class ReservationRequest {
 
 	@NotBlank
 	@Min(value = 1, message = "최소 인원 수는 1명입니다")
 	private int memberCount;
 
-	@NotBlank(message = "포장이나 매장을 선택해야 합니다")
-	private WaitingType waitingType;
+	@ValidReservationDate
+	@NotBlank(message = "날짜를 선택해야 합니다")
+	private LocalDateTime reservationDate;
 }

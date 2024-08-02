@@ -43,13 +43,13 @@ public class MemberEntity extends BaseTimeEntity {
 
     private Boolean memberStatus = false;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member")
     private List<ReviewEntity> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member")
     private List<ReservationEntity> reservations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "member")
     private List<WaitingEntity> waitings = new ArrayList<>();
 
 

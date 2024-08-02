@@ -2,6 +2,7 @@ package org.example.catch_line.menu.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 
 @Entity
 @Table(name = "menu")
@@ -21,4 +22,8 @@ public class MenuEntity {
 
     @Column(nullable = false)
     private Long price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    private RestaurantEntity restaurant;
 }

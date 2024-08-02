@@ -31,10 +31,10 @@ public class RestaurantResponse {
     @Pattern(regexp = "\\d{10,11}", message = "전화번호는 10자 이상 11자 이하의 숫자만 입력하세요.")
     private String phoneNumber;
 
-    @Min(0) @Max(5)
+    @NotNull(message = "위도는 비어있을 수 없습니다.")
     private BigDecimal latitude;
 
-    @Min(0) @Max(5)
+    @NotNull(message = "경도는 비어있을 수 없습니다.")
     private BigDecimal longitude;
 
     @NotEmpty

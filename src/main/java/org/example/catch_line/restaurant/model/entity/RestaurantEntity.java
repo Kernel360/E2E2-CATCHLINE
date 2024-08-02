@@ -47,7 +47,7 @@ public class RestaurantEntity extends BaseTimeEntity {
     private ServiceType serviceType;
 
     @Builder
-    public RestaurantEntity(String name, String description, BigDecimal rating, String phoneNumber, BigDecimal latitude, BigDecimal longitude, Long scrapCount, Long reviewCount, FoodType foodType, ServiceType serviceType) {
+    public RestaurantEntity(String name, String description, BigDecimal rating, String phoneNumber, BigDecimal latitude, BigDecimal longitude, FoodType foodType, ServiceType serviceType) {
         this.name = name;
         this.description = description;
         this.rating = rating;

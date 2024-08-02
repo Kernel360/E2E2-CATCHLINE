@@ -13,8 +13,8 @@ public class ReservationDateValidator implements ConstraintValidator<ValidReserv
 			return true;
 		}
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime startDate = now.plusDays(1);
-		LocalDateTime endDate = now.plusDays(7);
+		LocalDateTime startDate = now.plusDays(0);
+		LocalDateTime endDate = now.plusDays(8);
 
 		return reservationDate.isAfter(startDate) && reservationDate.isBefore(endDate);
 	}

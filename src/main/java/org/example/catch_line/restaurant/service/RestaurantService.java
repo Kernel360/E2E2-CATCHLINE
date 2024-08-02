@@ -1,6 +1,7 @@
 package org.example.catch_line.restaurant.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
@@ -44,8 +46,6 @@ public class RestaurantService {
                 .foodType(request.getFoodType())
                 .serviceType(request.getServiceType())
                 .rating(BigDecimal.valueOf(0))
-                .reviewCount(0L)
-                .scrapCount(0L)
                 .build();
     }
 }

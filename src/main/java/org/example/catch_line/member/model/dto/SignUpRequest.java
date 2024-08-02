@@ -1,9 +1,6 @@
 package org.example.catch_line.member.model.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.example.catch_line.common.constant.Role;
 
@@ -33,7 +30,7 @@ public class SignUpRequest {
     @Pattern(regexp = "\\d{10,11}", message = "전화번호는 10자 이상 11자 이하의 숫자만 입력하세요.")
     private String phoneNumber;
 
-    @NotBlank
+    @NotNull
     private Role role;
 
 }

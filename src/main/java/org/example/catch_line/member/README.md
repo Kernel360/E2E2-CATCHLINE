@@ -11,3 +11,9 @@
 ## 로그인 검증
 
 - 잘못된 패스워드 입력 시 401 에러 발생
+- Role Enum이 제대로 안들어오고 있음.
+
+
+## @Valid
+
+- Request Dto에 붙여놓은 @NotBlank 등의 어노테이션이 작동하려면 Controller의 RequestBody 앞에 @Valid 붙여주어야 한다.

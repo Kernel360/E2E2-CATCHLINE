@@ -9,6 +9,7 @@ public class MemberResponseMapper {
 
     public MemberResponse toDto(MemberEntity member) {
         return MemberResponse.builder()
+                .memberId(member.getMemberId())
                 .email(member.getEmail())
                 .name(member.getName())
                 .nickname(member.getNickname())

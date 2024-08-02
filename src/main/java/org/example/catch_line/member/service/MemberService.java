@@ -1,6 +1,7 @@
 package org.example.catch_line.member.service;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.member.model.dto.LoginRequest;
 import org.example.catch_line.member.model.dto.SignUpRequest;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -39,13 +41,7 @@ public class MemberService {
 
         return memberRepository.findByEmail(loginRequest.getEmail())
                 .filter(member -> loginRequest.getPassword().equals(member.getPassword()))
-                .map(member -> MemberResponse.builder()
-                        .email(member.getEmail())
-                        .name(member.getName())
-                        .role(member.getRole())
-                        .nickname(member.getNickname())
-                        .phoneNumber(member.getPhoneNumber())
-                        .build())
+                .map(memberResponseMapper::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("로그인 실패"));
 
 

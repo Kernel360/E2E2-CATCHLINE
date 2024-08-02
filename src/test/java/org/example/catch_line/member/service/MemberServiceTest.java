@@ -1,5 +1,6 @@
 package org.example.catch_line.member.service;
 
+import jakarta.transaction.Transactional;
 import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.member.model.dto.LoginRequest;
 import org.example.catch_line.member.model.dto.SignUpRequest;
@@ -13,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@Transactional
 @SpringBootTest
 class MemberServiceTest {
 

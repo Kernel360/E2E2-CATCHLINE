@@ -11,6 +11,7 @@ import org.example.catch_line.common.constant.Role;
 public class MemberResponse {
 
 
+    private Long memberId;
     private String email;
     private String name;
     private String nickname;

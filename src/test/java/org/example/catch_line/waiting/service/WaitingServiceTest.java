@@ -11,27 +11,23 @@ import org.example.catch_line.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.waiting.model.entity.WaitingStatus;
 import org.example.catch_line.waiting.model.entity.WaitingType;
 import org.example.catch_line.waiting.repository.WaitingRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
+@Transactional
 class WaitingServiceTest {
 
 	@Autowired
 	WaitingService waitingService;
 	@Autowired
 	WaitingRepository waitingRepository;
-
-	@BeforeEach
-	void setUp() {
-		waitingRepository.deleteAll();
-	}
 
 	@Test
 	@DisplayName("웨이팅 추가 테스트")

@@ -10,7 +10,6 @@ import org.example.catch_line.common.constant.Role;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 @Builder
 public class LoginRequest {
 

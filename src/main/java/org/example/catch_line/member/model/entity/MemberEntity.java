@@ -7,11 +7,8 @@ import org.example.catch_line.common.constant.Role;
 
 @Entity
 @Table(name = "member")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
-@Builder
 public class MemberEntity extends BaseTimeEntity {
 
     @Id
@@ -37,4 +34,16 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private Role role;
 
+    private Boolean memberStatus = false;
+
+    @Builder
+    public MemberEntity(String email, String name, String nickname, String password, String phoneNumber, Role role, Boolean memberStatus) {
+        this.email = email;
+        this.name = name;
+        this.nickname = nickname;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.memberStatus = memberStatus;
+    }
 }

@@ -21,17 +21,13 @@ public class MemberService {
 
     public MemberResponse signUp(SignUpRequest signUpRequest) {
 
-        MemberEntity member = MemberEntity.builder()
-                .email(signUpRequest.getEmail())
-                .name(signUpRequest.getName())
-                .nickname(signUpRequest.getNickname())
-                .password(signUpRequest.getPassword())
-                .phoneNumber(signUpRequest.getPhoneNumber())
-                .role(signUpRequest.getRole())
-                .build();
+        if (memberRepository.findByEmail(signUpRequest.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+        }
 
+
+        MemberEntity member = toMemberEntity(signUpRequest);
         memberRepository.save(member);
-
         return memberResponseMapper.toDto(member);
 
 
@@ -45,6 +41,17 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("로그인 실패"));
 
 
+    }
+
+    private static MemberEntity toMemberEntity(SignUpRequest signUpRequest) {
+        return MemberEntity.builder()
+                .email(signUpRequest.getEmail())
+                .name(signUpRequest.getName())
+                .nickname(signUpRequest.getNickname())
+                .password(signUpRequest.getPassword())
+                .phoneNumber(signUpRequest.getPhoneNumber())
+                .role(signUpRequest.getRole())
+                .build();
     }
 
 

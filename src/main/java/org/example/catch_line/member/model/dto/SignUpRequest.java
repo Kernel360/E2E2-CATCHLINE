@@ -7,7 +7,6 @@ import org.example.catch_line.common.constant.Role;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 public class SignUpRequest {
 

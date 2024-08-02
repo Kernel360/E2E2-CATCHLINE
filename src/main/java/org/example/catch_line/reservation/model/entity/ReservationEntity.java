@@ -2,24 +2,19 @@ package org.example.catch_line.reservation.model.entity;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
 import org.example.catch_line.common.BaseTimeEntity;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.reservation.validation.ValidReservationDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 
 @Entity
 @NoArgsConstructor
@@ -44,6 +39,14 @@ public class ReservationEntity extends BaseTimeEntity {
 	@ValidReservationDate
 	@Column(nullable = false)
 	private LocalDateTime reservationDate;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private MemberEntity member;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "restaurant_id")
+	private RestaurantEntity restaurant;
 
 	@Builder
 	public ReservationEntity(int memberCount, Status status, LocalDateTime reservationDate) {

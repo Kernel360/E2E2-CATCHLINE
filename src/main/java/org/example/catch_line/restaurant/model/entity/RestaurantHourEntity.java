@@ -21,6 +21,10 @@ public class RestaurantHourEntity {
     private LocalTime closeTime;
     private OpenStatus openStatus;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    private RestaurantEntity restaurant;
+
     @Builder
     public RestaurantHourEntity(DayOfWeek dayOfWeek, LocalTime openTime, LocalTime closeTime, OpenStatus openStatus) {
         this.dayOfWeek = dayOfWeek;

@@ -9,10 +9,7 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "restaurant_hour")
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RestaurantHourEntity {
 
     @Id
@@ -23,4 +20,12 @@ public class RestaurantHourEntity {
     private LocalTime openTime;
     private LocalTime closeTime;
     private OpenStatus openStatus;
+
+    @Builder
+    public RestaurantHourEntity(DayOfWeek dayOfWeek, LocalTime openTime, LocalTime closeTime, OpenStatus openStatus) {
+        this.dayOfWeek = dayOfWeek;
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+        this.openStatus = openStatus;
+    }
 }

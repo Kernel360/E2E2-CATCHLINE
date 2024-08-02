@@ -1,6 +1,8 @@
 package org.example.catch_line.restaurant.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.example.catch_line.common.BaseTimeEntity;
@@ -10,10 +12,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "restaurant")
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RestaurantEntity extends BaseTimeEntity {
 
     @Id
@@ -25,7 +24,6 @@ public class RestaurantEntity extends BaseTimeEntity {
     private String description;
 
     @Column(nullable = false)
-    @Size(max = 5)
     private BigDecimal rating;
 
     private String phoneNumber;
@@ -48,4 +46,17 @@ public class RestaurantEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ServiceType serviceType;
 
+    @Builder
+    public RestaurantEntity(String name, String description, BigDecimal rating, String phoneNumber, BigDecimal latitude, BigDecimal longitude, Long scrapCount, Long reviewCount, FoodType foodType, ServiceType serviceType) {
+        this.name = name;
+        this.description = description;
+        this.rating = rating;
+        this.phoneNumber = phoneNumber;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.scrapCount = scrapCount;
+        this.reviewCount = reviewCount;
+        this.foodType = foodType;
+        this.serviceType = serviceType;
+    }
 }

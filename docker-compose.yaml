@@ -23,20 +23,22 @@ services:
     networks:
       - backend
 
-  application:
-    container_name: main-server
-    restart: always
-    build:
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/catch_line_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 1234
-    depends_on:
-      - mysql
-    networks:
-      - backend
+
+#  application:
+#    container_name: main-server
+#    restart: always
+#    image: catch_line:0.0.1-SNAPSHOT
+##    build:
+##      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/catch_line_db
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: 1234
+#    depends_on:
+#      - mysql
+#    networks:
+#      - backend
 
 

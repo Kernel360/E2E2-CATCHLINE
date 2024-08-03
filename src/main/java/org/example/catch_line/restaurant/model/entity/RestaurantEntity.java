@@ -1,14 +1,13 @@
 package org.example.catch_line.restaurant.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.example.catch_line.common.BaseTimeEntity;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.menu.model.entity.MenuEntity;
 import org.example.catch_line.reservation.model.entity.ReservationEntity;
+import org.example.catch_line.restaurant.model.entity.constant.FoodType;
+import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.review.model.entity.ReviewEntity;
 import org.example.catch_line.waiting.model.entity.WaitingEntity;
 

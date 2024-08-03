@@ -2,15 +2,28 @@ package org.example.catch_line.waiting.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.member.model.dto.SignUpRequest;
+import org.example.catch_line.member.model.entity.MemberEntity;
+import org.example.catch_line.member.repository.MemberRepository;
+import org.example.catch_line.member.service.MemberService;
+import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
+import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
+import org.example.catch_line.restaurant.model.entity.FoodType;
+import org.example.catch_line.restaurant.model.entity.ServiceType;
+import org.example.catch_line.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.restaurant.service.RestaurantService;
 import org.example.catch_line.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.waiting.model.entity.WaitingType;
 import org.example.catch_line.waiting.repository.WaitingRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +41,68 @@ class WaitingServiceTest {
 	WaitingService waitingService;
 	@Autowired
 	WaitingRepository waitingRepository;
+	@Autowired
+	MemberRepository memberRepository;
+	@Autowired
+	RestaurantRepository restaurantRepository;
+
+	@Autowired
+	MemberService memberService;
+
+	@Autowired
+	RestaurantService restaurantService;
+
+	private Long memberId;
+	private Long memberId2;
+	private Long restaurantId;
+
+	@BeforeEach
+	void setUp() {
+		SignUpRequest request = SignUpRequest.builder()
+			.email("test@example.com")
+			.name("Test User")
+			.nickname("testnickname")
+			.phoneNumber("01012345678")
+			.password("password")
+			.role(Role.USER)
+			.build();
+
+		memberService.signUp(request);
+
+		MemberEntity member = memberRepository.findByEmail("test@example.com").orElse(null);
+
+		memberId = member.getMemberId();
+
+		SignUpRequest request2 = SignUpRequest.builder()
+			.email("test1@example.com")
+			.name("Test User")
+			.nickname("testnickname")
+			.phoneNumber("01012345678")
+			.password("password")
+			.role(Role.USER)
+			.build();
+
+		memberService.signUp(request2);
+
+		MemberEntity member2 = memberRepository.findByEmail("test1@example.com").orElse(null);
+
+		memberId2 = member2.getMemberId();
+
+		RestaurantCreateRequest request1 = RestaurantCreateRequest.builder()
+			.description("식당 소개")
+			.name("한식집")
+			.latitude(BigDecimal.ZERO)
+			.longitude(BigDecimal.ZERO)
+			.phoneNumber("02-1234-1234")
+			.foodType(FoodType.KOREAN)
+			.serviceType(ServiceType.WAITING)
+			.build();
+
+		RestaurantResponse restaurant = restaurantService.createRestaurant(request1);
+
+		restaurantId = restaurant.getRestaurantId();
+
+	}
 
 	@Test
 	@DisplayName("웨이팅 추가 테스트")
@@ -38,7 +113,7 @@ class WaitingServiceTest {
 			.memberCount(4)
 			.build();
 
-		WaitingResponse response = waitingService.addWaiting(request);
+		WaitingResponse response = waitingService.addWaiting(memberId, restaurantId, request);
 
 		WaitingEntity entity = waitingRepository.findById(response.getWaitingId()).orElseThrow();
 
@@ -60,11 +135,16 @@ class WaitingServiceTest {
 			.waitingType(WaitingType.TAKE_OUT)
 			.memberCount(3)
 			.build();
+		WaitingRequest request3 = WaitingRequest.builder()
+			.waitingType(WaitingType.TAKE_OUT)
+			.memberCount(5)
+			.build();
 
-		waitingService.addWaiting(request1);
-		waitingService.addWaiting(request2);
+		waitingService.addWaiting(memberId, restaurantId, request1);
+		waitingService.addWaiting(memberId, restaurantId, request2);
+		waitingService.addWaiting(memberId2, restaurantId, request3);
 
-		List<WaitingResponse> responses = waitingService.getAllWaiting();
+		List<WaitingResponse> responses = waitingService.getAllWaiting(memberId);
 
 		assertThat(responses).hasSize(2);
 		WaitingResponse response1 = responses.get(0);
@@ -88,7 +168,7 @@ class WaitingServiceTest {
 			.memberCount(4)
 			.build();
 
-		WaitingResponse addedResponse = waitingService.addWaiting(request);
+		WaitingResponse addedResponse = waitingService.addWaiting(memberId, restaurantId, request);
 		Long id = addedResponse.getWaitingId();
 
 		WaitingResponse response = waitingService.getWaitingById(id);
@@ -107,7 +187,7 @@ class WaitingServiceTest {
 			.memberCount(4)
 			.build();
 
-		WaitingResponse response = waitingService.addWaiting(request);
+		WaitingResponse response = waitingService.addWaiting(memberId, restaurantId, request);
 		Long id = response.getWaitingId();
 
 		waitingService.cancelWaiting(id);

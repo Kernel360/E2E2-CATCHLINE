@@ -39,13 +39,6 @@ public class WaitingEntity extends BaseTimeEntity {
 		this.restaurant = restaurant;
 	}
 
-	@Builder
-	public WaitingEntity(int memberCount, Status status, WaitingType waitingType) {
-		this.memberCount = memberCount;
-		this.status = status;
-		this.waitingType = waitingType;
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false)

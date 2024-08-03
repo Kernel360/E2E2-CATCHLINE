@@ -2,8 +2,8 @@ package org.example.catch_line.restaurant.model.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.example.catch_line.restaurant.model.entity.FoodType;
-import org.example.catch_line.restaurant.model.entity.ServiceType;
+import org.example.catch_line.restaurant.model.entity.constant.FoodType;
+import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 
 import java.math.BigDecimal;
 

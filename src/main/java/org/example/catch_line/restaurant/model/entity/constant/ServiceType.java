@@ -1,4 +1,4 @@
-package org.example.catch_line.restaurant.model.entity;
+package org.example.catch_line.restaurant.model.entity.constant;
 
 public enum ServiceType {
 

@@ -1,12 +1,11 @@
 package org.example.catch_line.restaurant.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.restaurant.model.entity.FoodType;
+import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.entity.ServiceType;
+import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,15 +29,7 @@ class RestaurantServiceTest {
     @Transactional
     void restaurant_create() {
         // given
-        RestaurantCreateRequest request = RestaurantCreateRequest.builder()
-                .description("식당 소개")
-                .name("한식집")
-                .latitude(BigDecimal.ZERO)
-                .longitude(BigDecimal.ZERO)
-                .phoneNumber("02-1234-1234")
-                .foodType(FoodType.KOREAN)
-                .serviceType(ServiceType.WAITING)
-                .build();
+        RestaurantCreateRequest request = getRestaurantCreateRequest();
 
         // when
         RestaurantResponse restaurant = restaurantService.createRestaurant(request);
@@ -53,19 +44,23 @@ class RestaurantServiceTest {
     }
 
     @Test
+    @DisplayName("식당 이름 중복 테스트")
+    @Transactional
+    void restaurant_create_duplicate_name() {
+        RestaurantCreateRequest request1 = getRestaurantCreateRequest();
+        RestaurantCreateRequest request2 = getRestaurantCreateRequest();
+        restaurantService.createRestaurant(request1);
+
+        assertThatThrownBy(() -> restaurantService.createRestaurant(request2))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("식당 상세 조회 테스트")
     @Transactional
     void restaurant_find() {
         // given
-        RestaurantCreateRequest request = RestaurantCreateRequest.builder()
-                .description("식당 소개")
-                .name("한식집")
-                .latitude(BigDecimal.ZERO)
-                .longitude(BigDecimal.ZERO)
-                .phoneNumber("02-1234-1234")
-                .foodType(FoodType.KOREAN)
-                .serviceType(ServiceType.WAITING)
-                .build();
+        RestaurantCreateRequest request = getRestaurantCreateRequest();
 
         // when
         RestaurantResponse restaurant = restaurantService.createRestaurant(request);
@@ -74,6 +69,10 @@ class RestaurantServiceTest {
 
         // then
         assertThat(restaurantId).isEqualTo(response.getRestaurantId());
+        assertThat(restaurant.getName()).isEqualTo(response.getName());
+        assertThat(restaurant.getDescription()).isEqualTo(response.getDescription());
+        assertThat(restaurant.getPhoneNumber()).isEqualTo(response.getPhoneNumber());
+        assertThat(restaurant.getRating()).isEqualTo(response.getRating());
     }
 
     @Test
@@ -81,15 +80,7 @@ class RestaurantServiceTest {
     @Transactional
     void restaurant_delete() {
         // given
-        RestaurantCreateRequest request = RestaurantCreateRequest.builder()
-                .description("식당 소개")
-                .name("한식집")
-                .latitude(BigDecimal.ZERO)
-                .longitude(BigDecimal.ZERO)
-                .phoneNumber("02-1234-1234")
-                .foodType(FoodType.KOREAN)
-                .serviceType(ServiceType.WAITING)
-                .build();
+        RestaurantCreateRequest request = getRestaurantCreateRequest();
 
         // when
         RestaurantResponse restaurant = restaurantService.createRestaurant(request);
@@ -98,5 +89,18 @@ class RestaurantServiceTest {
 
         // then
         assertThat(restaurantRepository.findById(restaurantId)).isEmpty();
+    }
+
+    private static RestaurantCreateRequest getRestaurantCreateRequest() {
+        RestaurantCreateRequest request = RestaurantCreateRequest.builder()
+                .description("식당 소개")
+                .name("한식집")
+                .latitude(BigDecimal.ZERO)
+                .longitude(BigDecimal.ZERO)
+                .phoneNumber("0212341234")
+                .foodType(FoodType.KOREAN)
+                .serviceType(ServiceType.WAITING)
+                .build();
+        return request;
     }
 }

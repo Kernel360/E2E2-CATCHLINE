@@ -64,7 +64,7 @@ public class ReservationService {
 	public void cancelReservation(Long id) {
 		ReservationEntity reservationEntity = reservationRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("예약 아이디가 다릅니다: " + id));
-		reservationEntity.changeStatus(Status.CANCELED);
+		reservationEntity.changeReservationStatus(Status.CANCELED);
 		reservationRepository.save(reservationEntity);
 	}
 

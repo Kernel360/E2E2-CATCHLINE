@@ -63,7 +63,7 @@ public class WaitingEntity extends BaseTimeEntity {
 		this.restaurant = restaurant;
 	}
 
-	public void changeStatus(Status newStatus) {
+	public void changeWaitingStatus(Status newStatus) {
 		this.status = newStatus;
 	}
 

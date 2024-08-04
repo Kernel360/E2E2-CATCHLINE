@@ -71,7 +71,7 @@ public class ReservationEntity extends BaseTimeEntity {
 		this.status = reservationRequest.getStatus();
 	}
 
-	public void changeStatus(Status newStatus) {
+	public void changeReservationStatus(Status newStatus) {
 		this.status = newStatus;
 	}
 

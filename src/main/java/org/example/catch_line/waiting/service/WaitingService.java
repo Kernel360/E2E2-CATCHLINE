@@ -64,7 +64,7 @@ public class WaitingService {
 	public void cancelWaiting(Long id) {
 		WaitingEntity entity = waitingRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("웨이팅 아이디가 다릅니다: " + id));
-		entity.changeStatus(Status.CANCELED);
+		entity.changeWaitingStatus(Status.CANCELED);
 		waitingRepository.save(entity);
 	}
 

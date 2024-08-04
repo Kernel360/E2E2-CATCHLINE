@@ -35,29 +35,29 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SpringBootTest
 @Transactional
-class WaitingServiceTest {
+public class WaitingServiceTest {
 
 	@Autowired
-	WaitingService waitingService;
+	private WaitingService waitingService;
 	@Autowired
-	WaitingRepository waitingRepository;
+	private WaitingRepository waitingRepository;
 	@Autowired
-	MemberRepository memberRepository;
+	private MemberRepository memberRepository;
 	@Autowired
-	RestaurantRepository restaurantRepository;
+	private RestaurantRepository restaurantRepository;
 
 	@Autowired
-	MemberService memberService;
+	private MemberService memberService;
 
 	@Autowired
-	RestaurantService restaurantService;
+	private RestaurantService restaurantService;
 
 	private Long memberId;
 	private Long memberId2;
 	private Long restaurantId;
 
 	@BeforeEach
-	void setUp() {
+	public void setUp() {
 		SignUpRequest request = SignUpRequest.builder()
 			.email("test@example.com")
 			.name("Test User")
@@ -106,7 +106,7 @@ class WaitingServiceTest {
 
 	@Test
 	@DisplayName("웨이팅 추가 테스트")
-	void testAddWaiting() {
+	public void testAddWaiting() {
 
 		WaitingRequest request = WaitingRequest.builder()
 			.waitingType(WaitingType.DINE_IN)
@@ -126,7 +126,7 @@ class WaitingServiceTest {
 
 	@Test
 	@DisplayName("웨이팅 전체 조회 테스트")
-	void testGetAllWaiting() {
+	public void testGetAllWaiting() {
 		WaitingRequest request1 = WaitingRequest.builder()
 			.waitingType(WaitingType.DINE_IN)
 			.memberCount(2)
@@ -162,7 +162,7 @@ class WaitingServiceTest {
 
 	@Test
 	@DisplayName("웨이팅 개별 조회 테스트")
-	void testGetWaitingById() {
+	public void testGetWaitingById() {
 		WaitingRequest request = WaitingRequest.builder()
 			.waitingType(WaitingType.DINE_IN)
 			.memberCount(4)
@@ -181,7 +181,7 @@ class WaitingServiceTest {
 
 	@Test
 	@DisplayName("웨이팅 취소 테스트")
-	void testCancelWaiting() {
+	public void testCancelWaiting() {
 		WaitingRequest request = WaitingRequest.builder()
 			.waitingType(WaitingType.DINE_IN)
 			.memberCount(4)

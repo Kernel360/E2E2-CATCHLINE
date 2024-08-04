@@ -17,27 +17,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @Table(name = "waiting")
 public class WaitingEntity extends BaseTimeEntity {
-
-	@Builder
-	public WaitingEntity(int memberCount, Status status, WaitingType waitingType, MemberEntity member,
-		RestaurantEntity restaurant) {
-		this.memberCount = memberCount;
-		this.status = status;
-		this.waitingType = waitingType;
-		this.member = member;
-		this.restaurant = restaurant;
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,5 +52,19 @@ public class WaitingEntity extends BaseTimeEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "restaurant_id")
 	private RestaurantEntity restaurant;
+
+	@Builder
+	public WaitingEntity(int memberCount, Status status, WaitingType waitingType, MemberEntity member,
+		RestaurantEntity restaurant) {
+		this.memberCount = memberCount;
+		this.status = status;
+		this.waitingType = waitingType;
+		this.member = member;
+		this.restaurant = restaurant;
+	}
+
+	public void changeStatus(Status newStatus) {
+		this.status = newStatus;
+	}
 
 }

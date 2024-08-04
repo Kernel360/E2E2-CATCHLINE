@@ -23,7 +23,7 @@ public class MemberController {
     private final MemberService memberService;
 
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<MemberResponse> findMember(
             HttpSession httpSession
     ) {
@@ -31,7 +31,7 @@ public class MemberController {
         return ResponseEntity.ok().body(memberResponse);
     }
 
-    @PutMapping("")
+    @PutMapping
     public ResponseEntity<MemberResponse> updateMember(
             @Valid
             @RequestBody MemberUpdateRequest memberUpdateRequest,
@@ -43,7 +43,7 @@ public class MemberController {
 
     }
 
-    @PatchMapping("")
+    @PatchMapping
     public ResponseEntity<MemberResponse> deleteMember(
             HttpSession httpSession
     ) {

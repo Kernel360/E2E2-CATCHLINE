@@ -64,14 +64,14 @@ public class MemberEntity extends BaseTimeEntity {
 
 
     @Builder
-    public MemberEntity(String email, String name, String nickname, String password, String phoneNumber, Role role, boolean isMemberDeleted) {
+    public MemberEntity(String email, String name, String nickname, String password, String phoneNumber, Role role) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.role = role;
-        this.isMemberDeleted = false;
+//        this.isMemberDeleted = false;
     }
 
 

@@ -1,7 +1,5 @@
 package org.example.catch_line.waiting.controller;
 
-import org.example.catch_line.member.service.MemberService;
-import org.example.catch_line.restaurant.service.RestaurantService;
 import org.example.catch_line.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.waiting.model.entity.WaitingType;
@@ -21,26 +19,27 @@ public class WaitingController {
 
 	private final WaitingService waitingService;
 
-	@GetMapping("restaurants/{restaurantId}/{memberId}/waiting")
+	@GetMapping("/restaurants/{restaurantId}/{memberId}/waiting")
 	public String addWaitingForm(
 		@PathVariable("restaurantId") Long restaurantId,
-		@PathVariable("memberId") Long memberId, Model model) {
-		model.addAttribute("restaurantId", restaurantId);
-		model.addAttribute("memberId", memberId);
+		@PathVariable("memberId") Long memberId
+		) {
+
 
 		return "waiting/waiting";
 	}
 
 	//세션을 사용해서 memberId를 갖고오고 싶은데 아직 구현이 안될거 같아서 일단 PathVariable 로 memberId를 입력하고 db에 저장되는 것 확인했습니다..!!
 	//후에 다시 세션으로 받아올 수 있게 수정해야 할 것 같아요,,!
-	@PostMapping("restaurants/{restaurantId}/{memberId}/waiting")
+	@PostMapping("/restaurants/{restaurantId}/{memberId}/waiting")
 	public String addWaiting(
 		@PathVariable("restaurantId") Long restaurantId,
 		@PathVariable("memberId") Long memberId,
 		@RequestParam(value = "memberCount") Integer memberCount,
 		@RequestParam(value = "waitingType") String waitingType,
-		// HttpSession session,
 		Model model
+		// HttpSession session,
+
 	) {
 		// Long memberId = (Long) session.getAttribute("memberId");
 		// if(memberId == null) {
@@ -57,7 +56,7 @@ public class WaitingController {
 
 		model.addAttribute("waitingResponse", waitingResponse);
 
-		return "/waiting/waiting";
+		return "waiting/waiting";
 	}
 
 }

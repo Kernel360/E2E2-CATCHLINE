@@ -2,51 +2,57 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Waiting Information</title>
-    <!-- Include Bootstrap CSS -->
+    <title>예약</title>
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            margin-top: 50px;
-        }
-        .btn-primary {
-            background-color: #007BFF;
-            border-color: #007BFF;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
-        }
-    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date();
+            const nextDay = new Date(today);
+            nextDay.setDate(today.getDate() + 1);
+            nextDay.setHours(0, 0, 0, 0); // 다음 날 00:00으로 설정
+
+            const lastDay = new Date(today);
+            lastDay.setDate(today.getDate() + 7);
+
+            // 날짜 및 시간을 yyyy-MM-ddThh:mm 형식으로 변환
+            const formatDateTime = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            };
+
+            const nextDayStr = formatDateTime(nextDay);
+            const lastDayStr = formatDateTime(lastDay);
+
+            const reservationDateInput = document.getElementById('reservationDate');
+            reservationDateInput.setAttribute('min', nextDayStr);
+            reservationDateInput.setAttribute('max', lastDayStr);
+        });
+    </script>
 </head>
 <body>
-<div class="container">
-    <h1 class="text-center mb-4">Add Waiting Information</h1>
-    <form th:action="@{/restaurants/{restaurantId}/{memberId}/waiting(restaurantId=${restaurantId}, memberId=${memberId})}" method="post">
-        <!-- Hidden field for memberId -->
-        <input type="hidden" th:value="${memberId}" name="memberId"/>
-
-        <div class="mb-3">
-            <label for="memberCount" class="form-label">Number of Members:</label>
-            <input type="number" id="memberCount" name="memberCount" th:value="${memberCount}" class="form-control" required />
+<div class="container mt-5">
+    <h1 class="text-center">예약하기</h1>
+    <form th:action="@{/restaurants/{restaurantId}/{memberId}/reservation(restaurantId=${restaurantId}, memberId=${memberId})}"
+          method="post">
+        <div class="form-group">
+            <label for="memberCount">인원 수:</label>
+            <input type="number" id="memberCount" name="memberCount" class="form-control" min="1" required>
         </div>
-
-        <div class="mb-3">
-            <label for="waitingType" class="form-label">Waiting Type:</label>
-            <select id="waitingType" name="waitingType" class="form-select" required>
-                <option value="regular" th:selected="${waitingType == 'DINE_IN'}">DINE_IN</option>
-                <option value="vip" th:selected="${waitingType == 'TAKE_OUT'}">TAKE_OUT</option>
-                <!-- Add more options as needed -->
-            </select>
+        <div class="form-group">
+            <label for="reservationDate">예약 날짜 및 시간:</label>
+            <input type="datetime-local" id="reservationDate" name="reservationDate" class="form-control" required>
         </div>
-
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
+        <button type="submit" class="btn btn-primary">예약하기</button>
     </form>
+    <div class="mt-4">
+        <p th:if="${reservationResponse != null}" class="alert alert-success">
+            예약이 성공적으로 완료되었습니다!
+        </p>
+    </div>
 </div>
 </body>
 </html>

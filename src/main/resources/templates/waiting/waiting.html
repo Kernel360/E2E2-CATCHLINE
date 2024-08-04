@@ -9,13 +9,16 @@
         body {
             font-family: Arial, sans-serif;
         }
+
         .container {
             margin-top: 50px;
         }
+
         .btn-primary {
             background-color: #007BFF;
             border-color: #007BFF;
         }
+
         .btn-primary:hover {
             background-color: #0056b3;
             border-color: #004085;
@@ -25,20 +28,22 @@
 <body>
 <div class="container">
     <h1 class="text-center mb-4">Add Waiting Information</h1>
-    <form th:action="@{/restaurants/{restaurantId}/{memberId}/waiting(restaurantId=${restaurantId}, memberId=${memberId})}" method="post">
+    <form th:action="@{/restaurants/{restaurantId}/{memberId}/waiting(restaurantId=${restaurantId}, memberId=${memberId})}"
+          method="post">
         <!-- Hidden field for memberId -->
         <input type="hidden" th:value="${memberId}" name="memberId"/>
 
         <div class="mb-3">
             <label for="memberCount" class="form-label">Number of Members:</label>
-            <input type="number" id="memberCount" name="memberCount" th:value="${memberCount}" class="form-control" required />
+            <input type="number" id="memberCount" name="memberCount" th:value="${memberCount}" class="form-control"
+                   required/>
         </div>
 
         <div class="mb-3">
             <label for="waitingType" class="form-label">Waiting Type:</label>
             <select id="waitingType" name="waitingType" class="form-select" required>
-                <option value="regular" th:selected="${waitingType == 'DINE_IN'}">DINE_IN</option>
-                <option value="vip" th:selected="${waitingType == 'TAKE_OUT'}">TAKE_OUT</option>
+                <option value="DINE_IN" th:selected="${waitingType == 'DINE_IN'}">DINE_IN</option>
+                <option value="TAKE_OUT" th:selected="${waitingType == 'TAKE_OUT'}">TAKE_OUT</option>
                 <!-- Add more options as needed -->
             </select>
         </div>
@@ -47,6 +52,11 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
+    <div class="mt-4">
+        <p th:if="${waitingResponse != null}" class="alert alert-success">
+            웨이팅 등록이 성공적으로 완료되었습니다!
+        </p>
+    </div>
 </div>
 </body>
 </html>

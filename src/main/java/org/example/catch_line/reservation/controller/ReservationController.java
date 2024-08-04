@@ -40,10 +40,11 @@ public class ReservationController {
 
 	) {
 
-		ReservationRequest reservationRequest = new ReservationRequest();
-		reservationRequest.setReservationDate(reservationDate);
-		reservationRequest.setMemberCount(memberCount);
-		reservationRequest.setStatus(Status.SCHEDULED);
+		ReservationRequest reservationRequest = ReservationRequest.builder()
+			.reservationDate(reservationDate)
+			.memberCount(memberCount)
+			.status(Status.SCHEDULED)
+			.build();
 
 		ReservationResponse reservationResponse = reservationService.addReserve(memberId, restaurantId,
 			reservationRequest);

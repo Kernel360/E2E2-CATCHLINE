@@ -23,8 +23,7 @@ public class WaitingController {
 	public String addWaitingForm(
 		@PathVariable("restaurantId") Long restaurantId,
 		@PathVariable("memberId") Long memberId
-		) {
-
+	) {
 
 		return "waiting/waiting";
 	}
@@ -48,9 +47,10 @@ public class WaitingController {
 
 		WaitingType type = "DINE_IN".equals(waitingType) ? WaitingType.DINE_IN : WaitingType.TAKE_OUT;
 
-		WaitingRequest waitingRequest = new WaitingRequest();
-		waitingRequest.setMemberCount(memberCount);
-		waitingRequest.setWaitingType(type);
+		WaitingRequest waitingRequest = WaitingRequest.builder()
+			.memberCount(memberCount)
+			.waitingType(type)
+			.build();
 
 		WaitingResponse waitingResponse = waitingService.addWaiting(memberId, restaurantId, waitingRequest);
 

@@ -28,6 +28,4 @@ public class ReservationRequest {
 	@NotBlank(message = "날짜를 선택해야 합니다")
 	private LocalDateTime reservationDate;
 
-	@NotBlank(message = "현재 상태가 존재해야 합니다")
-	private Status status;
 }

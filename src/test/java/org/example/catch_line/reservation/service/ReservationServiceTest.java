@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-public class ReservationServiceTest {
+class ReservationServiceTest {
 
 	@Autowired
 	private ReservationService reservationService;
@@ -55,7 +55,7 @@ public class ReservationServiceTest {
 	private Long restaurantId;
 
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		SignUpRequest request = SignUpRequest.builder()
 			.email("test@example.com")
 			.name("Test User")

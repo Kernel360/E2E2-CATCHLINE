@@ -38,19 +38,19 @@ import lombok.extern.slf4j.Slf4j;
 class WaitingServiceTest {
 
 	@Autowired
-	WaitingService waitingService;
+	private WaitingService waitingService;
 	@Autowired
-	WaitingRepository waitingRepository;
+	private WaitingRepository waitingRepository;
 	@Autowired
-	MemberRepository memberRepository;
+	private MemberRepository memberRepository;
 	@Autowired
-	RestaurantRepository restaurantRepository;
+	private RestaurantRepository restaurantRepository;
 
 	@Autowired
-	MemberService memberService;
+	private MemberService memberService;
 
 	@Autowired
-	RestaurantService restaurantService;
+	private RestaurantService restaurantService;
 
 	private Long memberId;
 	private Long memberId2;

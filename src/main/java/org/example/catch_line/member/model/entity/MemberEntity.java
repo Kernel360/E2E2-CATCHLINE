@@ -42,7 +42,7 @@ public class MemberEntity extends BaseTimeEntity {
     private Role role;
 
     @Column(nullable = false)
-    private Boolean memberStatus = false;
+    private boolean isMemberDeleted;
 
 
     @OneToMany(mappedBy = "member")
@@ -64,27 +64,28 @@ public class MemberEntity extends BaseTimeEntity {
 
 
     @Builder
-    public MemberEntity(String email, String name, String nickname, String password, String phoneNumber, Role role) {
+    public MemberEntity(String email, String name, String nickname, String password, String phoneNumber, Role role, boolean isMemberDeleted) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.role = role;
+        this.isMemberDeleted = false;
     }
 
 
     // 회원 정보 수정 -> @Setter 사용 대신 메서드를 따로 추가
     public void updateMember(String email, String name, String nickname, String password, String phoneNumber) {
-        this.email = email;
-        this.name = name;
-        this.nickname = nickname;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
+        this.email = (email != null) ? email : this.email;
+        this.name = (name != null) ? name : this.name;
+        this.nickname = (nickname != null) ? nickname : this.nickname;
+        this.password = (password != null) ? password : this.password;
+        this.phoneNumber = (phoneNumber != null) ? phoneNumber : this.phoneNumber;
     }
 
     // 회원 탈퇴 (memberStatus 값만 변경) -> @Setter 사용 대신 메서드를 따로 추가
-    public void updateMemberStatus(Boolean memberStatus) {
-        this.memberStatus = memberStatus;
+    public void doWithdrawal() {
+        this.isMemberDeleted = true;
     }
 }

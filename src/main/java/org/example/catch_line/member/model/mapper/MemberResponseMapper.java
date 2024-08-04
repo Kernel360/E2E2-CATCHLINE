@@ -15,7 +15,7 @@ public class MemberResponseMapper {
                 .nickname(member.getNickname())
                 .phoneNumber(member.getPhoneNumber())
                 .role(member.getRole())
-                .memberStatus(member.getMemberStatus())
+                .isMemberDeleted(member.isMemberDeleted())
                 .build();
     }
 }

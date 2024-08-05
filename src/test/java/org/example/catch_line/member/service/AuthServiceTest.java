@@ -16,11 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
-class MemberServiceTest {
+class AuthServiceTest {
 
 
     @Autowired
-    MemberService memberService;
+    AuthService authService;
 
     @Autowired
     MemberRepository memberRepository;
@@ -41,7 +41,7 @@ class MemberServiceTest {
                 .build();
 
 
-        memberService.signUp(request);
+        authService.signUp(request);
 
         MemberEntity savedMember = memberRepository.findByEmail("test@example.com").orElse(null);
         assertNotNull(savedMember);

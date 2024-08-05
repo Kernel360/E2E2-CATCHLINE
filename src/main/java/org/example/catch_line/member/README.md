@@ -1,19 +1,90 @@
-## Controller 수정 필요
+# 🛠️ Member 기능 구현
 
-- 현재 JSON으로 `ResponseEntity` 반환
-- Thymeleaf 사용 시 `html` 파일을 반환
+## 🚀 구현된 기능
 
-## Service에서 회원가입 검증
-
-- 어떻게 할지?
-- 지금 중복된 이메일 입력 시 500 에러 발생
-
-## 로그인 검증
-
-- 잘못된 패스워드 입력 시 401 에러 발생
-- Role Enum이 제대로 안들어오고 있음.
+1. **로그인, 로그아웃 `AuthController`**
+  - 이메일, 비밀번호로 로그인 (`/login`)
+  - 로그아웃 (`/logout`)
+  - ✅ 탈퇴한 회원은 로그인 불가능
 
 
-## @Valid
+2. **회원가입 `AuthController`**
+  - 회원가입 (`/signup`)
+  - ✅ 중복 이메일 검증
 
-- Request Dto에 붙여놓은 @NotBlank 등의 어노테이션이 작동하려면 Controller의 RequestBody 앞에 @Valid 붙여주어야 한다.
+
+  - ⚠️ 탈퇴한 회원의 경우, 동일한 이메일로 재가입 가능하도록 처리 필요
+  - 해결 방안:
+    1. 탈퇴 시 이메일 변경
+    2. 복합 고유 제약 조건 설정 (`email`, `isMemberDeleted`)
+
+
+3. **회원 정보 조회 `MemberController`**
+  - `/members`
+  - ✅ 존재하는 회원인지 체크 `MemberValidator.checkIfMemberPresent()`
+  - ✅ 탈퇴한 회원은 회원 정보 조회 불가능
+
+
+4. **회원 정보 수정 `MemberController`**
+  - `/members`
+  - ✅ 존재하는 회원인지 확인 `MemberValidator.checkIfMemberPresent()`
+  - ✅ 탈퇴한 회원은 정보 수정 불가능
+  - ✅ 중복 이메일 검증(이메일 변경 시에만) `MemberValidator.checkDuplicateEmail()`
+
+    - ✅ 탈퇴한 회원의 이메일은 검증에서 제외
+
+5. **회원 삭제 `MemberController`**
+  - `/members`
+  - ✅ 존재하는 회원인지 확인 `MemberValidator.checkIfMemberPresent()`
+  - ✅ 탈퇴한 회원은 삭제 불가능 `MemberValidator.checkDuplicateEmail()`
+
+6. **작성한 리뷰 관리 `MyReviewController`**
+  - ⬜️ 작성한 리뷰 조회 (`/my-page/reviews`)
+  - ⬜️ 작성한 리뷰 삭제 (`/my-page/reviews`)
+  - ⬜️ 작성한 리뷰 수정 (`/my-page/reviews`)
+
+7. **스크랩한 식당 관리 `MyScrapController`**
+  - ⬜️ 스크랩한 식당 조회
+
+
+<br>
+
+## ✅ 리팩토링 기록
+
+1. **Role Enum 문제 해결**
+  - ✅ `Enum` 타입을 dto에서 검증하고 싶을 때 `@NotBlank` 대신 `@NotNull` 사용
+
+
+2. **DTO의 validation 동작 문제 해결**
+  - ✅ `controller`에 `@Valid` 어노테이션 추가
+
+3. **회원 엔티티 리팩토링**
+  - ✅ `isDeletedMember` 필드 생성자 초기화로 변경
+
+  - ✅ 회원 수정 메서드명 변경 `updateMemberStatus` -> `doWithDrawal`
+  - ✅ 필드명 변경 `memberStatus` -> `isDeletedMember`
+  - ✅ 필드 타입 변경 `Boolean` -> `boolean`
+  - ✅ 회원 탈퇴 메서드 수정
+    
+    - 메서드명 변경 `updateMemberStatus`  -> `doWithdrwal`
+    - 메서드의 파라미터 삭제, 내부에서 항상 `isDeletedMember` 값을 `true`로 변경
+
+5. **회원 검증 메서드 클래스 분리 `validate\MemberValidator`**
+  - ✅ 회원 이메일 중복 체크 `checkDuplicateEmail()`
+  - ✅ 회원 존재 여부 체크 `checkIfMemberPresent()`
+  - ⬜️ 탈퇴 회원 관리
+
+6. **컨트롤러 수정에 따른 서비스 분리**
+  - ✅ 회원 가입/로그인 (`AuthService`)
+  - ✅ 회원 조회/수정/삭제 (`MemberService`)
+  - ⬜️ 마이페이지 - 리뷰 조회/수정/삭제 (`MyReviewService`)
+  - ⬜️ 마이페이지 - 스크랩한 식당 조회 (`MyScrapService`)
+
+
+
+
+## 🔧 추후 수정할 사항
+
+- ⬜️ 타임리프로 변경? `flutter`?
+- ⬜️ 에러 코드 & 예외 처리
+- ⬜️ 테스트 코드 작성 (단위 테스트)

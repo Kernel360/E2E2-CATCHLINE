@@ -32,10 +32,10 @@ public class WaitingController {
 	//후에 다시 세션으로 받아올 수 있게 수정해야 할 것 같아요,,!
 	@PostMapping("/restaurants/{restaurantId}/{memberId}/waiting")
 	public String addWaiting(
-		@PathVariable("restaurantId") Long restaurantId,
-		@PathVariable("memberId") Long memberId,
-		@RequestParam(value = "memberCount") Integer memberCount,
-		@RequestParam(value = "waitingType") String waitingType,
+		@PathVariable Long restaurantId,
+		@PathVariable Long memberId,
+		@RequestParam Integer memberCount,
+		@RequestParam String waitingType,
 		Model model
 		// HttpSession session,
 

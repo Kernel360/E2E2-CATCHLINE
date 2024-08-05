@@ -28,7 +28,7 @@
 <body>
 <div class="container">
     <h1 class="text-center mb-4">Add Waiting Information</h1>
-    <form th:action="@{/restaurants/{restaurantId}/{memberId}/waiting(restaurantId=${restaurantId}, memberId=${memberId})}"
+    <form th:action="@{/restaurants/{restaurantId}/waiting(restaurantId=${restaurantId})}"
           method="post">
         <!-- Hidden field for memberId -->
         <input type="hidden" th:value="${memberId}" name="memberId"/>

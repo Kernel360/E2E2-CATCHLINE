@@ -36,7 +36,7 @@
 <body>
 <div class="container mt-5">
     <h1 class="text-center">예약하기</h1>
-    <form th:action="@{/restaurants/{restaurantId}/{memberId}/reservation(restaurantId=${restaurantId}, memberId=${memberId})}"
+    <form th:action="@{/restaurants/{restaurantId}/reservation(restaurantId=${restaurantId})}"
           method="post">
         <div class="form-group">
             <label for="memberCount">인원 수:</label>

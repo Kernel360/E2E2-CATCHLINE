@@ -2,7 +2,6 @@ package org.example.catch_line.restaurant.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.service.RestaurantScrapService;

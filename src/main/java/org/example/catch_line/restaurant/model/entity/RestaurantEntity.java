@@ -84,4 +84,10 @@ public class RestaurantEntity extends BaseTimeEntity {
         this.foodType = foodType;
         this.serviceType = serviceType;
     }
+
+    // 사용자가 식당 스크랩 시 `scrapCount` 1씩 증가
+    public void addScrapCountByUser() {
+        this.scrapCount++;
+
+    }
 }

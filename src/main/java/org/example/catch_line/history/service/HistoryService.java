@@ -26,9 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HistoryService {
 
-	private final WaitingService waitingService;
-	private final ReservationService reservationService;
-
 	private final WaitingRepository waitingRepository;
 	private final ReservationRepository reservationRepository;
 
@@ -37,9 +34,6 @@ public class HistoryService {
 		Long memberId = SessionUtils.getMemberId(session);
 
 		List<HistoryResponse> historyResponseList = new ArrayList<>();
-
-		// List<WaitingResponse> allWaiting = waitingService.getAllWaiting(memberId);
-		// List<ReservationResponse> allReservation = reservationService.getAllReservation(memberId);
 
 		List<WaitingEntity> allWaiting = waitingRepository.findByMemberMemberIdAndStatus(memberId,status);
 		List<ReservationEntity> allReservation = reservationRepository.findByMemberMemberIdAndStatus(memberId,status);
@@ -52,33 +46,37 @@ public class HistoryService {
 			historyResponseList.add(reservationToHistoryResponse(reservation));
 		}
 
-
-
 		Collections.sort(historyResponseList, Comparator.comparing(HistoryResponse::getCreatedAt).reversed());
 
 		return historyResponseList;
+
 	}
 
-	private HistoryResponse waitingToHistoryResponse(WaitingEntity response) {
+	private HistoryResponse waitingToHistoryResponse(WaitingEntity entity) {
 		return HistoryResponse.builder()
-			.waitingId(response.getWaitingId())
-			.memberCount(response.getMemberCount())
-			.status(response.getStatus())
-			.waitingType(response.getWaitingType())
-			.createdAt(response.getCreatedAt())
-			.modifiedAt(response.getModifiedAt())
+			.restaurantId(entity.getRestaurant().getRestaurantId())
+			.waitingId(entity.getWaitingId())
+			.memberCount(entity.getMemberCount())
+			.restaurantName(entity.getRestaurant().getName())
+			.status(entity.getStatus())
+			.waitingType(entity.getWaitingType())
+			.serviceType(entity.getRestaurant().getServiceType())
+			.createdAt(entity.getCreatedAt())
+			.modifiedAt(entity.getModifiedAt())
 			.build();
-
 	}
 
-	private HistoryResponse reservationToHistoryResponse(ReservationEntity response) {
+	private HistoryResponse reservationToHistoryResponse(ReservationEntity entity) {
 		return HistoryResponse.builder()
-			.reservationId(response.getReservationId())
-			.memberCount(response.getMemberCount())
-			.status(response.getStatus())
-			.reservationDate(response.getReservationDate())
-			.createdAt(response.getCreatedAt())
-			.modifiedAt(response.getModifiedAt())
+			.restaurantId(entity.getRestaurant().getRestaurantId())
+			.reservationId(entity.getReservationId())
+			.memberCount(entity.getMemberCount())
+			.restaurantName(entity.getRestaurant().getName())
+			.status(entity.getStatus())
+			.reservationDate(entity.getReservationDate())
+			.serviceType(entity.getRestaurant().getServiceType())
+			.createdAt(entity.getCreatedAt())
+			.modifiedAt(entity.getModifiedAt())
 			.build();
 
 	}

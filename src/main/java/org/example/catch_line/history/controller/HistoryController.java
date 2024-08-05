@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
+
 @Controller
 @RequiredArgsConstructor
 public class HistoryController {
@@ -32,7 +33,7 @@ public class HistoryController {
 		@RequestParam(defaultValue = "SCHEDULED") Status status
 	) {
 		List<HistoryResponse> allHistory = historyService.getAllHistory(session,status);
-		model.addAttribute("history",allHistory);
+		model.addAttribute("history", allHistory);
 
 		return "history/history";
 	}

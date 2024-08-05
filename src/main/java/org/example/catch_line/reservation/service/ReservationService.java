@@ -3,6 +3,7 @@ package org.example.catch_line.reservation.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.repository.MemberRepository;
@@ -15,6 +16,7 @@ import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,7 +29,9 @@ public class ReservationService {
 	private final ReservationRepository reservationRepository;
 	private final ReservationResponseMapper reservationResponseMapper;
 
-	public ReservationResponse addReserve(Long memberId, Long restaurantId, ReservationRequest reservationRequest) {
+	public ReservationResponse addReserve(Long restaurantId, ReservationRequest reservationRequest, HttpSession session) {
+
+		Long memberId = SessionUtils.getMemberId(session);
 
 		MemberEntity member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("member 아이디가 틀립니다: " + memberId));

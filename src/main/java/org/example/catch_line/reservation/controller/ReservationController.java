@@ -2,6 +2,7 @@ package org.example.catch_line.reservation.controller;
 
 import java.time.LocalDateTime;
 
+import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.reservation.model.dto.ReservationResponse;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -21,23 +23,21 @@ public class ReservationController {
 
 	private final ReservationService reservationService;
 
-	@GetMapping("/restaurants/{restaurantId}/{memberId}/reservation")
+	@GetMapping("/restaurants/{restaurantId}/reservation")
 	public String addReservationForm(
-		@PathVariable Long restaurantId,
-		@PathVariable Long memberId) {
+		@PathVariable Long restaurantId
+		) {
 
 		return "reservation/reservation";
 	}
 
-	@PostMapping("/restaurants/{restaurantId}/{memberId}/reservation")
+	@PostMapping("/restaurants/{restaurantId}/reservation")
 	public String addReservation(
 		@PathVariable Long restaurantId,
-		@PathVariable Long memberId,
 		@RequestParam Integer memberCount,
 		@RequestParam LocalDateTime reservationDate,
-		Model model
-		// HttpSession session
-
+		Model model,
+		HttpSession session
 	) {
 
 		ReservationRequest reservationRequest = ReservationRequest.builder()
@@ -46,8 +46,8 @@ public class ReservationController {
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse reservationResponse = reservationService.addReserve(memberId, restaurantId,
-			reservationRequest);
+		ReservationResponse reservationResponse = reservationService.addReserve(restaurantId,
+			reservationRequest, session);
 
 		model.addAttribute("reservationResponse", reservationResponse);
 

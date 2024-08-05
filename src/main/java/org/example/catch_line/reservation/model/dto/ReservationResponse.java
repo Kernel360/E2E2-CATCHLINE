@@ -34,4 +34,8 @@ public class ReservationResponse {
 	@NotBlank(message = "현재 상태가 존재해야 합니다")
 	private Status status;
 
+	private LocalDateTime createdAt;
+
+	private LocalDateTime modifiedAt;
+
 }

@@ -38,7 +38,6 @@ public class ReservationController {
 		@RequestParam LocalDateTime reservationDate,
 		Model model,
 		HttpSession session
-
 	) {
 
 		ReservationRequest reservationRequest = ReservationRequest.builder()

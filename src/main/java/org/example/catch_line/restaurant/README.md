@@ -37,11 +37,11 @@
 
 #### 👤 사용자 기능
 
-- [ ] **마이스크랩 컨트롤러 (`MyScrapController`)**
+- ✅ **마이스크랩 컨트롤러 (`MyScrapController`)**
     - url: `/my-page/scraps`
 
     <br>
 
-- [ ] **마이스크랩 서비스 (`MyScrapService`)**
+- ✅ **마이스크랩 서비스 (`MyScrapService`)**
     - 📌 스크랩한 식당을 조회 
     - `findMyRestaurantScrap()`

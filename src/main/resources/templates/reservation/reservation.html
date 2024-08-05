@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>예약</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date();
+            const nextDay = new Date(today);
+            nextDay.setDate(today.getDate() + 1);
+            nextDay.setHours(0, 0, 0, 0); // 다음 날 00:00으로 설정
+
+            const lastDay = new Date(today);
+            lastDay.setDate(today.getDate() + 7);
+
+            // 날짜 및 시간을 yyyy-MM-ddThh:mm 형식으로 변환
+            const formatDateTime = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            };
+
+            const nextDayStr = formatDateTime(nextDay);
+            const lastDayStr = formatDateTime(lastDay);
+
+            const reservationDateInput = document.getElementById('reservationDate');
+            reservationDateInput.setAttribute('min', nextDayStr);
+            reservationDateInput.setAttribute('max', lastDayStr);
+        });
+    </script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="text-center">예약하기</h1>
+    <form th:action="@{/restaurants/{restaurantId}/{memberId}/reservation(restaurantId=${restaurantId}, memberId=${memberId})}"
+          method="post">
+        <div class="form-group">
+            <label for="memberCount">인원 수:</label>
+            <input type="number" id="memberCount" name="memberCount" class="form-control" min="1" required>
+        </div>
+        <div class="form-group">
+            <label for="reservationDate">예약 날짜 및 시간:</label>
+            <input type="datetime-local" id="reservationDate" name="reservationDate" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">예약하기</button>
+    </form>
+    <div class="mt-4">
+        <p th:if="${reservationResponse != null}" class="alert alert-success">
+            예약이 성공적으로 완료되었습니다!
+        </p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-insert into member (name, nickname, password, email, phone_number, role, member_status, created_at, modified_at)
+insert into member (name, nickname, password, email, phone_number, role, is_member_deleted, created_at, modified_at)
 values
     ('홍길동', '홍', '12341234', 'abc@gmail.com', '01012341234', 'USER', false, '2022-08-04 00:00:00', '2022-08-04 00:00:00'),
     ('김민준', '민', '11111111', 'min@gmail.com', '01043214321', 'USER', false, '2023-01-04 00:00:00', '2023-01-04 00:00:00'),

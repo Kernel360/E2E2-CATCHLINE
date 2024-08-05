@@ -4,11 +4,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.member.model.entity.MemberEntity;
+import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.reservation.model.mapper.ReservationResponseMapper;
 import org.example.catch_line.reservation.repository.ReservationRepository;
+import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -17,11 +21,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReservationService {
 
+	private final MemberRepository memberRepository;
+	private final RestaurantRepository restaurantRepository;
+
 	private final ReservationRepository reservationRepository;
 	private final ReservationResponseMapper reservationResponseMapper;
 
-	public ReservationResponse addReserve(ReservationRequest reservationRequest) {
+	public ReservationResponse addReserve(Long memberId, Long restaurantId, ReservationRequest reservationRequest) {
+
+		MemberEntity member = memberRepository.findById(memberId)
+			.orElseThrow(() -> new IllegalArgumentException("member 아이디가 틀립니다: " + memberId));
+
+		RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
+			.orElseThrow(() -> new IllegalArgumentException("식당 아이디가 틀립니다: " + restaurantId));
+
 		ReservationEntity reservation = ReservationEntity.builder()
+			.member(member)
+			.restaurant(restaurant)
 			.memberCount(reservationRequest.getMemberCount())
 			.status(Status.SCHEDULED)
 			.reservationDate(reservationRequest.getReservationDate())
@@ -31,8 +47,8 @@ public class ReservationService {
 		return reservationResponseMapper.convertToResponse(savedEntity);
 	}
 
-	public List<ReservationResponse> getAllReservation() {
-		List<ReservationEntity> reservationEntities = reservationRepository.findAll();
+	public List<ReservationResponse> getAllReservation(Long memberId) {
+		List<ReservationEntity> reservationEntities = reservationRepository.findByMemberMemberId(memberId);
 
 		return reservationEntities.stream()
 			.map(reservationResponseMapper::convertToResponse)
@@ -48,7 +64,7 @@ public class ReservationService {
 	public void cancelReservation(Long id) {
 		ReservationEntity reservationEntity = reservationRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("예약 아이디가 다릅니다: " + id));
-		reservationEntity.setStatus(Status.CANCELED);
+		reservationEntity.changeReservationStatus(Status.CANCELED);
 		reservationRepository.save(reservationEntity);
 	}
 

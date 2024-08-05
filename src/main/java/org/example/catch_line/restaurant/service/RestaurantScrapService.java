@@ -41,4 +41,19 @@ public class RestaurantScrapService {
         return restaurantMapper.toDto(restaurant);
 
     }
+
+    public RestaurantResponse deleteRestaurantScrap(Long memberId, Long restaurantId) {
+        MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
+        RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+
+        if(!member.getRestaurantScraps().contains(restaurant)) return restaurantMapper.toDto(restaurant);
+        member.getRestaurantScraps().remove(restaurant);
+
+        // 식당 스크랩 수 1 감소
+        restaurant.reduceScrapCountByUser();
+        memberRepository.save(member);
+
+        return restaurantMapper.toDto(restaurant);
+
+    }
 }

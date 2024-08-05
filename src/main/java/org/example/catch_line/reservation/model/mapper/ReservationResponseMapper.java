@@ -13,6 +13,8 @@ public class ReservationResponseMapper {
 			.memberCount(entity.getMemberCount())
 			.status(entity.getStatus())
 			.reservationDate(entity.getReservationDate())
+			.createdAt(entity.getCreatedAt())
+			.modifiedAt(entity.getModifiedAt())
 			.build();
 	}
 

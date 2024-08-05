@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>History</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">History</h1>
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary mb-4" th:onclick="|location.href='@{/history(status=SCHEDULED)}'|">예정</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary mb-4" th:onclick="|location.href='@{/history(status=COMPLETED)}'|">완료</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary mb-4" th:onclick="|location.href='@{/history(status=CANCELED)}'|">취소</button>
+        </div>
+
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+
+            <th>Member Count</th>
+            <th>Status</th>
+            <th>Waiting Type</th>
+            <th>Reservation Date</th>
+            <th>Created At</th>
+            <th>Modified At</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="history : ${history}">
+
+            <td th:text="${history.memberCount}"></td>
+            <td th:text="${history.status}"></td>
+            <td th:text="${history.waitingType != null ? history.waitingType : 'N/A'}"></td>
+            <td th:text="${history.reservationDate != null ? #temporals.format(history.reservationDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></td>
+            <td th:text="${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${history.modifiedAt != null ? #temporals.format(history.modifiedAt, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

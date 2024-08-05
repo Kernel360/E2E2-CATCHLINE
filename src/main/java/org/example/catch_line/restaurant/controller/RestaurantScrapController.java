@@ -1,40 +1,59 @@
-package org.example.catch_line.restaurant.controller;
+package org.example.catch_line.restaurant.service;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.common.constant.SessionConst;
+import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.member.model.entity.MemberEntity;
+import org.example.catch_line.member.repository.MemberRepository;
+import org.example.catch_line.member.validate.MemberValidator;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.restaurant.service.RestaurantScrapService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
+import org.example.catch_line.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.restaurant.validate.RestaurantValidator;
+import org.springframework.stereotype.Service;
 
-@Controller
-@RequestMapping("/restaurants")
+@Service
+@Slf4j
 @RequiredArgsConstructor
-public class RestaurantScrapController {
+public class RestaurantScrapService {
 
-    private final RestaurantScrapService restaurantScrapService;
+    private final MemberRepository memberRepository;
+    private final MemberValidator memberValidator;
+    private final RestaurantValidator restaurantValidator;
+    private final RestaurantMapper restaurantMapper;
 
-    @PostMapping("/{restaurantId}/scraps")
-    public ResponseEntity<RestaurantResponse> scrapRestaurantByUser(
-            @PathVariable Long restaurantId,
-            HttpSession httpSession
-    ) {
-        RestaurantResponse restaurantResponse = restaurantScrapService.saveRestaurantScrap((Long) httpSession.getAttribute(SessionConst.MEMBER_ID), restaurantId);
-        return ResponseEntity.ok().body(restaurantResponse);
+
+    public RestaurantResponse saveRestaurantScrap(Long memberId, Long restaurantId) {
+        // 회원 존재 여부 확인
+        MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
+        // 식당 존재 여부 확인
+        RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+        // scrap 중복 확인 -> 만약 존재하면 에러 발생하지 않고 ** 무시 **
+        if (member.getRestaurantScraps().contains(restaurant))
+            return restaurantMapper.toDto(restaurant);
+
+        member.getRestaurantScraps().add(restaurant);
+
+        // 식당 스크랩 수 1 증가
+        restaurant.addScrapCountByUser();
+        memberRepository.save(member);
+
+        return restaurantMapper.toDto(restaurant);
+
     }
 
-    @DeleteMapping("/{restaurantId}/scraps")
-    public ResponseEntity<RestaurantResponse> cancelScrapByUser(
-            @PathVariable Long restaurantId,
-            HttpSession httpSession
-    ) {
-        RestaurantResponse restaurantResponse = restaurantScrapService.deleteRestaurantScrap((Long) httpSession.getAttribute(SessionConst.MEMBER_ID), restaurantId);
-        return ResponseEntity.ok().body(restaurantResponse);
-    }
+    public RestaurantResponse deleteRestaurantScrap(Long memberId, Long restaurantId) {
+        MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
+        RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
 
+        if(!member.getRestaurantScraps().contains(restaurant)) return restaurantMapper.toDto(restaurant);
+        member.getRestaurantScraps().remove(restaurant);
+
+        // 식당 스크랩 수 1 감소
+        restaurant.reduceScrapCountByUser();
+        memberRepository.save(member);
+
+        return restaurantMapper.toDto(restaurant);
+
+    }
 }

@@ -23,18 +23,18 @@ public class ReservationController {
 
 	@GetMapping("/restaurants/{restaurantId}/{memberId}/reservation")
 	public String addReservationForm(
-		@PathVariable("restaurantId") Long restaurantId,
-		@PathVariable("memberId") Long memberId) {
+		@PathVariable Long restaurantId,
+		@PathVariable Long memberId) {
 
 		return "reservation/reservation";
 	}
 
 	@PostMapping("/restaurants/{restaurantId}/{memberId}/reservation")
 	public String addReservation(
-		@PathVariable("restaurantId") Long restaurantId,
-		@PathVariable("memberId") Long memberId,
-		@RequestParam(value = "memberCount") Integer memberCount,
-		@RequestParam(value = "reservationDate") LocalDateTime reservationDate,
+		@PathVariable Long restaurantId,
+		@PathVariable Long memberId,
+		@RequestParam Integer memberCount,
+		@RequestParam LocalDateTime reservationDate,
 		Model model
 		// HttpSession session
 

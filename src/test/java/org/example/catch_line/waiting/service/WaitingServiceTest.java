@@ -11,6 +11,7 @@ import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.member.model.dto.SignUpRequest;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.repository.MemberRepository;
+import org.example.catch_line.member.service.AuthService;
 import org.example.catch_line.member.service.MemberService;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
@@ -43,14 +44,12 @@ class WaitingServiceTest {
 	private WaitingRepository waitingRepository;
 	@Autowired
 	private MemberRepository memberRepository;
-	@Autowired
-	private RestaurantRepository restaurantRepository;
-
-	@Autowired
-	private MemberService memberService;
 
 	@Autowired
 	private RestaurantService restaurantService;
+
+	@Autowired
+	AuthService authService;
 
 	private Long memberId;
 	private Long memberId2;
@@ -67,7 +66,7 @@ class WaitingServiceTest {
 			.role(Role.USER)
 			.build();
 
-		memberService.signUp(request);
+		authService.signUp(request);
 
 		MemberEntity member = memberRepository.findByEmail("test@example.com").orElse(null);
 
@@ -82,7 +81,7 @@ class WaitingServiceTest {
 			.role(Role.USER)
 			.build();
 
-		memberService.signUp(request2);
+		authService.signUp(request2);
 
 		MemberEntity member2 = memberRepository.findByEmail("test1@example.com").orElse(null);
 

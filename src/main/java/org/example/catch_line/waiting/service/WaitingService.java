@@ -3,6 +3,8 @@ package org.example.catch_line.waiting.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.example.catch_line.common.SessionUtils;
+import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.repository.MemberRepository;
@@ -15,6 +17,7 @@ import org.example.catch_line.waiting.model.mapper.WaitingResponseMapper;
 import org.example.catch_line.waiting.repository.WaitingRepository;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +31,9 @@ public class WaitingService {
 	private final MemberRepository memberRepository;
 	private final RestaurantRepository restaurantRepository;
 
-	public WaitingResponse addWaiting(Long memberId, Long restaurantId, WaitingRequest waitingRequest) {
+	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest, HttpSession session) {
+		
+		Long memberId = SessionUtils.getMemberId(session);
 
 		MemberEntity member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("member 아이디가 틀립니다: " + memberId));

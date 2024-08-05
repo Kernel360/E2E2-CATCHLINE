@@ -13,6 +13,8 @@ public class WaitingResponseMapper {
 			.memberCount(entity.getMemberCount())
 			.status(entity.getStatus())
 			.waitingType(entity.getWaitingType())
+			.createdAt(entity.getCreatedAt())
+			.modifiedAt(entity.getModifiedAt())
 			.build();
 	}
 

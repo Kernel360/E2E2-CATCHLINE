@@ -41,19 +41,14 @@ public class ReservationController {
 
 	) {
 
-		Long memberId = (Long) session.getAttribute(SessionConst.MEMBER_ID);
-		if(memberId == null) {
-			throw new RuntimeException("로그인이 필요합니다");
-		}
-
 		ReservationRequest reservationRequest = ReservationRequest.builder()
 			.reservationDate(reservationDate)
 			.memberCount(memberCount)
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse reservationResponse = reservationService.addReserve(memberId, restaurantId,
-			reservationRequest);
+		ReservationResponse reservationResponse = reservationService.addReserve(restaurantId,
+			reservationRequest, session);
 
 		model.addAttribute("reservationResponse", reservationResponse);
 

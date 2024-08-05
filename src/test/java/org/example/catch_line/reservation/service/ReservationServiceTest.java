@@ -1,18 +1,20 @@
 package org.example.catch_line.reservation.service;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.example.catch_line.common.constant.Role;
+import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.member.model.dto.LoginRequest;
 import org.example.catch_line.member.model.dto.SignUpRequest;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.member.service.AuthService;
-import org.example.catch_line.member.service.MemberService;
 import org.example.catch_line.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.reservation.model.entity.ReservationEntity;
@@ -21,7 +23,6 @@ import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
-import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.example.catch_line.restaurant.service.RestaurantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.servlet.http.HttpSession;
 
 @SpringBootTest
 @Transactional
@@ -49,12 +52,16 @@ class ReservationServiceTest {
 	@Autowired
 	private AuthService authService;
 
+	private HttpSession session;
+
 	private Long memberId;
-	private Long memberId2;
 	private Long restaurantId;
 
 	@BeforeEach
 	void setUp() {
+
+		session = mock(HttpSession.class);
+
 		SignUpRequest request = SignUpRequest.builder()
 			.email("test@example.com")
 			.name("Test User")
@@ -81,9 +88,7 @@ class ReservationServiceTest {
 
 		authService.signUp(request2);
 
-		MemberEntity member2 = memberRepository.findByEmail("test1@example.com").orElse(null);
 
-		memberId2 = member2.getMemberId();
 
 		RestaurantCreateRequest request1 = RestaurantCreateRequest.builder()
 			.description("식당 소개")
@@ -99,6 +104,16 @@ class ReservationServiceTest {
 
 		restaurantId = restaurant.getRestaurantId();
 
+		LoginRequest loginRequest = LoginRequest.builder()
+			.email("test1@example.com")
+			.password("password")
+			.role(Role.USER)
+			.build();
+
+		authService.login(loginRequest);
+
+		when(session.getAttribute(SessionConst.MEMBER_ID)).thenReturn(memberId);
+
 	}
 
 	@Test
@@ -111,7 +126,7 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse response = reservationService.addReserve(memberId, restaurantId, request);
+		ReservationResponse response = reservationService.addReserve(restaurantId, request, session);
 
 		assertThat(response).isNotNull();
 		assertThat(response.getMemberCount()).isEqualTo(4);
@@ -138,15 +153,15 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		reservationService.addReserve(memberId, restaurantId, request1);
+		reservationService.addReserve(restaurantId, request1, session);
 
-		reservationService.addReserve(memberId, restaurantId, request2);
+		reservationService.addReserve(restaurantId, request2, session);
 
-		reservationService.addReserve(memberId2, restaurantId, request3);
+		reservationService.addReserve(restaurantId, request3, session);
 
 		List<ReservationResponse> responses = reservationService.getAllReservation(memberId);
 
-		assertThat(responses).hasSize(2);
+		assertThat(responses).hasSize(3);
 	}
 
 	@Test
@@ -158,7 +173,7 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse addedResponse = reservationService.addReserve(memberId, restaurantId, request);
+		ReservationResponse addedResponse = reservationService.addReserve(restaurantId, request, session);
 		Long id = addedResponse.getReservationId();
 
 		ReservationResponse response = reservationService.getReservationById(id);
@@ -178,7 +193,7 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse response = reservationService.addReserve(memberId, restaurantId, request);
+		ReservationResponse response = reservationService.addReserve(restaurantId, request, session);
 		Long id = response.getReservationId();
 
 		reservationService.cancelReservation(id);
@@ -196,7 +211,7 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse response = reservationService.addReserve(memberId, restaurantId, request);
+		ReservationResponse response = reservationService.addReserve(restaurantId, request, session);
 		Long id = response.getReservationId();
 
 		ReservationRequest updatedRequest = ReservationRequest.builder()

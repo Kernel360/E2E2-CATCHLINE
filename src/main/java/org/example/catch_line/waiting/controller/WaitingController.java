@@ -29,8 +29,7 @@ public class WaitingController {
 		return "waiting/waiting";
 	}
 
-	//세션을 사용해서 memberId를 갖고오고 싶은데 아직 구현이 안될거 같아서 일단 PathVariable 로 memberId를 입력하고 db에 저장되는 것 확인했습니다..!!
-	//후에 다시 세션으로 받아올 수 있게 수정해야 할 것 같아요,,!
+
 	@PostMapping("/restaurants/{restaurantId}/waiting")
 	public String addWaiting(
 		@PathVariable Long restaurantId,
@@ -39,10 +38,7 @@ public class WaitingController {
 		Model model,
 		HttpSession session
 	) {
-		Long memberId = (Long) session.getAttribute(SessionConst.MEMBER_ID);
-		if(memberId == null) {
-			throw new RuntimeException("로그인이 필요합니다");
-		}
+
 
 
 
@@ -53,7 +49,7 @@ public class WaitingController {
 			.waitingType(type)
 			.build();
 
-		WaitingResponse waitingResponse = waitingService.addWaiting(memberId, restaurantId, waitingRequest);
+		WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest,session);
 
 		model.addAttribute("waitingResponse", waitingResponse);
 

@@ -54,7 +54,7 @@ public class WaitingController {
 			model.addAttribute("waitingResponse", waitingResponse);
 
 			return "redirect:/history";
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
 			redirectAttributes.addFlashAttribute("error", "Waiting failed: " + e.getMessage());
 			return "redirect:/restaurants/" + restaurantId + "/waiting";
 		}

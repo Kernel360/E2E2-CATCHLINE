@@ -56,7 +56,7 @@ public class ReservationController {
 			model.addAttribute("reservationResponse", reservationResponse);
 
 			return "redirect:/history";
-		} catch (Exception e) {
+		} catch (IllegalArgumentException e) {
 			redirectAttributes.addFlashAttribute("error", "Reservation failed: " + e.getMessage());
 			return "redirect:/restaurants/" + restaurantId + "/reservation";
 		}

@@ -4,12 +4,10 @@ import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 @Service
 public class RestaurantMapper {
 
-    public RestaurantResponse toDto(RestaurantEntity entity) {
+    public RestaurantResponse entityToResponse(RestaurantEntity entity) {
         return RestaurantResponse.builder()
                 .restaurantId(entity.getRestaurantId())
                 .name(entity.getName())

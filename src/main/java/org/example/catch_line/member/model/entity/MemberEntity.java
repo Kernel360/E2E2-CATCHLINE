@@ -26,7 +26,7 @@ public class MemberEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false) // 이메일 unique 제약 조건 삭제
     @Convert(converter = EmailConverter.class)
     private Email email;
 

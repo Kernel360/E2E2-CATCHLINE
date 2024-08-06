@@ -2,6 +2,7 @@ package org.example.catch_line.history.controller;
 
 import java.util.List;
 
+import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.history.model.dto.HistoryResponse;
@@ -32,7 +33,8 @@ public class HistoryController {
 		HttpSession session,
 		@RequestParam(defaultValue = "SCHEDULED") Status status
 	) {
-		List<HistoryResponse> allHistory = historyService.getAllHistory(session,status);
+		Long memberId = SessionUtils.getMemberId(session);
+		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId,status);
 		model.addAttribute("history", allHistory);
 
 		return "history/history";

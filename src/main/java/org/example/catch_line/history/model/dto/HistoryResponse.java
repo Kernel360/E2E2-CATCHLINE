@@ -13,9 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class HistoryResponse {
 
@@ -40,5 +38,7 @@ public class HistoryResponse {
 	private LocalDateTime createdAt;
 
 	private LocalDateTime modifiedAt;
+
+	private int waitingRegistrationId;
 
 }

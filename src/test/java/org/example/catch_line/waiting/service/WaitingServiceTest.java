@@ -116,7 +116,7 @@ class WaitingServiceTest {
 			.memberCount(4)
 			.build();
 
-		WaitingResponse response = waitingService.addWaiting(restaurantId, request, session);
+		WaitingResponse response = waitingService.addWaiting(restaurantId, request, memberId);
 
 		WaitingEntity entity = waitingRepository.findById(response.getWaitingId()).orElseThrow();
 
@@ -143,8 +143,8 @@ class WaitingServiceTest {
 			.memberCount(5)
 			.build();
 
-		waitingService.addWaiting(restaurantId, request1, session);
-		waitingService.addWaiting(restaurantId, request2, session);
+		waitingService.addWaiting(restaurantId, request1, memberId);
+		waitingService.addWaiting(restaurantId, request2, memberId);
 
 		List<WaitingResponse> responses = waitingService.getAllWaiting(memberId);
 
@@ -170,7 +170,7 @@ class WaitingServiceTest {
 			.memberCount(4)
 			.build();
 
-		WaitingResponse addedResponse = waitingService.addWaiting(restaurantId, request, session);
+		WaitingResponse addedResponse = waitingService.addWaiting(restaurantId, request, memberId);
 		Long id = addedResponse.getWaitingId();
 
 		WaitingResponse response = waitingService.getWaitingById(id);
@@ -189,7 +189,7 @@ class WaitingServiceTest {
 			.memberCount(4)
 			.build();
 
-		WaitingResponse response = waitingService.addWaiting(restaurantId, request, session);
+		WaitingResponse response = waitingService.addWaiting(restaurantId, request, memberId);
 		Long id = response.getWaitingId();
 
 		waitingService.cancelWaiting(id);

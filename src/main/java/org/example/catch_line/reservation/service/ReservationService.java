@@ -3,11 +3,10 @@ package org.example.catch_line.reservation.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.example.catch_line.common.SessionUtils;
-import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.repository.MemberRepository;
+import org.example.catch_line.reservation.exception.IdException;
 import org.example.catch_line.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.reservation.model.entity.ReservationEntity;
@@ -16,9 +15,9 @@ import org.example.catch_line.reservation.repository.ReservationRepository;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.reservation.exception.ServiceTypeException;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -37,13 +36,13 @@ public class ReservationService {
 
 
 		MemberEntity member = memberRepository.findById(memberId)
-			.orElseThrow(() -> new IllegalArgumentException("member 아이디가 틀립니다: " + memberId));
+			.orElseThrow(() -> new IdException());
 
 		RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
-			.orElseThrow(() -> new IllegalArgumentException("식당 아이디가 틀립니다: " + restaurantId));
+			.orElseThrow(() -> new IdException());
 
 		if (restaurant.getServiceType() != ServiceType.RESERVATION) {
-			throw new IllegalArgumentException("해당 식당은 RESERVATION 타입이 아닙니다: " + restaurantId);
+			throw new ServiceTypeException();
 		}
 
 

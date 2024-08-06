@@ -39,7 +39,7 @@ public class HistoryService {
 			.collect(Collectors.groupingBy(waiting -> waiting.getRestaurant().getRestaurantId()));
 
 		for (Map.Entry<Long, List<WaitingEntity>> entry : waitingByRestaurant.entrySet()) {
-			Long restaurantId = entry.getKey();
+			// Long restaurantId = entry.getKey();
 			List<WaitingEntity> waitingList = entry.getValue();
 			// List<WaitingEntity> sortedWaitingList = waitingRepository.findByRestaurantRestaurantIdOrderByCreatedAt(
 			// 	restaurantId);

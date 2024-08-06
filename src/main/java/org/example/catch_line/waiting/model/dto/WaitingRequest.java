@@ -13,7 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class WaitingRequest {
 

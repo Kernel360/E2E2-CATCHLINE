@@ -41,4 +41,6 @@ public class HistoryResponse {
 
 	private LocalDateTime modifiedAt;
 
+	private int waitingRegistrationId;
+
 }

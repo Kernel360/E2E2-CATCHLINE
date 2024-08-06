@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.SessionConst;
@@ -38,9 +40,23 @@ public class HistoryService {
 		List<WaitingEntity> allWaiting = waitingRepository.findByMemberMemberIdAndStatus(memberId,status);
 		List<ReservationEntity> allReservation = reservationRepository.findByMemberMemberIdAndStatus(memberId,status);
 
-		for (WaitingEntity waiting : allWaiting) {
-			historyResponseList.add(waitingToHistoryResponse(waiting));
+		Map<Long, List<WaitingEntity>> waitingByRestaurant = allWaiting.stream()
+			.collect(Collectors.groupingBy(waiting -> waiting.getRestaurant().getRestaurantId()));
+
+		for (Map.Entry<Long, List<WaitingEntity>> entry : waitingByRestaurant.entrySet()) {
+			Long restaurantId = entry.getKey();
+			List<WaitingEntity> waitingList = entry.getValue();
+			List<WaitingEntity> sortedWaitingList = waitingRepository.findByRestaurantRestaurantIdOrderByCreatedAt(restaurantId);
+			// 정렬된 대로 순서를 매김
+			waitingList.sort(Comparator.comparing(WaitingEntity::getCreatedAt));
+			for (int i = 0; i < waitingList.size(); i++) {
+				WaitingEntity waiting = waitingList.get(i);
+				historyResponseList.add(waitingToHistoryResponse(waiting, i + 1));
+			}
 		}
+
+		Map<Long, List<ReservationEntity>> reservationByRestaurant = allReservation.stream()
+			.collect(Collectors.groupingBy(reservation -> reservation.getRestaurant().getRestaurantId()));
 
 		for (ReservationEntity reservation : allReservation) {
 			historyResponseList.add(reservationToHistoryResponse(reservation));
@@ -52,7 +68,7 @@ public class HistoryService {
 
 	}
 
-	private HistoryResponse waitingToHistoryResponse(WaitingEntity entity) {
+	private HistoryResponse waitingToHistoryResponse(WaitingEntity entity,int waitingRegistrationId) {
 		return HistoryResponse.builder()
 			.restaurantId(entity.getRestaurant().getRestaurantId())
 			.waitingId(entity.getWaitingId())
@@ -63,6 +79,7 @@ public class HistoryService {
 			.serviceType(entity.getRestaurant().getServiceType())
 			.createdAt(entity.getCreatedAt())
 			.modifiedAt(entity.getModifiedAt())
+			.waitingRegistrationId(waitingRegistrationId)
 			.build();
 	}
 

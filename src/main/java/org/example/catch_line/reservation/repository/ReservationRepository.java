@@ -14,4 +14,6 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 	List<ReservationEntity> findByMemberMemberId(Long memberId);
 
 	List<ReservationEntity> findByMemberMemberIdAndStatus(Long memberId, Status status);
+
+
 }

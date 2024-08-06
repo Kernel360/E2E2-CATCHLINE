@@ -13,6 +13,7 @@ import org.example.catch_line.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.reservation.model.mapper.ReservationResponseMapper;
 import org.example.catch_line.reservation.repository.ReservationRepository;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,11 @@ public class ReservationService {
 
 		RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
 			.orElseThrow(() -> new IllegalArgumentException("식당 아이디가 틀립니다: " + restaurantId));
+
+		if (restaurant.getServiceType() != ServiceType.RESERVATION) {
+			throw new IllegalArgumentException("해당 식당은 RESERVATION 타입이 아닙니다: " + restaurantId);
+		}
+
 
 		ReservationEntity reservation = ReservationEntity.builder()
 			.member(member)

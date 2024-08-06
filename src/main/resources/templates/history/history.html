@@ -29,6 +29,7 @@
             <th>Created At</th>
             <th>Modified At</th>
             <th>Waiting Type / Reservation Date</th>
+            <th>WaitingRegistrationId</th>
         </tr>
         </thead>
         <tbody>
@@ -40,6 +41,7 @@
             <td th:text="${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
             <td th:text="${history.modifiedAt != null ? #temporals.format(history.modifiedAt, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></td>
             <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingType : (history.reservationDate != null ? #temporals.format(history.reservationDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A')}"></td>
+            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingRegistrationId : 1}"></td>
         </tr>
         </tbody>
     </table>

@@ -41,8 +41,8 @@ public class HistoryService {
 		for (Map.Entry<Long, List<WaitingEntity>> entry : waitingByRestaurant.entrySet()) {
 			Long restaurantId = entry.getKey();
 			List<WaitingEntity> waitingList = entry.getValue();
-			List<WaitingEntity> sortedWaitingList = waitingRepository.findByRestaurantRestaurantIdOrderByCreatedAt(
-				restaurantId);
+			// List<WaitingEntity> sortedWaitingList = waitingRepository.findByRestaurantRestaurantIdOrderByCreatedAt(
+			// 	restaurantId);
 			// 정렬된 대로 순서를 매김
 			waitingList.sort(Comparator.comparing(WaitingEntity::getCreatedAt));
 			for (int i = 0; i < waitingList.size(); i++) {
@@ -51,8 +51,8 @@ public class HistoryService {
 			}
 		}
 
-		Map<Long, List<ReservationEntity>> reservationByRestaurant = allReservation.stream()
-			.collect(Collectors.groupingBy(reservation -> reservation.getRestaurant().getRestaurantId()));
+		// Map<Long, List<ReservationEntity>> reservationByRestaurant = allReservation.stream()
+		// 	.collect(Collectors.groupingBy(reservation -> reservation.getRestaurant().getRestaurantId()));
 
 		for (ReservationEntity reservation : allReservation) {
 			historyResponseList.add(reservationToHistoryResponse(reservation));

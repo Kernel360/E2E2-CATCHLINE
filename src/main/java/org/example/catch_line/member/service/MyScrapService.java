@@ -22,7 +22,7 @@ public class MyScrapService {
         MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 
         return member.getRestaurantScraps().stream()
-                .map(restaurantMapper::toDto)
+                .map(restaurantMapper::entityToResponse)
                 .collect(Collectors.toList());
 
     }

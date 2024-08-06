@@ -26,4 +26,9 @@ public class MenuEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private RestaurantEntity restaurant;
+
+    public void updateMenu(String name, Long price) {
+        this.name = name;
+        this.price = price;
+    }
 }

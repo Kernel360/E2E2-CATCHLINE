@@ -15,7 +15,6 @@ import lombok.Getter;
 public class MemberUpdateRequest {
 
     @NotBlank
-    @Email(message = "올바른 이메일 형식을 입력하세요.")
     private String email;
 
     @NotBlank
@@ -29,7 +28,6 @@ public class MemberUpdateRequest {
     private String password;
 
     @NotBlank
-    @Pattern(regexp = "\\d{10,11}", message = "전화번호는 10자 이상 11자 이하의 숫자만 입력하세요.")
     private String phoneNumber;
 
 }

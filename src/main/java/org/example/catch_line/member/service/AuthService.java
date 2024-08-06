@@ -8,6 +8,7 @@ import org.example.catch_line.member.model.dto.MemberResponse;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.model.mapper.MemberResponseMapper;
 import org.example.catch_line.member.model.vo.Email;
+import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.member.validate.MemberValidator;
 import org.springframework.stereotype.Service;
@@ -51,8 +52,6 @@ public class AuthService {
     }
 
 
-
-
     // 회원가입 요청 `dto`를 `entity`로 변환
     private static MemberEntity toMemberEntity(SignUpRequest signUpRequest) {
         return MemberEntity.builder()
@@ -60,7 +59,7 @@ public class AuthService {
                 .name(signUpRequest.getName())
                 .nickname(signUpRequest.getNickname())
                 .password(signUpRequest.getPassword())
-                .phoneNumber(signUpRequest.getPhoneNumber())
+                .phoneNumber(new PhoneNumber(signUpRequest.getPhoneNumber()))
                 .role(signUpRequest.getRole())
                 .build();
     }

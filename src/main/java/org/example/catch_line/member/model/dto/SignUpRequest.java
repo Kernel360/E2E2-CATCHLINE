@@ -23,7 +23,6 @@ public class SignUpRequest {
     private String password;
 
     @NotBlank
-    @Pattern(regexp = "\\d{10,11}", message = "전화번호는 10자 이상 11자 이하의 숫자만 입력하세요.")
     private String phoneNumber;
 
     @NotNull

@@ -33,8 +33,8 @@ public class HistoryController {
 		HttpSession session,
 		@RequestParam(defaultValue = "SCHEDULED") Status status
 	) {
-		SessionUtils.getMemberId(session);
-		List<HistoryResponse> allHistory = historyService.getAllHistory(session,status);
+		Long memberId = SessionUtils.getMemberId(session);
+		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId,status);
 		model.addAttribute("history", allHistory);
 
 		return "history/history";

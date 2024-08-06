@@ -42,7 +42,7 @@ public class ReservationController {
 		RedirectAttributes redirectAttributes
 	) {
 		try {
-			SessionUtils.getMemberId(session);
+			Long memberId = SessionUtils.getMemberId(session);
 
 			ReservationRequest reservationRequest = ReservationRequest.builder()
 				.reservationDate(reservationDate)
@@ -51,7 +51,7 @@ public class ReservationController {
 				.build();
 
 			ReservationResponse reservationResponse = reservationService.addReserve(restaurantId,
-				reservationRequest, session);
+				reservationRequest, memberId);
 
 			model.addAttribute("reservationResponse", reservationResponse);
 

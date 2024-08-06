@@ -40,7 +40,7 @@ public class WaitingController {
 		RedirectAttributes redirectAttributes
 	) {
 		try {
-			SessionUtils.getMemberId(session);
+			Long memberId = SessionUtils.getMemberId(session);
 
 			WaitingType type = "DINE_IN".equals(waitingType) ? WaitingType.DINE_IN : WaitingType.TAKE_OUT;
 
@@ -49,7 +49,7 @@ public class WaitingController {
 				.waitingType(type)
 				.build();
 
-			WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, session);
+			WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, memberId);
 
 			model.addAttribute("waitingResponse", waitingResponse);
 

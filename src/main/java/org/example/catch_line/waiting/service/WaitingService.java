@@ -31,9 +31,9 @@ public class WaitingService {
 	private final MemberRepository memberRepository;
 	private final RestaurantRepository restaurantRepository;
 
-	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest, HttpSession session) {
+	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest,Long memberId) {
 
-		Long memberId = (Long)session.getAttribute(SessionConst.MEMBER_ID);
+
 
 		MemberEntity member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("member 아이디가 틀립니다: " + memberId));

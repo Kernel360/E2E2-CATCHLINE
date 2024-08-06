@@ -31,9 +31,9 @@ public class ReservationService {
 	private final ReservationRepository reservationRepository;
 	private final ReservationResponseMapper reservationResponseMapper;
 
-	public ReservationResponse addReserve(Long restaurantId, ReservationRequest reservationRequest, HttpSession session) {
+	public ReservationResponse addReserve(Long restaurantId, ReservationRequest reservationRequest, Long memberId) {
 
-		Long memberId = (Long)session.getAttribute(SessionConst.MEMBER_ID);
+
 
 
 		MemberEntity member = memberRepository.findById(memberId)

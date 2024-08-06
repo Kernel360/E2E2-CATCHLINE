@@ -140,7 +140,7 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse response = reservationService.addReserve(restaurantId2, request, session);
+		ReservationResponse response = reservationService.addReserve(restaurantId2, request, memberId);
 
 		assertThat(response).isNotNull();
 		assertThat(response.getMemberCount()).isEqualTo(4);
@@ -167,11 +167,11 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		reservationService.addReserve(restaurantId2, request1, session);
+		reservationService.addReserve(restaurantId2, request1, memberId);
 
-		reservationService.addReserve(restaurantId2, request2, session);
+		reservationService.addReserve(restaurantId2, request2, memberId);
 
-		reservationService.addReserve(restaurantId2, request3, session);
+		reservationService.addReserve(restaurantId2, request3, memberId);
 
 		List<ReservationResponse> responses = reservationService.getAllReservation(memberId);
 
@@ -187,7 +187,7 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse addedResponse = reservationService.addReserve(restaurantId2, request, session);
+		ReservationResponse addedResponse = reservationService.addReserve(restaurantId2, request, memberId);
 		Long id = addedResponse.getReservationId();
 
 		ReservationResponse response = reservationService.getReservationById(id);
@@ -207,7 +207,7 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse response = reservationService.addReserve(restaurantId2, request, session);
+		ReservationResponse response = reservationService.addReserve(restaurantId2, request, memberId);
 		Long id = response.getReservationId();
 
 		reservationService.cancelReservation(id);
@@ -225,7 +225,7 @@ class ReservationServiceTest {
 			.status(Status.SCHEDULED)
 			.build();
 
-		ReservationResponse response = reservationService.addReserve(restaurantId2, request, session);
+		ReservationResponse response = reservationService.addReserve(restaurantId2, request, memberId);
 		Long id = response.getReservationId();
 
 		ReservationRequest updatedRequest = ReservationRequest.builder()

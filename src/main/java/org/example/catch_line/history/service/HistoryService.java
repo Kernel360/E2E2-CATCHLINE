@@ -26,9 +26,9 @@ public class HistoryService {
 	private final WaitingRepository waitingRepository;
 	private final ReservationRepository reservationRepository;
 
-	public List<HistoryResponse> getAllHistory(HttpSession session, Status status) {
+	public List<HistoryResponse> getAllHistory(Long memberId, Status status) {
 
-		Long memberId = (Long)session.getAttribute(SessionConst.MEMBER_ID);
+
 
 		List<HistoryResponse> historyResponseList = new ArrayList<>();
 

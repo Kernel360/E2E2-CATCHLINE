@@ -36,8 +36,18 @@
 <body>
 <div class="container mt-5">
     <h1 class="text-center">예약하기</h1>
-    <form th:action="@{/restaurants/{restaurantId}/reservation(restaurantId=${restaurantId})}"
-          method="post">
+
+    <!-- Error message -->
+    <div th:if="${error}" class="alert alert-danger text-center" role="alert">
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- Success message -->
+    <div th:if="${reservationResponse != null}" class="alert alert-success text-center" role="alert">
+        예약이 성공적으로 완료되었습니다!
+    </div>
+
+    <form th:action="@{/restaurants/{restaurantId}/reservation(restaurantId=${restaurantId})}" method="post">
         <div class="form-group">
             <label for="memberCount">인원 수:</label>
             <input type="number" id="memberCount" name="memberCount" class="form-control" min="1" required>
@@ -48,11 +58,6 @@
         </div>
         <button type="submit" class="btn btn-primary">예약하기</button>
     </form>
-    <div class="mt-4">
-        <p th:if="${reservationResponse != null}" class="alert alert-success">
-            예약이 성공적으로 완료되었습니다!
-        </p>
-    </div>
 </div>
 </body>
 </html>

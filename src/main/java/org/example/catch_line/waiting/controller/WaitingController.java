@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -35,23 +36,29 @@ public class WaitingController {
 		@RequestParam Integer memberCount,
 		@RequestParam String waitingType,
 		Model model,
-		HttpSession session
+		HttpSession session,
+		RedirectAttributes redirectAttributes
 	) {
+		try {
+			SessionUtils.getMemberId(session);
 
-		SessionUtils.getMemberId(session);
+			WaitingType type = "DINE_IN".equals(waitingType) ? WaitingType.DINE_IN : WaitingType.TAKE_OUT;
 
-		WaitingType type = "DINE_IN".equals(waitingType) ? WaitingType.DINE_IN : WaitingType.TAKE_OUT;
+			WaitingRequest waitingRequest = WaitingRequest.builder()
+				.memberCount(memberCount)
+				.waitingType(type)
+				.build();
 
-		WaitingRequest waitingRequest = WaitingRequest.builder()
-			.memberCount(memberCount)
-			.waitingType(type)
-			.build();
+			WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, session);
 
-		WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, session);
+			model.addAttribute("waitingResponse", waitingResponse);
 
-		model.addAttribute("waitingResponse", waitingResponse);
+			return "redirect:/history";
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Waiting failed: " + e.getMessage());
+			return "redirect:/restaurants/" + restaurantId + "/waiting";
+		}
 
-		return "waiting/waiting";
 	}
 
 }

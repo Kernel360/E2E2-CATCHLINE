@@ -28,8 +28,18 @@
 <body>
 <div class="container">
     <h1 class="text-center mb-4">Add Waiting Information</h1>
-    <form th:action="@{/restaurants/{restaurantId}/waiting(restaurantId=${restaurantId})}"
-          method="post">
+
+    <!-- Error message -->
+    <div th:if="${error}" class="alert alert-danger text-center" role="alert">
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- Success message -->
+    <div th:if="${waitingResponse != null}" class="alert alert-success text-center" role="alert">
+        웨이팅 등록이 성공적으로 완료되었습니다!
+    </div>
+
+    <form th:action="@{/restaurants/{restaurantId}/waiting(restaurantId=${restaurantId})}" method="post">
         <!-- Hidden field for memberId -->
         <input type="hidden" th:value="${memberId}" name="memberId"/>
 
@@ -52,11 +62,6 @@
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
-    <div class="mt-4">
-        <p th:if="${waitingResponse != null}" class="alert alert-success">
-            웨이팅 등록이 성공적으로 완료되었습니다!
-        </p>
-    </div>
 </div>
 </body>
 </html>

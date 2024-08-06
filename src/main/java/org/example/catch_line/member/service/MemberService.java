@@ -6,6 +6,7 @@ import org.example.catch_line.member.model.dto.MemberResponse;
 import org.example.catch_line.member.model.dto.MemberUpdateRequest;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.model.mapper.MemberResponseMapper;
+import org.example.catch_line.member.model.vo.Email;
 import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.member.validate.MemberValidator;
 import org.springframework.stereotype.Service;
@@ -33,11 +34,12 @@ public class MemberService {
 
         // 이메일을 수정하였다면, 이미 존재하는 이메일인지 검증이 필요합니다.
         // 수정되지 않은 경우, 검증이 불필요합니다.
-        if (!member.getEmail().equals(updateMemberRequest.getEmail()))
-            memberValidator.checkDuplicateEmail(updateMemberRequest.getEmail());
+        Email email = new Email(updateMemberRequest.getEmail());
+        if (!member.getEmail().getEmailValue().equals(updateMemberRequest.getEmail()))
+            memberValidator.checkDuplicateEmail(email);
 
         // TODO: 해당 부분 리팩토링이 가능한지
-        member.updateMember(updateMemberRequest.getEmail(), updateMemberRequest.getName(), updateMemberRequest.getNickname(), updateMemberRequest.getPassword(), updateMemberRequest.getPhoneNumber());
+        member.updateMember(email, updateMemberRequest.getName(), updateMemberRequest.getNickname(), updateMemberRequest.getPassword(), updateMemberRequest.getPhoneNumber());
 
         memberRepository.save(member);
         return memberResponseMapper.toDto(member);

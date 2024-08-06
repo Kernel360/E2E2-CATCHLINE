@@ -3,7 +3,6 @@ package org.example.catch_line.waiting.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.member.model.entity.MemberEntity;
@@ -34,7 +33,7 @@ public class WaitingService {
 
 	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest, HttpSession session) {
 
-		Long memberId = SessionUtils.getMemberId(session);
+		Long memberId = (Long)session.getAttribute(SessionConst.MEMBER_ID);
 
 		MemberEntity member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("member 아이디가 틀립니다: " + memberId));
@@ -57,7 +56,6 @@ public class WaitingService {
 
 		return waitingResponseMapper.convertToResponse(savedEntity);
 	}
-
 
 	public List<WaitingResponse> getAllWaiting(Long memberId) {
 		List<WaitingEntity> waitingEntities = waitingRepository.findByMemberMemberId(memberId);

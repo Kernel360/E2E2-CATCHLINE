@@ -2,6 +2,7 @@ package org.example.catch_line.reservation.controller;
 
 import java.time.LocalDateTime;
 
+import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.reservation.model.dto.ReservationRequest;
@@ -39,6 +40,7 @@ public class ReservationController {
 		Model model,
 		HttpSession session
 	) {
+		SessionUtils.getMemberId(session);
 
 		ReservationRequest reservationRequest = ReservationRequest.builder()
 			.reservationDate(reservationDate)

@@ -7,18 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.history.model.dto.HistoryResponse;
-import org.example.catch_line.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.reservation.repository.ReservationRepository;
-import org.example.catch_line.reservation.service.ReservationService;
-import org.example.catch_line.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.waiting.repository.WaitingRepository;
-import org.example.catch_line.waiting.service.WaitingService;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
@@ -33,12 +28,12 @@ public class HistoryService {
 
 	public List<HistoryResponse> getAllHistory(HttpSession session, Status status) {
 
-		Long memberId = SessionUtils.getMemberId(session);
+		Long memberId = (Long)session.getAttribute(SessionConst.MEMBER_ID);
 
 		List<HistoryResponse> historyResponseList = new ArrayList<>();
 
-		List<WaitingEntity> allWaiting = waitingRepository.findByMemberMemberIdAndStatus(memberId,status);
-		List<ReservationEntity> allReservation = reservationRepository.findByMemberMemberIdAndStatus(memberId,status);
+		List<WaitingEntity> allWaiting = waitingRepository.findByMemberMemberIdAndStatus(memberId, status);
+		List<ReservationEntity> allReservation = reservationRepository.findByMemberMemberIdAndStatus(memberId, status);
 
 		Map<Long, List<WaitingEntity>> waitingByRestaurant = allWaiting.stream()
 			.collect(Collectors.groupingBy(waiting -> waiting.getRestaurant().getRestaurantId()));
@@ -46,7 +41,8 @@ public class HistoryService {
 		for (Map.Entry<Long, List<WaitingEntity>> entry : waitingByRestaurant.entrySet()) {
 			Long restaurantId = entry.getKey();
 			List<WaitingEntity> waitingList = entry.getValue();
-			List<WaitingEntity> sortedWaitingList = waitingRepository.findByRestaurantRestaurantIdOrderByCreatedAt(restaurantId);
+			List<WaitingEntity> sortedWaitingList = waitingRepository.findByRestaurantRestaurantIdOrderByCreatedAt(
+				restaurantId);
 			// 정렬된 대로 순서를 매김
 			waitingList.sort(Comparator.comparing(WaitingEntity::getCreatedAt));
 			for (int i = 0; i < waitingList.size(); i++) {
@@ -68,7 +64,7 @@ public class HistoryService {
 
 	}
 
-	private HistoryResponse waitingToHistoryResponse(WaitingEntity entity,int waitingRegistrationId) {
+	private HistoryResponse waitingToHistoryResponse(WaitingEntity entity, int waitingRegistrationId) {
 		return HistoryResponse.builder()
 			.restaurantId(entity.getRestaurant().getRestaurantId())
 			.waitingId(entity.getWaitingId())

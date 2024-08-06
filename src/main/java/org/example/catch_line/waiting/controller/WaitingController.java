@@ -1,6 +1,6 @@
 package org.example.catch_line.waiting.controller;
 
-import org.example.catch_line.common.constant.SessionConst;
+import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.waiting.model.entity.WaitingType;
@@ -29,7 +29,6 @@ public class WaitingController {
 		return "waiting/waiting";
 	}
 
-
 	@PostMapping("/restaurants/{restaurantId}/waiting")
 	public String addWaiting(
 		@PathVariable Long restaurantId,
@@ -39,8 +38,7 @@ public class WaitingController {
 		HttpSession session
 	) {
 
-
-
+		SessionUtils.getMemberId(session);
 
 		WaitingType type = "DINE_IN".equals(waitingType) ? WaitingType.DINE_IN : WaitingType.TAKE_OUT;
 
@@ -49,7 +47,7 @@ public class WaitingController {
 			.waitingType(type)
 			.build();
 
-		WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest,session);
+		WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, session);
 
 		model.addAttribute("waitingResponse", waitingResponse);
 

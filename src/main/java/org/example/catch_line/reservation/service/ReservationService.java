@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.example.catch_line.common.SessionUtils;
+import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.repository.MemberRepository;
@@ -32,7 +33,8 @@ public class ReservationService {
 
 	public ReservationResponse addReserve(Long restaurantId, ReservationRequest reservationRequest, HttpSession session) {
 
-		Long memberId = SessionUtils.getMemberId(session);
+		Long memberId = (Long)session.getAttribute(SessionConst.MEMBER_ID);
+
 
 		MemberEntity member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("member 아이디가 틀립니다: " + memberId));

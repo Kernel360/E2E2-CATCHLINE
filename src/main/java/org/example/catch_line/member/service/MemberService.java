@@ -37,7 +37,7 @@ public class MemberService {
         // 수정되지 않은 경우, 검증이 불필요합니다.
         Email email = new Email(updateMemberRequest.getEmail());
         PhoneNumber phoneNumber = new PhoneNumber(updateMemberRequest.getPhoneNumber());
-        Password password = new Password(updateMemberRequest.getPassword());
+        Password password = new Password(updateMemberRequest.getPassword(), false);
 
         if (!member.getEmail().getEmailValue().equals(updateMemberRequest.getEmail()))
             memberValidator.checkDuplicateEmail(email);

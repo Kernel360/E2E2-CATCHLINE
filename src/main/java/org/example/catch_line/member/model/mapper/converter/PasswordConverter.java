@@ -14,6 +14,6 @@ public class PasswordConverter implements AttributeConverter<Password, String> {
 
     @Override
     public Password convertToEntityAttribute(String password) {
-        return new Password(password);
+        return new Password(password, true);
     }
 }

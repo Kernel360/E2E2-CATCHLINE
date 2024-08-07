@@ -15,14 +15,13 @@ import java.util.stream.Collectors;
 public class MyScrapService {
 
     private final MemberValidator memberValidator;
-    private final RestaurantMapper restaurantMapper;
 
     public List<RestaurantResponse> findMyRestaurants(Long memberId) {
 
         MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 
         return member.getRestaurantScraps().stream()
-                .map(restaurantMapper::entityToResponse)
+                .map(RestaurantMapper::entityToResponse)
                 .collect(Collectors.toList());
 
     }

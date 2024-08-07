@@ -9,8 +9,6 @@ import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class MenuEntity {
 
     @Id
@@ -26,6 +24,13 @@ public class MenuEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private RestaurantEntity restaurant;
+
+    @Builder
+    public MenuEntity(String name, Long price, RestaurantEntity restaurant) {
+        this.name = name;
+        this.price = price;
+        this.restaurant = restaurant;
+    }
 
     public void updateMenu(String name, Long price) {
         this.name = name;

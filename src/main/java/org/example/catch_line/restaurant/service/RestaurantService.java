@@ -7,6 +7,7 @@ import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.restaurant.validate.RestaurantValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,7 @@ import java.math.BigDecimal;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-    private final RestaurantMapper restaurantMapper;
+    private final RestaurantValidator restaurantValidator;
 
     public RestaurantResponse createRestaurant(RestaurantCreateRequest request) {
         // TODO: 식당 이름은 중복되도 되지 않을까?
@@ -29,14 +30,12 @@ public class RestaurantService {
 
         RestaurantEntity entity = toEntity(request);
         RestaurantEntity savedEntity = restaurantRepository.save(entity);
-        return restaurantMapper.entityToResponse(savedEntity);
+        return RestaurantMapper.entityToResponse(savedEntity);
     }
 
     public RestaurantResponse findRestaurant(Long restaurantId) {
-        RestaurantEntity entity = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("식당을 찾을 수 없습니다."));
-
-        return restaurantMapper.entityToResponse(entity);
+        RestaurantEntity entity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+        return RestaurantMapper.entityToResponse(entity);
     }
 
     public void deleteRestaurant(Long restaurantId) {

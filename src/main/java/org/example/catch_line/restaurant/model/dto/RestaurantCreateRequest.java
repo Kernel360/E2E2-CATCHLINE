@@ -8,7 +8,6 @@ import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import java.math.BigDecimal;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class RestaurantCreateRequest {

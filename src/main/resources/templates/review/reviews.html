@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">리뷰 정보</h5>
+            <div class="list-group">
+                <p class="card-text" th:text="'전체 평점 : ' + ${averageRating}">전체 평점</p>
+                <div class="list-group-item" th:each="review : ${reviewList}">
+                    <span th:text="${review.rating}">name</span>
+                    <span th:text="${review.content}">price</span>
+                    <span th:text="${review.createdAt}">createdAt</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-info btn-lg"
+                    th:onclick="|location.href='@{/restaurants/{restaurantId}(restaurantId=${restaurantId})}'|"
+                    type="button">뒤로</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

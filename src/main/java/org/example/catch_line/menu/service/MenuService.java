@@ -6,6 +6,8 @@ import org.example.catch_line.menu.model.dto.MenuResponse;
 import org.example.catch_line.menu.model.entity.MenuEntity;
 import org.example.catch_line.menu.model.mapper.MenuMapper;
 import org.example.catch_line.menu.repository.MenuRepository;
+import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.restaurant.validate.RestaurantValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +20,14 @@ import java.util.stream.Collectors;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuMapper menuMapper;
+    private final RestaurantValidator restaurantValidator;
 
     // 식당에 대한 메뉴 조회
-    public List<MenuResponse> getRestaurantMenu(Long restaurantId) {
+    public List<MenuResponse> getRestaurantMenuList(Long restaurantId) {
         List<MenuEntity> menuList = menuRepository.findAllByRestaurantRestaurantId(restaurantId);
 
         return menuList.stream()
-                .map(entity -> menuMapper.entityToResponse(entity)) // .map(menuMapper::entityToResponse)
+                .map(entity -> MenuMapper.entityToResponse(entity)) // .map(menuMapper::entityToResponse)
                 .collect(Collectors.toList());
     }
 
@@ -33,15 +35,17 @@ public class MenuService {
     // TODO: 이 부분은 아마 사장님 구현할 때 사용
     // 메뉴 상세 조회
     // 메뉴 추가
-    public MenuResponse createRestaurantMenu(MenuRequest menuRequest) {
-        MenuEntity menuEntity = requestToEntity(menuRequest);
+    public MenuResponse createRestaurantMenu(Long restaurantId, MenuRequest menuRequest) {
+        RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+        MenuEntity menuEntity = requestToEntity(menuRequest, restaurantEntity);
         MenuEntity savedEntity = menuRepository.save(menuEntity);
-        return menuMapper.entityToResponse(savedEntity);
+        return MenuMapper.entityToResponse(savedEntity);
     }
 
     // 메뉴 수정
     public void updateRestaurantMenu(Long restaurantId, MenuRequest menuRequest) {
-        MenuEntity menuEntity = requestToEntity(menuRequest);
+        RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+        MenuEntity menuEntity = requestToEntity(menuRequest, restaurantEntity);
         menuEntity.updateMenu(menuRequest.getName(), menuRequest.getPrice());
         // menuRepository.save(menuEntity);
     }
@@ -51,10 +55,11 @@ public class MenuService {
         menuRepository.deleteById(restaurantId);
     }
 
-    private MenuEntity requestToEntity(MenuRequest menuRequest) {
+    private MenuEntity requestToEntity(MenuRequest menuRequest, RestaurantEntity restaurantEntity) {
         return MenuEntity.builder()
                 .name(menuRequest.getName())
                 .price(menuRequest.getPrice())
+                .restaurant(restaurantEntity)
                 .build();
     }
 }

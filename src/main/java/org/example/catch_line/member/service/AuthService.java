@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final MemberRepository memberRepository;
-    private final MemberResponseMapper memberResponseMapper;
     private final MemberValidator memberValidator;
 
 
@@ -32,7 +31,7 @@ public class AuthService {
 
         MemberEntity member = toMemberEntity(signUpRequest);
         memberRepository.save(member);
-        return memberResponseMapper.toDto(member);
+        return MemberResponseMapper.entityToResponse(member);
 
 
     }
@@ -45,7 +44,7 @@ public class AuthService {
         return memberRepository.findByEmail(new Email(loginRequest.getEmail()))
                 .filter(member -> !member.isMemberDeleted()) // 탈퇴한 회언은 로그인 불가능
                 .filter(member -> loginRequest.getPassword().equals(member.getPassword()))
-                .map(memberResponseMapper::toDto)
+                .map(MemberResponseMapper::entityToResponse)
                 .orElseThrow(() -> new IllegalArgumentException("로그인 실패"));
 
 

@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.member.model.dto.MemberResponse;
 import org.example.catch_line.member.model.dto.MemberUpdateRequest;
 import org.example.catch_line.member.service.MemberService;
@@ -27,7 +28,7 @@ public class MemberController {
     public ResponseEntity<MemberResponse> findMember(
             HttpSession httpSession
     ) {
-        MemberResponse memberResponse = memberService.findMember((Long) httpSession.getAttribute(MEMBER_ID));
+        MemberResponse memberResponse = memberService.findMember(SessionUtils.getMemberId(httpSession));
         return ResponseEntity.ok().body(memberResponse);
     }
 
@@ -38,7 +39,7 @@ public class MemberController {
             HttpSession httpSession
     ) {
 
-        MemberResponse memberResponse = memberService.updateMember(memberUpdateRequest, (Long) httpSession.getAttribute(MEMBER_ID));
+        MemberResponse memberResponse = memberService.updateMember(memberUpdateRequest, SessionUtils.getMemberId(httpSession));
         return ResponseEntity.ok().body(memberResponse);
 
     }
@@ -47,7 +48,8 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMember(
             HttpSession httpSession
     ) {
-        MemberResponse memberResponse = memberService.deleteMember((Long) httpSession.getAttribute(MEMBER_ID));
+        MemberResponse memberResponse = memberService.deleteMember(SessionUtils.getMemberId(httpSession));
+        httpSession.invalidate();
         return ResponseEntity.ok().body(memberResponse);
     }
 

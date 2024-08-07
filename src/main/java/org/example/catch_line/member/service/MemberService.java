@@ -7,6 +7,7 @@ import org.example.catch_line.member.model.dto.MemberUpdateRequest;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.model.mapper.MemberResponseMapper;
 import org.example.catch_line.member.model.vo.Email;
+import org.example.catch_line.member.model.vo.Password;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.member.validate.MemberValidator;
@@ -36,12 +37,13 @@ public class MemberService {
         // 수정되지 않은 경우, 검증이 불필요합니다.
         Email email = new Email(updateMemberRequest.getEmail());
         PhoneNumber phoneNumber = new PhoneNumber(updateMemberRequest.getPhoneNumber());
+        Password password = new Password(updateMemberRequest.getPassword());
 
         if (!member.getEmail().getEmailValue().equals(updateMemberRequest.getEmail()))
             memberValidator.checkDuplicateEmail(email);
 
         // TODO: 해당 부분 리팩토링이 가능한지 -> 타입 안전성
-        member.updateMember(email, updateMemberRequest.getName(), updateMemberRequest.getNickname(), updateMemberRequest.getPassword(), phoneNumber);
+        member.updateMember(email, updateMemberRequest.getName(), updateMemberRequest.getNickname(), password, phoneNumber);
 
         memberRepository.save(member);
         return MemberResponseMapper.entityToResponse(member);

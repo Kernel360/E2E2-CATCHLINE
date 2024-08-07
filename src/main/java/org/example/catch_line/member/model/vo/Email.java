@@ -1,8 +1,6 @@
 package org.example.catch_line.member.model.vo;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Value;
 import org.example.catch_line.exception.email.InvalidEmailException;
 
 import java.util.regex.Pattern;

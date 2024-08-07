@@ -8,6 +8,7 @@ import org.example.catch_line.member.model.dto.MemberResponse;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.model.mapper.MemberResponseMapper;
 import org.example.catch_line.member.model.vo.Email;
+import org.example.catch_line.member.model.vo.Password;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.member.validate.MemberValidator;
@@ -43,7 +44,7 @@ public class AuthService {
 
         return memberRepository.findByEmail(new Email(loginRequest.getEmail()))
                 .filter(member -> !member.isMemberDeleted()) // 탈퇴한 회언은 로그인 불가능
-                .filter(member -> loginRequest.getPassword().equals(member.getPassword()))
+                .filter(member -> loginRequest.getPassword().equals(member.getPassword().getPasswordValue()))
                 .map(MemberResponseMapper::entityToResponse)
                 .orElseThrow(() -> new IllegalArgumentException("로그인 실패"));
 
@@ -57,7 +58,7 @@ public class AuthService {
                 .email(new Email(signUpRequest.getEmail()))
                 .name(signUpRequest.getName())
                 .nickname(signUpRequest.getNickname())
-                .password(signUpRequest.getPassword())
+                .password(new Password(signUpRequest.getPassword()))
                 .phoneNumber(new PhoneNumber(signUpRequest.getPhoneNumber()))
                 .role(signUpRequest.getRole())
                 .build();

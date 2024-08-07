@@ -18,14 +18,13 @@ import org.springframework.stereotype.Service;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final MemberResponseMapper memberResponseMapper;
     private final MemberValidator memberValidator;
 
 
     // 회원 정보 조회
     public MemberResponse findMember(Long memberId) {
         MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
-        return memberResponseMapper.toDto(member);
+        return MemberResponseMapper.entityToResponse(member);
     }
 
     // 회원 정보 수정
@@ -45,7 +44,7 @@ public class MemberService {
         member.updateMember(email, updateMemberRequest.getName(), updateMemberRequest.getNickname(), updateMemberRequest.getPassword(), phoneNumber);
 
         memberRepository.save(member);
-        return memberResponseMapper.toDto(member);
+        return MemberResponseMapper.entityToResponse(member);
     }
 
     // 회원 탈퇴 (`status`만 변경)
@@ -54,7 +53,7 @@ public class MemberService {
         MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 
         member.doWithdrawal();
-        return memberResponseMapper.toDto(member);
+        return MemberResponseMapper.entityToResponse(member);
 
 
     }

@@ -8,7 +8,6 @@ import lombok.*;
 import org.example.catch_line.common.constant.Role;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Builder
 public class LoginRequest {

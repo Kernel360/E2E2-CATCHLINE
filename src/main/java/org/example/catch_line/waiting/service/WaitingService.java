@@ -3,13 +3,13 @@ package org.example.catch_line.waiting.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.example.catch_line.common.SessionUtils;
-import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.reservation.exception.ServiceTypeException;
 import org.example.catch_line.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.waiting.model.entity.WaitingEntity;
@@ -17,7 +17,6 @@ import org.example.catch_line.waiting.model.mapper.WaitingResponseMapper;
 import org.example.catch_line.waiting.repository.WaitingRepository;
 import org.springframework.stereotype.Service;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,14 +30,19 @@ public class WaitingService {
 	private final MemberRepository memberRepository;
 	private final RestaurantRepository restaurantRepository;
 
-	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest, HttpSession session) {
-		
-		Long memberId = SessionUtils.getMemberId(session);
+	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest,Long memberId) {
+
+
 
 		MemberEntity member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("member 아이디가 틀립니다: " + memberId));
 		RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
 			.orElseThrow(() -> new IllegalArgumentException("식당 아이디가 틀립니다: " + restaurantId));
+
+		// 서비스 타입이 WAITING이 아니면 예외를 발생시킴
+		if (restaurant.getServiceType() != ServiceType.WAITING) {
+			throw new ServiceTypeException();
+		}
 
 		WaitingEntity waiting = WaitingEntity.builder()
 			.memberCount(waitingRequest.getMemberCount())

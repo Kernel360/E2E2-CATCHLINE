@@ -48,5 +48,11 @@ public class AuthController {
 
     }
 
-
+    @PostMapping("/logout")
+    public String logout(
+        HttpSession httpSession
+    ) {
+        httpSession.invalidate();
+        return "로그아웃 완료";
+    }
 }

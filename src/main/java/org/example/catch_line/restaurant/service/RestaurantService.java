@@ -8,12 +8,14 @@ import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
@@ -27,14 +29,14 @@ public class RestaurantService {
 
         RestaurantEntity entity = toEntity(request);
         RestaurantEntity savedEntity = restaurantRepository.save(entity);
-        return restaurantMapper.toDto(savedEntity);
+        return restaurantMapper.entityToResponse(savedEntity);
     }
 
     public RestaurantResponse findRestaurant(Long restaurantId) {
         RestaurantEntity entity = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("Restaurant not found"));
+                .orElseThrow(() -> new IllegalArgumentException("식당을 찾을 수 없습니다."));
 
-        return restaurantMapper.toDto(entity);
+        return restaurantMapper.entityToResponse(entity);
     }
 
     public void deleteRestaurant(Long restaurantId) {

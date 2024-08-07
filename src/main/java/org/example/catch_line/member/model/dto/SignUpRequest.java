@@ -4,15 +4,12 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.example.catch_line.common.constant.Role;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Builder
 public class SignUpRequest {
 
-
-    @NotBlank
-    @Email(message = "올바른 이메일 형식을 입력하세요.")
+    @NotNull
     private String email;
 
     @NotBlank
@@ -26,7 +23,6 @@ public class SignUpRequest {
     private String password;
 
     @NotBlank
-    @Pattern(regexp = "\\d{10,11}", message = "전화번호는 10자 이상 11자 이하의 숫자만 입력하세요.")
     private String phoneNumber;
 
     @NotNull

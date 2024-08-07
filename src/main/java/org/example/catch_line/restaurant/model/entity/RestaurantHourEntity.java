@@ -37,4 +37,8 @@ public class RestaurantHourEntity {
         this.closeTime = closeTime;
         this.openStatus = openStatus;
     }
+
+    public void closeBusiness() {
+        this.openStatus = OpenStatus.CLOSE;
+    }
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">영업 정보</h5>
+            <div class="list-group">
+                <p class="card-text">영업 시간</p>
+                <div class="list-group-item" th:each="menu : ${menuList}">
+                    <span th:text="${menu.name}">name</span>
+                    <span th:text="${menu.price}">price</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-info btn-lg"
+                    th:onclick="|location.href='@{/restaurants/{restaurantId}(restaurantId=${restaurantId})}'|"
+                    type="button">뒤로</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

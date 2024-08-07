@@ -8,7 +8,6 @@ import org.example.catch_line.member.validate.MemberValidator;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
-import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.example.catch_line.restaurant.validate.RestaurantValidator;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +29,7 @@ public class RestaurantScrapService {
         RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
         // scrap 중복 확인 -> 만약 존재하면 에러 발생하지 않고 ** 무시 **
         if (member.getRestaurantScraps().contains(restaurant))
-            return restaurantMapper.toDto(restaurant);
+            return restaurantMapper.entityToResponse(restaurant);
 
         member.getRestaurantScraps().add(restaurant);
 
@@ -38,7 +37,7 @@ public class RestaurantScrapService {
         restaurant.addScrapCountByUser();
         memberRepository.save(member);
 
-        return restaurantMapper.toDto(restaurant);
+        return restaurantMapper.entityToResponse(restaurant);
 
     }
 
@@ -46,14 +45,14 @@ public class RestaurantScrapService {
         MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
         RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
 
-        if(!member.getRestaurantScraps().contains(restaurant)) return restaurantMapper.toDto(restaurant);
+        if(!member.getRestaurantScraps().contains(restaurant)) return restaurantMapper.entityToResponse(restaurant);
         member.getRestaurantScraps().remove(restaurant);
 
         // 식당 스크랩 수 1 감소
         restaurant.reduceScrapCountByUser();
         memberRepository.save(member);
 
-        return restaurantMapper.toDto(restaurant);
+        return restaurantMapper.entityToResponse(restaurant);
 
     }
 }

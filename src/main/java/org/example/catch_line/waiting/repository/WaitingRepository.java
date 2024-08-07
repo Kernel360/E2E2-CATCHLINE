@@ -12,4 +12,6 @@ public interface WaitingRepository extends JpaRepository<WaitingEntity, Long> {
 	List<WaitingEntity> findByMemberMemberId(Long memberId);
 
 	List<WaitingEntity> findByMemberMemberIdAndStatus(Long memberId, Status status);
+
+	List<WaitingEntity> findByRestaurantRestaurantIdOrderByCreatedAt(Long restaurantId);
 }

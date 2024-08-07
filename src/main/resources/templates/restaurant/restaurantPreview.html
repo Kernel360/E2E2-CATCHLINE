@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: flex-end; /* 오른쪽으로 정렬 */
+        }
+    </style>
+</head>
+<div class="container">
+
+    <div class="text-center mb-4">
+        <h2 th:text="'식당 리스트'">식당 리스트</h2>
+    </div>
+
+    <div class="row btn-container mb-3">
+        <div class="col-auto">
+            <button class="btn btn-outline-secondary"
+                    th:onclick="|location.href='@{/login}'|"
+                    type="button">로그인</button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-outline-secondary"
+                    th:onclick="|location.href='@{/signup}'|"
+                    type="button">회원가입</button>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">식당 정보</h5>
+            <div class="list-group">
+                <div class="list-group-item" th:each="preview : ${restaurantPreviewList}" th:onclick="|location.href='@{/restaurants/{restaurantId}(restaurantId=${preview.restaurantId})}'|">
+                    <span th:text="${preview.name}">식당 이름</span>
+                    <span th:text="${preview.averageRating}">평점</span>
+                    <span th:text="${preview.reviewCount}">리뷰 수</span>
+                    <span th:text="${preview.foodType}">음식 종류</span>
+                    <span th:text="${preview.serviceType}">서비스 종류</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- /container -->
+</body>
+</html>

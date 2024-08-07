@@ -7,5 +7,9 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
+    Long countByRestaurantRestaurantId(Long restaurantId);
+
+    List<ReviewEntity> findAllByRestaurantRestaurantId(Long restaurantId);
+
     List<ReviewEntity> findAllByRestaurantRestaurantIdOrderByCreatedAtDesc(Long restaurantId);
 }

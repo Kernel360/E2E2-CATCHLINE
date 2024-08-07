@@ -3,11 +3,11 @@ package org.example.catch_line.restaurant.service;
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantHourEntity;
+import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
 import org.example.catch_line.restaurant.model.mapper.RestaurantHourMapper;
 import org.example.catch_line.restaurant.repository.RestaurantHourRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +27,7 @@ public class RestaurantHourService {
     }
 
     // 요일 별 영업 시간 조회
-    public RestaurantHourResponse getRestaurantHours(Long restaurantId, DayOfWeek dayOfWeek) {
+    public RestaurantHourResponse getRestaurantHours(Long restaurantId, DayOfWeeks dayOfWeek) {
         RestaurantHourEntity entity = restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(restaurantId, dayOfWeek);
         return RestaurantHourMapper.entityToResponse(entity);
     }

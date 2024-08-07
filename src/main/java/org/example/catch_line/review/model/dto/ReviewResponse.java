@@ -14,7 +14,6 @@ public class ReviewResponse {
 
     private Long reviewId;
     private Integer rating;
-    private BigDecimal averageRating;
     private String content;
-    private LocalDateTime createdAt;
+    private String createdAt;
 }

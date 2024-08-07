@@ -10,10 +10,10 @@ public class MemberResponseMapper {
     public MemberResponse toDto(MemberEntity member) {
         return MemberResponse.builder()
                 .memberId(member.getMemberId())
-                .email(member.getEmail())
+                .email(member.getEmail().getEmailValue())
                 .name(member.getName())
                 .nickname(member.getNickname())
-                .phoneNumber(member.getPhoneNumber())
+                .phoneNumber(member.getPhoneNumber().getPhoneNumberValue())
                 .role(member.getRole())
                 .isMemberDeleted(member.isMemberDeleted())
                 .build();

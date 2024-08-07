@@ -1,7 +1,9 @@
 package org.example.catch_line.member.validate;
 
 import lombok.RequiredArgsConstructor;
+import org.example.catch_line.exception.email.DuplicateEmailException;
 import org.example.catch_line.member.model.entity.MemberEntity;
+import org.example.catch_line.member.model.vo.Email;
 import org.example.catch_line.member.repository.MemberRepository;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +14,9 @@ public class MemberValidator {
     private final MemberRepository memberRepository;
 
     // TODO: 탈퇴한 회원의 이메일이 db에 남아있음. 이들은 제외하고 이메일 중복 체크 해야 함.
-    public void checkDuplicateEmail(String email) {
+    public void checkDuplicateEmail(Email email) {
         if (memberRepository.findByEmailAndIsMemberDeletedFalse(email).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            throw new DuplicateEmailException();
         }
     }
 

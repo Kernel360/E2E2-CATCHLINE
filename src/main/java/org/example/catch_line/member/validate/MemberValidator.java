@@ -16,7 +16,7 @@ public class MemberValidator {
     // TODO: 탈퇴한 회원의 이메일이 db에 남아있음. 이들은 제외하고 이메일 중복 체크 해야 함.
     public void checkDuplicateEmail(Email email) {
         if (memberRepository.findByEmailAndIsMemberDeletedFalse(email).isPresent()) {
-            throw new DuplicateEmailException();
+            throw new DuplicateEmailException(email.getEmailValue());
         }
     }
 

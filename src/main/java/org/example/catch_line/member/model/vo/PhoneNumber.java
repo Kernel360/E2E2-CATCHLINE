@@ -20,8 +20,8 @@ public class PhoneNumber {
 
     private void validatePhoneNumber(String phoneNumberValue) {
 
-        if (phoneNumberValue == null || !PHONE_NUMBER_PATTERN.matcher(phoneNumberValue).matches()) {
-            throw new InvalidPhoneNumberException();
+        if (!PHONE_NUMBER_PATTERN.matcher(phoneNumberValue).matches()) {
+            throw new InvalidPhoneNumberException(phoneNumberValue);
         }
 
 

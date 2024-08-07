@@ -10,7 +10,6 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class RestaurantHourResponse {

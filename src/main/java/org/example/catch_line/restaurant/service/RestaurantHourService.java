@@ -16,21 +16,20 @@ import java.util.stream.Collectors;
 public class RestaurantHourService {
 
     private final RestaurantHourRepository restaurantHourRepository;
-    private final RestaurantHourMapper restaurantHourMapper;
 
     // 영업 시간 전체 조회
     public List<RestaurantHourResponse> getAllRestaurantHours(Long restaurantId) {
         List<RestaurantHourEntity> restaurantHourList = restaurantHourRepository.findAllByRestaurantRestaurantId(restaurantId);
 
         return restaurantHourList.stream()
-                .map(restaurantHourMapper::entityToResponse)
+                .map(RestaurantHourMapper::entityToResponse)
                 .collect(Collectors.toList());
     }
 
     // 요일 별 영업 시간 조회
-    public RestaurantHourResponse getRestaurantHour(Long restaurantId, DayOfWeek dayOfWeek) {
+    public RestaurantHourResponse getRestaurantHours(Long restaurantId, DayOfWeek dayOfWeek) {
         RestaurantHourEntity entity = restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(restaurantId, dayOfWeek);
-        return restaurantHourMapper.entityToResponse(entity);
+        return RestaurantHourMapper.entityToResponse(entity);
     }
 
     // 영업 재개

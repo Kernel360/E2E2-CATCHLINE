@@ -41,4 +41,6 @@ public class HistoryResponse {
 
 	private int waitingRegistrationId;
 
+	private int myWaitingPosition;
+
 }

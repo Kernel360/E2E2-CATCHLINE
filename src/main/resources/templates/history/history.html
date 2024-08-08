@@ -18,6 +18,9 @@
         <div class="col">
             <button type="button" class="btn btn-primary btn-lg" th:onclick="|location.href='@{/history(status=CANCELED)}'|">취소</button>
         </div>
+        <div class="col">
+            <button type="button" class="btn btn-secondary btn-lg" onclick="refreshPage()">새로고침</button>
+        </div>
     </div>
     <table class="table table-striped">
         <thead>
@@ -30,6 +33,7 @@
             <th>Modified At</th>
             <th>Waiting Type / Reservation Date</th>
             <th>WaitingRegistrationId</th>
+            <th>MyWaitingPosition</th>
         </tr>
         </thead>
         <tbody>
@@ -42,6 +46,7 @@
             <td th:text="${history.modifiedAt != null ? #temporals.format(history.modifiedAt, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></td>
             <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingType : (history.reservationDate != null ? #temporals.format(history.reservationDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A')}"></td>
             <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingRegistrationId : 1}"></td>
+            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.myWaitingPosition : 1}"></td>
         </tr>
         </tbody>
     </table>
@@ -50,5 +55,10 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function refreshPage() {
+        location.reload();
+    }
+</script>
 </body>
 </html>

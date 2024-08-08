@@ -23,7 +23,7 @@ public class Rating {
     }
 
     public Rating(BigDecimal rating) {
-        this.rating = rating;
+        this.rating = rating.setScale(1, BigDecimal.ROUND_HALF_UP);
     }
 
     public BigDecimal getRating() {

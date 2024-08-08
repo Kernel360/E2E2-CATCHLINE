@@ -17,4 +17,15 @@ public class RestaurantPreviewMapper {
                 .foodType(restaurantEntity.getFoodType().getDescription())
                 .build();
     }
+
+    public static RestaurantPreviewResponse entityToResponse(RestaurantEntity restaurantEntity) {
+        return RestaurantPreviewResponse.builder()
+                .restaurantId(restaurantEntity.getRestaurantId())
+                .name(restaurantEntity.getName())
+                .averageRating(restaurantEntity.getRating().getRating())
+                .reviewCount(restaurantEntity.getReviewCount())
+                .serviceType(restaurantEntity.getServiceType().getDescription())
+                .foodType(restaurantEntity.getFoodType().getDescription())
+                .build();
+    }
 }

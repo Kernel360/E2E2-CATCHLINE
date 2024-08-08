@@ -72,7 +72,7 @@ class RestaurantServiceTest {
         assertThat(restaurant.getName()).isEqualTo(response.getName());
         assertThat(restaurant.getDescription()).isEqualTo(response.getDescription());
         assertThat(restaurant.getPhoneNumber()).isEqualTo(response.getPhoneNumber());
-        assertThat(restaurant.getRating()).isEqualTo(response.getRating());
+        assertThat(restaurant.getAverageRating()).isEqualTo(response.getAverageRating());
     }
 
     @Test

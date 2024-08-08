@@ -1,20 +1,23 @@
 package org.example.catch_line.restaurant.model.entity.constant;
 
 import java.time.DayOfWeek;
+import java.util.Arrays;
 
 public enum DayOfWeeks {
 
-    MONDAY("월요일"),
-    TUESDAY("화요일"),
-    WEDNESDAY("수요일"),
-    THURSDAY("목요일"),
-    FRIDAY("금요일"),
-    SATURDAY("토요일"),
-    SUNDAY("일요일");
+    MONDAY(DayOfWeek.MONDAY, "월요일"),
+    TUESDAY(DayOfWeek.TUESDAY, "화요일"),
+    WEDNESDAY(DayOfWeek.WEDNESDAY, "수요일"),
+    THURSDAY(DayOfWeek.THURSDAY, "목요일"),
+    FRIDAY(DayOfWeek.FRIDAY, "금요일"),
+    SATURDAY(DayOfWeek.SATURDAY, "토요일"),
+    SUNDAY(DayOfWeek.SUNDAY, "일요일");
 
+    private final DayOfWeek dayOfWeek;
     private final String description;
 
-    DayOfWeeks(String description) {
+    DayOfWeeks(DayOfWeek dayOfWeek, String description) {
+        this.dayOfWeek = dayOfWeek;
         this.description = description;
     }
 
@@ -22,16 +25,14 @@ public enum DayOfWeeks {
         return description;
     }
 
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
+    }
+
     public static DayOfWeeks from(DayOfWeek dayOfWeek) {
-        switch (dayOfWeek) {
-            case MONDAY: return MONDAY;
-            case TUESDAY: return TUESDAY;
-            case WEDNESDAY: return WEDNESDAY;
-            case THURSDAY: return THURSDAY;
-            case FRIDAY: return FRIDAY;
-            case SATURDAY: return SATURDAY;
-            case SUNDAY: return SUNDAY;
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(e -> e.dayOfWeek == dayOfWeek)
+                .findFirst()
+                .orElse(null);
     }
 }

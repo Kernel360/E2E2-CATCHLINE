@@ -7,8 +7,7 @@ import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 @Entity
 @Table(name = "menu")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MenuEntity {
 
     @Id

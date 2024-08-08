@@ -9,10 +9,10 @@ public class RestaurantHourMapper {
     public static RestaurantHourResponse entityToResponse(RestaurantHourEntity entity) {
         return RestaurantHourResponse.builder()
                 .restaurantHourId(entity.getRestaurantHourId())
-                .dayOfWeek(entity.getDayOfWeek())
+                .dayOfWeek(entity.getDayOfWeek().getDescription())
                 .openTime(entity.getOpenTime())
                 .closeTime(entity.getCloseTime())
-                .openStatus(entity.getOpenStatus())
+                .openStatus(entity.getOpenStatus().getDescription())
                 .build();
     }
 }

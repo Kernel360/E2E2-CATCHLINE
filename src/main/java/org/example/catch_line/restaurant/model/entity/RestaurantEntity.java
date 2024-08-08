@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.catch_line.common.BaseTimeEntity;
 import org.example.catch_line.member.model.entity.MemberEntity;
+import org.example.catch_line.member.model.mapper.converter.PhoneNumberConverter;
+import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.menu.model.entity.MenuEntity;
 import org.example.catch_line.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
@@ -32,7 +34,9 @@ public class RestaurantEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private BigDecimal rating;
 
-    private String phoneNumber;
+    @Column(nullable = false)
+    @Convert(converter = PhoneNumberConverter.class)
+    private PhoneNumber phoneNumber;
 
     @Column(nullable = false)
     private BigDecimal latitude;
@@ -72,7 +76,7 @@ public class RestaurantEntity extends BaseTimeEntity {
 
 
     @Builder
-    public RestaurantEntity(String name, String description, BigDecimal rating, String phoneNumber, BigDecimal latitude, BigDecimal longitude, FoodType foodType, ServiceType serviceType) {
+    public RestaurantEntity(String name, String description, BigDecimal rating, PhoneNumber phoneNumber, BigDecimal latitude, BigDecimal longitude, FoodType foodType, ServiceType serviceType) {
         this.name = name;
         this.description = description;
         this.rating = rating;

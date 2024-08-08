@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,18 +31,8 @@ public class ReviewService {
     public List<ReviewResponse> getRestaurantReviewList(Long restaurantId) {
         List<ReviewEntity> reviewList = reviewRepository.findAllByRestaurantRestaurantIdOrderByCreatedAtDesc(restaurantId);
 
-        BigDecimal totalRating = BigDecimal.ZERO;
-        for (ReviewEntity reviewEntity : reviewList) {
-            totalRating = totalRating.add(BigDecimal.valueOf(reviewEntity.getRating()));
-        }
-
-        BigDecimal averageRating = reviewList.isEmpty() ? BigDecimal.ZERO :
-                totalRating.divide(BigDecimal.valueOf(reviewList.size()), 1, BigDecimal.ROUND_HALF_UP);
-
-        BigDecimal rating = averageRating.setScale(1, BigDecimal.ROUND_HALF_UP);
-
         return reviewList.stream()
-                .map(reviewEntity -> ReviewMapper.entityToResponseWithAverageRating(reviewEntity, rating))
+                .map(ReviewMapper::entityToResponse)
                 .collect(Collectors.toList());
     }
 
@@ -70,6 +58,26 @@ public class ReviewService {
     // 리뷰 삭제
     public void deleteReview(Long reviewId) {
         reviewRepository.deleteById(reviewId);
+    }
+
+    // 식당 평점 구하기
+    public BigDecimal getAverageRating(Long restaurantId) {
+        List<ReviewEntity> reviewList = reviewRepository.findAllByRestaurantRestaurantId(restaurantId);
+
+        BigDecimal totalRating = BigDecimal.ZERO;
+        for (ReviewEntity reviewEntity : reviewList) {
+            totalRating = totalRating.add(BigDecimal.valueOf(reviewEntity.getRating()));
+        }
+
+        BigDecimal averageRating = reviewList.isEmpty() ? BigDecimal.ZERO :
+                totalRating.divide(BigDecimal.valueOf(reviewList.size()), 1, BigDecimal.ROUND_HALF_UP);
+
+        return averageRating.setScale(1, BigDecimal.ROUND_HALF_UP);
+    }
+
+    // 리뷰 전체 수 조회
+    public Long getReviewCount(Long restaurantId) {
+        return reviewRepository.countByRestaurantRestaurantId(restaurantId);
     }
 
     private ReviewEntity createRequestToEntity(ReviewCreateRequest reviewCreateRequest, MemberEntity memberEntity, RestaurantEntity restaurantEntity) {

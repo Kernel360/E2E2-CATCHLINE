@@ -2,9 +2,9 @@ package org.example.catch_line.restaurant.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
 import org.example.catch_line.restaurant.model.entity.constant.OpenStatus;
 
-import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
@@ -18,7 +18,7 @@ public class RestaurantHourEntity {
     private Long restaurantHourId;
 
     @Enumerated(EnumType.STRING)
-    private DayOfWeek dayOfWeek;
+    private DayOfWeeks dayOfWeek;
     private LocalTime openTime;
     private LocalTime closeTime;
 
@@ -31,7 +31,7 @@ public class RestaurantHourEntity {
     private RestaurantEntity restaurant;
 
     @Builder
-    public RestaurantHourEntity(DayOfWeek dayOfWeek, LocalTime openTime, LocalTime closeTime, OpenStatus openStatus) {
+    public RestaurantHourEntity(DayOfWeeks dayOfWeek, LocalTime openTime, LocalTime closeTime, OpenStatus openStatus) {
         this.dayOfWeek = dayOfWeek;
         this.openTime = openTime;
         this.closeTime = closeTime;

@@ -2,6 +2,7 @@ package org.example.catch_line.member.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.member.model.dto.MemberResponse;
 import org.example.catch_line.member.model.dto.MemberUpdateRequest;
 import org.example.catch_line.member.model.entity.MemberEntity;
@@ -11,8 +12,11 @@ import org.example.catch_line.member.model.vo.Password;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.member.validate.MemberValidator;
+import org.example.catch_line.member.validate.PasswordValidator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -20,6 +24,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final MemberValidator memberValidator;
+    private final PasswordEncoder passwordEncoder;
 
 
     // 회원 정보 조회
@@ -37,7 +42,13 @@ public class MemberService {
         // 수정되지 않은 경우, 검증이 불필요합니다.
         Email email = new Email(updateMemberRequest.getEmail());
         PhoneNumber phoneNumber = new PhoneNumber(updateMemberRequest.getPhoneNumber());
-        Password password = new Password(updateMemberRequest.getPassword(), false);
+
+        // 회원 수정 dto에 담긴 password 검증
+        String validatedPassword = PasswordValidator.validatePassword(updateMemberRequest.getPassword());
+        // 검증된 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(validatedPassword);
+        // 암호화된 비밀번호로 VO 객체 생성
+        Password password = new Password(encodedPassword);
 
         if (!member.getEmail().getEmailValue().equals(updateMemberRequest.getEmail()))
             memberValidator.checkDuplicateEmail(email);

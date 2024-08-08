@@ -9,11 +9,11 @@ public class PasswordConverter implements AttributeConverter<Password, String> {
 
     @Override
     public String convertToDatabaseColumn(Password password) {
-        return password.getPasswordValue();
+        return password.getEncodedPassword();
     }
 
     @Override
     public Password convertToEntityAttribute(String password) {
-        return new Password(password, true);
+        return new Password(password);
     }
 }

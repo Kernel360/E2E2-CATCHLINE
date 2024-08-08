@@ -1,5 +1,6 @@
 package org.example.catch_line.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,22 +37,28 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))  // frameOptions 설정
                 .authorizeHttpRequests(requests ->requests
-                        .requestMatchers("/**", "/user/**", "/questions/**", "/h2-console/**").permitAll()  // all paths can be accessed
+                        .requestMatchers("/**", "/restaurants/**", "/login/**", "/logout/**").permitAll()  // all paths can be accessed
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/user/login")  // user defined login page path
+                        .loginPage("/login")  // user defined login page path
                         .loginProcessingUrl("/perform_login")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll);
+//                .logout(logout -> logout
+//                        .logoutUrl("/logout")  // 로그아웃 URL 설정
+//                        .logoutSuccessUrl("/")  // 로그아웃 후 이동할 URL 설정
+//                        .permitAll()
+//                );
+                .logout(AbstractHttpConfigurer::disable);  // Spring Security 로그아웃 비활성화
+
         return http.build();
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4444","http://localhost:4445"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080","http://localhost:8081"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

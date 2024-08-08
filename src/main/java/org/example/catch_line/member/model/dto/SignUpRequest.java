@@ -19,7 +19,6 @@ public class SignUpRequest {
     private String nickname;
 
     @NotBlank
-    @Size(min = 8, max = 30, message = "비밀번호는 8자 이상, 30자 이하로 입력하세요.")
     private String password;
 
     @NotBlank

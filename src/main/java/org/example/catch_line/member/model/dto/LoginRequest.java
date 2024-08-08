@@ -18,7 +18,6 @@ public class LoginRequest {
     private String email;
 
     @NotBlank
-    @Size(min = 8, max = 30, message = "비밀번호는 8자 이상, 30자 이하로 입력하세요.")
     private String password;
 
     @NotNull(message = "역할을 선택해야 합니다.")

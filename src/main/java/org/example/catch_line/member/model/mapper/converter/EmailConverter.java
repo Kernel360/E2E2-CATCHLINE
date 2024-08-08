@@ -12,14 +12,11 @@ public class EmailConverter implements AttributeConverter<Email, String> {
     public String convertToDatabaseColumn(Email email) {
 
         // TODO : null 값 검증을 request dto, Email vo, converter에서 하고 있는데 검증이 너무 많을까요?
-
-        if (email == null) throw new InvalidEmailException();
         return email.getEmailValue();
     }
 
     @Override
     public Email convertToEntityAttribute(String email) {
-        if (email == null) throw new InvalidEmailException();
         return new Email(email); // TODO : 이렇게 VO 객체를 생성하면 괜찮을까요?
     }
 }

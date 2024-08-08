@@ -1,8 +1,10 @@
 package org.example.catch_line.exception.phone;
 
-public class InvalidPhoneNumberException extends RuntimeException {
+import org.example.catch_line.exception.CatchLineException;
 
-    public InvalidPhoneNumberException() {
-        super("올바른 전화번호 형식을 입력하세요.");
+public class InvalidPhoneNumberException extends CatchLineException {
+
+    public InvalidPhoneNumberException(String phoneNumber) {
+        super("올바른 전화번호 형식을 입력하세요. : " + phoneNumber);
     }
 }

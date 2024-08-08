@@ -22,11 +22,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
+    // 모든 커스텀 예외가 `CatchLineException`을 상속 -> 모든 `exception class` 다 적을 필요 없음.
+    @ExceptionHandler(CatchLineException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(CatchLineException e) {
 
-    @ExceptionHandler({DuplicateEmailException.class, InvalidEmailException.class, InvalidPhoneNumberException.class})
-    public ResponseEntity<String> handleIllegalArgumentException(RuntimeException e) {
-
-        log.error("커스텀 예외 발생: {}", e.getMessage(), e);
+        log.error("캐치라인 커스텀 예외 발생: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 

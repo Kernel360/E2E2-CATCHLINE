@@ -1,8 +1,6 @@
 package org.example.catch_line.member.model.vo;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Value;
 import org.example.catch_line.exception.email.InvalidEmailException;
 
 import java.util.regex.Pattern;
@@ -29,8 +27,8 @@ public class Email {
     private void validateEmail(String emailValue) {
 
         // TODO: null 체크를 dto에서 해야 할지 여기서 해야 할지? validation 책임 분리
-        if (emailValue == null || !EMAIL_PATTERN.matcher(emailValue).matches()) {
-            throw new InvalidEmailException();
+        if (!EMAIL_PATTERN.matcher(emailValue).matches()) {
+            throw new InvalidEmailException(emailValue);
         }
     }
 

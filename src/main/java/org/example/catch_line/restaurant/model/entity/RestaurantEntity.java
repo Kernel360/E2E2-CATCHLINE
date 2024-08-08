@@ -3,6 +3,8 @@ package org.example.catch_line.restaurant.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.catch_line.common.BaseTimeEntity;
+import org.example.catch_line.common.model.mapper.RatingConverter;
+import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.model.mapper.converter.PhoneNumberConverter;
 import org.example.catch_line.member.model.vo.PhoneNumber;
@@ -32,7 +34,8 @@ public class RestaurantEntity extends BaseTimeEntity {
     private String description;
 
     @Column(nullable = false)
-    private BigDecimal rating;
+    @Convert(converter = RatingConverter.class)
+    private Rating rating;
 
     @Column(nullable = false)
     @Convert(converter = PhoneNumberConverter.class)
@@ -76,7 +79,7 @@ public class RestaurantEntity extends BaseTimeEntity {
 
 
     @Builder
-    public RestaurantEntity(String name, String description, BigDecimal rating, PhoneNumber phoneNumber, BigDecimal latitude, BigDecimal longitude, FoodType foodType, ServiceType serviceType) {
+    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, BigDecimal latitude, BigDecimal longitude, FoodType foodType, ServiceType serviceType) {
         this.name = name;
         this.description = description;
         this.rating = rating;
@@ -87,6 +90,11 @@ public class RestaurantEntity extends BaseTimeEntity {
         this.reviewCount = 0L;
         this.foodType = foodType;
         this.serviceType = serviceType;
+    }
+
+    public void updateReview(Rating rating, Long reviewCount) {
+        this.rating = rating;
+        this.reviewCount = reviewCount;
     }
 
     // 사용자가 식당 스크랩 시 `scrapCount` 1 증가

@@ -23,6 +23,14 @@
         .page-item {
             margin: 0 5px;
         }
+        .sort-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .sort-buttons .btn {
+            margin: 0 5px;
+        }
     </style>
 </head>
 <body>
@@ -42,6 +50,16 @@
     </div>
 
     <hr class="my-4">
+
+    <!-- 정렬 버튼들 -->
+    <div class="sort-buttons">
+        <a th:href="@{/restaurants(criteria='reviewCount', page=0, size=${restaurantPreviewPage.size})}"
+           class="btn btn-primary" th:classappend="${criteria == 'reviewCount'} ? 'active' : ''">리뷰 순</a>
+        <a th:href="@{/restaurants(criteria='scrapCount', page=0, size=${restaurantPreviewPage.size})}"
+           class="btn btn-primary" th:classappend="${criteria == 'scrapCount'} ? 'active' : ''">스크랩 순</a>
+        <a th:href="@{/restaurants(criteria='rating', page=0, size=${restaurantPreviewPage.size})}"
+           class="btn btn-primary" th:classappend="${criteria == 'rating'} ? 'active' : ''">별점 순</a>
+    </div>
 
     <div class="card">
         <div class="card-body">
@@ -65,17 +83,17 @@
         <ul class="pagination">
             <!-- 이전 페이지 버튼 -->
             <li class="page-item" th:classappend="${!restaurantPreviewPage.hasPrevious()} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{/restaurants(page=${restaurantPreviewPage.number - 1}, size=${restaurantPreviewPage.size})}" th:text="'Previous'"></a>
+                <a class="page-link" th:href="@{/restaurants(page=${restaurantPreviewPage.number - 1}, size=${restaurantPreviewPage.size}, criteria=${criteria})}" th:text="'Previous'"></a>
             </li>
 
             <!-- 페이지 번호 버튼 -->
             <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}" th:classappend="${i == restaurantPreviewPage.number + 1} ? 'active' : ''">
-                <a class="page-link" th:href="@{/restaurants(page=${i - 1}, size=${restaurantPreviewPage.size})}" th:text="${i}"></a>
+                <a class="page-link" th:href="@{/restaurants(page=${i - 1}, size=${restaurantPreviewPage.size}, criteria=${criteria})}" th:text="${i}"></a>
             </li>
 
             <!-- 다음 페이지 버튼 -->
             <li class="page-item" th:classappend="${!restaurantPreviewPage.hasNext()} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{/restaurants(page=${restaurantPreviewPage.number + 1}, size=${restaurantPreviewPage.size})}" th:text="'Next'"></a>
+                <a class="page-link" th:href="@{/restaurants(page=${restaurantPreviewPage.number + 1}, size=${restaurantPreviewPage.size}, criteria=${criteria})}" th:text="'Next'"></a>
             </li>
         </ul>
     </nav>

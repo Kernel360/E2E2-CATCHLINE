@@ -38,14 +38,14 @@ public class RestaurantPreviewService {
 			.collect(Collectors.toList());
 	}
 
-	public Page<RestaurantPreviewResponse> restaurantPreviewPaging(Pageable pageable) {
+	public Page<RestaurantPreviewResponse> restaurantPreviewPaging(Pageable pageable, String criteria) {
 		// int page = pageable.getPageNumber();
 		int pageLimit = pageable.getPageSize();
 
 		//식당 엔티티들을 리포지토리에서 Page 속성들과 정렬 방식을 입력해서 restaurants 에 저장
 		Page<RestaurantEntity> restaurants = restaurantRepository.findAll(
 			PageRequest.of(pageable.getPageNumber(), pageLimit,
-				Sort.by(Sort.Direction.DESC, "reviewCount")));
+				Sort.by(Sort.Direction.DESC, criteria)));
 
 		// restaurants 를 매핑해 restaurantResponse 로 변환했다
 		Page<RestaurantPreviewResponse> restaurantPreviewPage = restaurants.map(

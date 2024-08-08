@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 @Controller
@@ -18,9 +19,12 @@ public class RestaurantPreviewController {
     private final RestaurantPreviewService restaurantPreviewService;
 
     @GetMapping("/restaurants")
-    public String getRestaurantPreviewList(@PageableDefault(page=0, size = 2)Pageable pageable,Model model) {
+    public String getRestaurantPreviewList(
+        @RequestParam(required = false, defaultValue = "reviewCount") String criteria,
+        @PageableDefault(page=0, size = 2)Pageable pageable,
+        Model model) {
 
-        Page<RestaurantPreviewResponse> restaurantPreviewPage = restaurantPreviewService.restaurantPreviewPaging(pageable);
+        Page<RestaurantPreviewResponse> restaurantPreviewPage = restaurantPreviewService.restaurantPreviewPaging(pageable, criteria);
 
         int blockLimit = 5;
         int startPage = (((int) Math.ceil(((double) (pageable.getPageNumber() +1) / blockLimit))) -1) * blockLimit + 1;
@@ -30,6 +34,7 @@ public class RestaurantPreviewController {
         model.addAttribute("restaurantPreviewPage",restaurantPreviewPage);
         model.addAttribute("startPage",startPage);
         model.addAttribute("endPage",endPage);
+        model.addAttribute("criteria",criteria);
 
         // List<RestaurantPreviewResponse> restaurantPreviewList = restaurantPreviewService.getRestaurantPreviewList();
         // model.addAttribute("restaurantPreviewList", restaurantPreviewList);

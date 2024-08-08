@@ -22,7 +22,7 @@ public class ReviewController {
     @GetMapping
     public String getRestaurantReviews(@PathVariable Long restaurantId, Model model) {
         List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurantId);
-        BigDecimal averageRating = reviewService.getAverageRating(restaurantId);
+        BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
         model.addAttribute("averageRating", averageRating);
         model.addAttribute("reviewList", reviewList);
         return "review/reviews";

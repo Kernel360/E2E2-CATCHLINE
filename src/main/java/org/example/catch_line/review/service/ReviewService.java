@@ -1,6 +1,7 @@
 package org.example.catch_line.review.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.validate.MemberValidator;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
@@ -14,7 +15,6 @@ import org.example.catch_line.review.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,18 +61,9 @@ public class ReviewService {
     }
 
     // 식당 평점 구하기
-    public BigDecimal getAverageRating(Long restaurantId) {
-        List<ReviewEntity> reviewList = reviewRepository.findAllByRestaurantRestaurantId(restaurantId);
-
-        BigDecimal totalRating = BigDecimal.ZERO;
-        for (ReviewEntity reviewEntity : reviewList) {
-            totalRating = totalRating.add(BigDecimal.valueOf(reviewEntity.getRating()));
-        }
-
-        BigDecimal averageRating = reviewList.isEmpty() ? BigDecimal.ZERO :
-                totalRating.divide(BigDecimal.valueOf(reviewList.size()), 1, BigDecimal.ROUND_HALF_UP);
-
-        return averageRating.setScale(1, BigDecimal.ROUND_HALF_UP);
+    public Rating getAverageRating(Long restaurantId) {
+        List<Integer> reviewRatingList = reviewRepository.findRatingsByRestaurantId(restaurantId);
+        return new Rating(reviewRatingList);
     }
 
     // 리뷰 전체 수 조회

@@ -5,10 +5,8 @@ import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.mapper.RestaurantPreviewMapper;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
-import org.example.catch_line.review.service.ReviewService;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,19 +15,14 @@ import java.util.stream.Collectors;
 public class RestaurantPreviewService {
 
     private final RestaurantRepository restaurantRepository;
-    private final ReviewService reviewService;
 
     // 식당 프리뷰 리스트 조회
+    // 변경 사항 : 프리뷰 조회 시 리뷰 수, 평점을 항상 DB에서 조회했음 -> 식당 상세 정보 조회시에만 리뷰 수, 평점 DB에서 조회
     public List<RestaurantPreviewResponse> getRestaurantPreviewList() {
         List<RestaurantEntity> restaurantList = restaurantRepository.findAll();
 
         return restaurantList.stream()
-                .map(restaurantEntity -> {
-                    Long restaurantId = restaurantEntity.getRestaurantId();
-                    BigDecimal averageRating = reviewService.getAverageRating(restaurantId);
-                    Long reviewCount = reviewService.getReviewCount(restaurantId);
-                    return RestaurantPreviewMapper.entityToResponse(restaurantEntity, averageRating, reviewCount);
-                })
+                .map(RestaurantPreviewMapper::entityToResponse)
                 .collect(Collectors.toList());
     }
 

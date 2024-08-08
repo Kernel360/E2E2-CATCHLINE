@@ -2,6 +2,7 @@ package org.example.catch_line.restaurant.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
@@ -36,12 +37,17 @@ public class RestaurantService {
         return RestaurantMapper.entityToResponse(savedEntity);
     }
 
+    // TODO: 현재 식당 상세 정보 조회 시 리뷰 수, 평균 평점을 구하기 위해 리뷰 테이블에서 실시간으로 가져오는 중
+    // TODO: 추후 DB에서 실시간으로 데이터 가져오지 않고, 특정 시간마다(10초?) update하는 식으로 변경 필요
+    // TODO: 더 나은 성능과 최신성을 위해 배치 처리? Redis?
+    @Transactional
     public RestaurantResponse findRestaurant(Long restaurantId) {
         RestaurantEntity entity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
-        BigDecimal averageRating = reviewService.getAverageRating(restaurantId);
+        BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
         Long reviewCount = reviewService.getReviewCount(restaurantId);
 
-        return RestaurantMapper.entityToResponse(entity, averageRating, reviewCount);
+        entity.updateReview(new Rating(averageRating), reviewCount);
+        return RestaurantMapper.entityToResponse(entity);
     }
 
     public void deleteRestaurant(Long restaurantId) {
@@ -59,7 +65,7 @@ public class RestaurantService {
                 .longitude(request.getLongitude())
                 .foodType(request.getFoodType())
                 .serviceType(request.getServiceType())
-                .rating(BigDecimal.valueOf(0))
+                .rating(new Rating(BigDecimal.valueOf(0)))
                 .build();
     }
 }

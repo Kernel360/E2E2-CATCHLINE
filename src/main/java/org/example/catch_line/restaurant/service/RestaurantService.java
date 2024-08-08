@@ -2,11 +2,14 @@ package org.example.catch_line.restaurant.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.restaurant.validate.RestaurantValidator;
+import org.example.catch_line.review.service.ReviewService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +22,8 @@ import java.math.BigDecimal;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-    private final RestaurantMapper restaurantMapper;
+    private final RestaurantValidator restaurantValidator;
+    private final ReviewService reviewService;
 
     public RestaurantResponse createRestaurant(RestaurantCreateRequest request) {
         // TODO: 식당 이름은 중복되도 되지 않을까?
@@ -29,14 +33,15 @@ public class RestaurantService {
 
         RestaurantEntity entity = toEntity(request);
         RestaurantEntity savedEntity = restaurantRepository.save(entity);
-        return restaurantMapper.entityToResponse(savedEntity);
+        return RestaurantMapper.entityToResponse(savedEntity);
     }
 
     public RestaurantResponse findRestaurant(Long restaurantId) {
-        RestaurantEntity entity = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("식당을 찾을 수 없습니다."));
+        RestaurantEntity entity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+        BigDecimal averageRating = reviewService.getAverageRating(restaurantId);
+        Long reviewCount = reviewService.getReviewCount(restaurantId);
 
-        return restaurantMapper.entityToResponse(entity);
+        return RestaurantMapper.entityToResponse(entity, averageRating, reviewCount);
     }
 
     public void deleteRestaurant(Long restaurantId) {
@@ -49,7 +54,7 @@ public class RestaurantService {
         return RestaurantEntity.builder()
                 .name(request.getName())
                 .description(request.getDescription())
-                .phoneNumber(request.getPhoneNumber())
+                .phoneNumber(new PhoneNumber(request.getPhoneNumber()))
                 .latitude(request.getLatitude())
                 .longitude(request.getLongitude())
                 .foodType(request.getFoodType())

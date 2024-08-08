@@ -1,8 +1,10 @@
 package org.example.catch_line.exception.email;
 
-public class InvalidEmailException extends RuntimeException {
+import org.example.catch_line.exception.CatchLineException;
 
-    public InvalidEmailException() {
-        super("올바른 이메일 형식을 입력하세요.");
+public class InvalidEmailException extends CatchLineException {
+
+    public InvalidEmailException(String email) {
+        super("올바른 이메일 형식을 입력하세요. : " + email);
     }
 }

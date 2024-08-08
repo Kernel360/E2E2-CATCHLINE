@@ -11,5 +11,5 @@ public class MenuResponse {
 
     private Long menuId;
     private String name;
-    private Long price;
+    private String price;
 }

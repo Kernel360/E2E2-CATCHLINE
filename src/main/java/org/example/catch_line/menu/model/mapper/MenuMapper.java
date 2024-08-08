@@ -4,14 +4,18 @@ import org.example.catch_line.menu.model.dto.MenuResponse;
 import org.example.catch_line.menu.model.entity.MenuEntity;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class MenuMapper {
 
-    public MenuResponse entityToResponse(MenuEntity menuEntity) {
+    private static final NumberFormat formatter = NumberFormat.getNumberInstance(Locale.KOREA);
+
+    public static MenuResponse entityToResponse(MenuEntity menuEntity) {
         return MenuResponse.builder()
                 .menuId(menuEntity.getMenuId())
                 .name(menuEntity.getName())
-                .price(menuEntity.getPrice())
+                .price(formatter.format(menuEntity.getPrice()))
                 .build();
     }
 }

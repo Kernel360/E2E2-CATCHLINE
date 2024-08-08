@@ -5,8 +5,10 @@ import lombok.*;
 import org.example.catch_line.common.BaseTimeEntity;
 import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.member.model.mapper.converter.EmailConverter;
+import org.example.catch_line.member.model.mapper.converter.PasswordConverter;
 import org.example.catch_line.member.model.mapper.converter.PhoneNumberConverter;
 import org.example.catch_line.member.model.vo.Email;
+import org.example.catch_line.member.model.vo.Password;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
@@ -36,9 +38,9 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private String nickname;
 
-    // TODO: password 도 vo ?
     @Column(nullable = false)
-    private String password;
+    @Convert(converter = PasswordConverter.class)
+    private Password password;
 
     @Column(nullable = false)
     @Convert(converter = PhoneNumberConverter.class)
@@ -71,7 +73,7 @@ public class MemberEntity extends BaseTimeEntity {
 
 
     @Builder
-    public MemberEntity(Email email, String name, String nickname, String password, PhoneNumber phoneNumber, Role role) {
+    public MemberEntity(Email email, String name, String nickname, Password password, PhoneNumber phoneNumber, Role role) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
@@ -82,14 +84,13 @@ public class MemberEntity extends BaseTimeEntity {
     }
 
 
-    // TODO: null check 필요?
     // 회원 정보 수정 -> @Setter 사용 대신 메서드를 따로 추가
-    public void updateMember(Email email, String name, String nickname, String password, PhoneNumber phoneNumber) {
-        this.email = (email != null) ? email : this.email;
-        this.name = (name != null) ? name : this.name;
-        this.nickname = (nickname != null) ? nickname : this.nickname;
-        this.password = (password != null) ? password : this.password;
-        this.phoneNumber = (phoneNumber != null) ? phoneNumber : this.phoneNumber;
+    public void updateMember(Email email, String name, String nickname, Password password, PhoneNumber phoneNumber) {
+        this.email = email;
+        this.name = name;
+        this.nickname = nickname;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
     }
 
     // 회원 탈퇴 (memberStatus 값만 변경) -> @Setter 사용 대신 메서드를 따로 추가

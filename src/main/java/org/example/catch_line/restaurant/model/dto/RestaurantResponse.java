@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class RestaurantResponse {
@@ -16,7 +15,7 @@ public class RestaurantResponse {
     private Long restaurantId;
     private String name;
     private String description;
-    private BigDecimal rating;
+    private BigDecimal averageRating;
     private String phoneNumber;
     private BigDecimal latitude;
     private BigDecimal longitude;

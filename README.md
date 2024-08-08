@@ -54,7 +54,7 @@
 
 ### 3. Database
 
-    - MySQL
+    - MySQL 8
 
 
 <br>
@@ -101,20 +101,14 @@ src
 └── main
     └── java
         └── catch_line
-            ├── common
-            │   ├── constant
-            │   ├── config
-            │   ├── exception
-            │   │   └── CatchLineException
-            │   │   └── GlobalExceptionHandler
-            │   ├── utils
-            │   │   └── SessionUtils
-            ├── controller
-            │   └── member
-            ├── email
-            ├── password
-            ├── phone
-            ├── session
+            ├── commmon
+            │   └── constant
+            ├── config
+            ├── exception
+            │   ├── email
+            │   ├── password
+            │   ├── phone
+            │   └── session
             ├── history
             ├── member
             │   ├── controller

@@ -2,12 +2,12 @@ package org.example.catch_line.history.controller;
 
 import java.util.List;
 
+import org.example.catch_line.booking.reservation.service.ReservationService;
+import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
-import org.example.catch_line.booking.reservation.service.ReservationService;
-import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,11 +40,10 @@ public class HistoryController {
 		return "history/history";
 	}
 
-
 	@GetMapping("/history/waiting/{waitingId}")
-	public String getWaitingDetail(@PathVariable String waitingId, HttpSession session, Model model) {
+	public String getWaitingDetail(@PathVariable Long waitingId, HttpSession session, Model model) {
 
-		List<HistoryResponse> historyList = (List<HistoryResponse>) session.getAttribute("historyList");
+		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
 
 		if (historyList != null) {
 			try {
@@ -61,11 +60,11 @@ public class HistoryController {
 
 	@GetMapping("/history/reservation/{reservationId}")
 	public String getReservationDetail(
-		@PathVariable String reservationId,
+		@PathVariable Long reservationId,
 		Model model,
 		HttpSession session
 	) {
-		List<HistoryResponse> historyList = (List<HistoryResponse>) session.getAttribute("historyList");
+		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
 
 		if (historyList != null) {
 			try {
@@ -80,21 +79,19 @@ public class HistoryController {
 	}
 
 	@PostMapping("/history/reservation/{reservationId}")
-	public String deleteReservation(@PathVariable String reservationId) {
-		Long reservateId = Long.parseLong(reservationId);
-		reservationService.cancelReservation(reservateId);
+	public String deleteReservation(@PathVariable Long reservationId) {
+
+		reservationService.cancelReservation(reservationId);
 
 		return "redirect:/history";
 	}
 
 	@PostMapping("/history/waiting/{waitingId}")
-	public String deleteWaiting(@PathVariable("waitingId") String waitingId) {
-		Long waitId = Long.parseLong(waitingId);
-		waitingService.cancelWaiting(waitId);
+	public String deleteWaiting(@PathVariable("waitingId") Long waitingId) {
+
+		waitingService.cancelWaiting(waitingId);
 
 		return "redirect:/history";
 	}
-
-
 
 }

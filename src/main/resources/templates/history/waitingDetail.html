@@ -2,11 +2,51 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Waiting Details</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 주황색 톤을 적용한 btn-danger 스타일 */
+        .btn-danger {
+            background-color: orange;
+            border-color: #ff6347;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: orange;
+            border-color: white;
+        }
+
+        .card-header {
+            background-color: orange;
+            color: #fff;
+        }
+
+        .card-body {
+            background-color: #fff8f0;
+        }
+
+        .card-body h5 {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .card {
+            border-color: orange;
+        }
+
+        /* 텍스트 스타일 */
+        .card-body p {
+            font-size: 16px;
+        }
+
+        .card-body p strong {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -35,12 +75,11 @@
                     <!-- 대기 등록 ID -->
                     <p><strong>대기 번호:</strong> <span id="waitingRegistrationId" th:text="${historyResponse.waitingRegistrationId}">123456</span></p>
                     <p><strong>대기 ID:</strong> <span id="waitingId" th:text="${historyResponse.waitingId}">123456</span></p>
-
                 </div>
             </div>
             <div class="row">
                 <div class="col text-right">
-                    <!-- 예약 취소 버튼 -->
+                    <!-- 대기 취소 버튼 -->
                     <button type="button" class="btn btn-danger" onclick="cancelWaiting()">취소하기</button>
                 </div>
             </div>

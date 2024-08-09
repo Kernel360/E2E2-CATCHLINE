@@ -2,11 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Reservation Details</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* 주황색 톤을 적용한 스타일 */
+        .btn-danger {
+            background-color: orange;
+            border-color: #ff6347;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: orange;
+            border-color: white;
+        }
+
+        .card-header {
+            background-color: orange;
+            color: #fff;
+        }
+
+        .card-body {
+            background-color: #fff8f0;
+        }
+
+        .card-body h5 {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .card {
+            border-color: orange;
+        }
+
+        /* 텍스트 스타일 */
+        .card-body p {
+            font-size: 16px;
+        }
+
+        .card-body p strong {
+            color: #333;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -37,7 +77,7 @@
             <div class="row">
                 <div class="col text-right">
                     <!-- 예약 취소 버튼 -->
-                    <button type="button" class="btn btn-danger" onclick="cancelReservation()">취소하기</button>
+                    <button type="button" class="btn btn-orange" onclick="cancelReservation()">취소하기</button>
                 </div>
             </div>
         </div>

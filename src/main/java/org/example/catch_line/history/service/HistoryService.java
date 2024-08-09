@@ -122,17 +122,17 @@ public class HistoryService {
 	}
 
 	// 예약 상세 정보 조회
-	public HistoryResponse findReservationDetailById(List<HistoryResponse> historyList, String reservationId) {
+	public HistoryResponse findReservationDetailById(List<HistoryResponse> historyList, Long reservationId) {
 		return historyList.stream()
-			.filter(h -> h.getReservationId() != null && reservationId.equals(h.getReservationId().toString()))  // null 체크 추가
+			.filter(h -> h.getReservationId() != null && reservationId.equals(h.getReservationId()))  // null 체크 추가
 			.findFirst()
 			.orElseThrow(() -> new IllegalArgumentException("오류: 해당 예약 정보를 찾을 수 없습니다."));
 	}
 
 	// 웨이팅 상세 정보 조회
-	public HistoryResponse findWaitingDetailById(List<HistoryResponse> historyList, String waitingId) {
+	public HistoryResponse findWaitingDetailById(List<HistoryResponse> historyList, Long waitingId) {
 		return historyList.stream()
-			.filter(h -> h.getWaitingId() != null && waitingId.equals(h.getWaitingId().toString()))  // null 체크 추가
+			.filter(h -> h.getWaitingId() != null && waitingId.equals(h.getWaitingId()))  // null 체크 추가
 			.findFirst()
 			.orElseThrow(() -> new IllegalArgumentException("오류: 해당 대기 정보를 찾을 수 없습니다."));
 	}

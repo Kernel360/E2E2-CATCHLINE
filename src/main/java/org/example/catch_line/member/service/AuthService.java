@@ -55,14 +55,11 @@ public class AuthService {
     // 로그인
     public MemberResponse login(LoginRequest loginRequest) {
 
-
-        return memberRepository.findByEmail(new Email(loginRequest.getEmail()))
-                .filter(member -> !member.isMemberDeleted()) // 탈퇴한 회언은 로그인 불가능
+        return memberRepository.findByEmailAndIsMemberDeletedFalse(new Email(loginRequest.getEmail()))
                 .filter(member -> passwordEncoder.matches(loginRequest.getPassword(), member.getPassword().getEncodedPassword())) // 비밀번호 비교
                 .filter(member -> loginRequest.getRole().equals(member.getRole()))
                 .map(MemberResponseMapper::entityToResponse)
-                .orElseThrow(() -> new CatchLineException("로그인 실패"));
-
+                .orElseThrow(() -> new CatchLineException("로그인에 실패하였습니다."));
 
     }
 

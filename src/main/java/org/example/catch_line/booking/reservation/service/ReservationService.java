@@ -10,12 +10,12 @@ import org.example.catch_line.booking.reservation.repository.ReservationReposito
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.repository.MemberRepository;
-import org.example.catch_line.exception.service.ServiceIdException;
+import org.example.catch_line.exception.booking.ServiceIdException;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
-import org.example.catch_line.exception.service.ServiceTypeException;
+import org.example.catch_line.exception.booking.ServiceTypeException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;

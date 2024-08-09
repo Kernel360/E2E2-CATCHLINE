@@ -6,6 +6,7 @@ import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
 import org.springframework.stereotype.Controller;
@@ -72,7 +73,7 @@ public class HistoryController {
 				model.addAttribute("historyResponse", historyResponse);
 				return "history/reservationDetail";
 			} catch (IllegalArgumentException e) {
-				// 오류 처리: 메시지 표시 또는 로그 기록 등
+				throw new HistoryException();
 			}
 		}
 		return "redirect:/history";

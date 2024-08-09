@@ -1,4 +1,4 @@
-package org.example.catch_line.exception.service;
+package org.example.catch_line.exception.booking;
 
 public class ServiceTypeException extends RuntimeException {
 

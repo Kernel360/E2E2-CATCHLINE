@@ -9,7 +9,7 @@ import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
-import org.example.catch_line.exception.service.ServiceTypeException;
+import org.example.catch_line.exception.booking.ServiceTypeException;
 import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;

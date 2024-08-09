@@ -72,8 +72,9 @@ public class HistoryController {
 				HistoryResponse historyResponse = historyService.findReservationDetailById(historyList, reservationId);
 				model.addAttribute("historyResponse", historyResponse);
 				return "history/reservationDetail";
-			} catch (IllegalArgumentException e) {
-				throw new HistoryException();
+			} catch (HistoryException e) {
+				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
+				return "error";
 			}
 		}
 		return "redirect:/history";
@@ -88,7 +89,7 @@ public class HistoryController {
 	}
 
 	@PostMapping("/history/waiting/{waitingId}")
-	public String deleteWaiting(@PathVariable("waitingId") Long waitingId) {
+	public String deleteWaiting(@PathVariable Long waitingId) {
 
 		waitingService.cancelWaiting(waitingId);
 

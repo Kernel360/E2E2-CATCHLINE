@@ -37,7 +37,7 @@ public class ReservationController {
 	//@RequestParam으로 변경
 	@PostMapping("/restaurants/{restaurantId}/reservation")
 	public String addReservation(
-		@ModelAttribute("ReservationRequest") ReservationRequest reservationRequest,
+		@ModelAttribute ReservationRequest reservationRequest,
 		@PathVariable Long restaurantId,
 		Model model,
 		HttpSession session,

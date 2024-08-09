@@ -1,8 +1,10 @@
 package org.example.catch_line.exception.booking;
 
-public class HistoryException extends RuntimeException{
+import org.example.catch_line.exception.CatchLineException;
+
+public class HistoryException extends CatchLineException {
 
 	public HistoryException() {
-		super("현재 booking내역을 조회할 수 없습니다");
+		super("현재 booking 내역을 조회할 수 없습니다");
 	}
 }

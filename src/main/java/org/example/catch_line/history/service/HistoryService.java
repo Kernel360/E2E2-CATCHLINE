@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
@@ -38,7 +39,7 @@ public class HistoryService {
 
 		// 각 웨이팅 엔티티를 HistoryResponse로 변환
 		scheduledWaitingEntities.forEach(waiting ->
-			historyResponseList.add(toHistoryResponse(waiting, startOfDay, endOfDay))
+			historyResponseList.add(entityToHistoryResponse(waiting, startOfDay, endOfDay))
 		);
 
 		// 각 예약 엔티티를 HistoryResponse로 변환
@@ -70,7 +71,7 @@ public class HistoryService {
 		return reservationRepository.findByMemberMemberIdAndStatus(memberId, status);
 	}
 
-	private HistoryResponse toHistoryResponse(WaitingEntity waiting, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+	private HistoryResponse entityToHistoryResponse(WaitingEntity waiting, LocalDateTime startOfDay, LocalDateTime endOfDay) {
 		int waitingRegistrationId = calculateWaitingRegistrationId(waiting, startOfDay, endOfDay);
 		int myWaitingPosition = calculateMyWaitingPosition(waiting, startOfDay, endOfDay);
 
@@ -126,7 +127,7 @@ public class HistoryService {
 		return historyList.stream()
 			.filter(h -> h.getReservationId() != null && reservationId.equals(h.getReservationId()))  // null 체크 추가
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("오류: 해당 예약 정보를 찾을 수 없습니다."));
+			.orElseThrow(() -> new HistoryException());
 	}
 
 	// 웨이팅 상세 정보 조회
@@ -134,7 +135,7 @@ public class HistoryService {
 		return historyList.stream()
 			.filter(h -> h.getWaitingId() != null && waitingId.equals(h.getWaitingId()))  // null 체크 추가
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("오류: 해당 대기 정보를 찾을 수 없습니다."));
+			.orElseThrow(() -> new HistoryException());
 	}
 
 }

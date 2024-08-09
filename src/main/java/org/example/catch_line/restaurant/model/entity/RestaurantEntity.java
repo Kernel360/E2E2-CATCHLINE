@@ -9,11 +9,11 @@ import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.model.mapper.converter.PhoneNumberConverter;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.menu.model.entity.MenuEntity;
-import org.example.catch_line.reservation.model.entity.ReservationEntity;
+import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.review.model.entity.ReviewEntity;
-import org.example.catch_line.waiting.model.entity.WaitingEntity;
+import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

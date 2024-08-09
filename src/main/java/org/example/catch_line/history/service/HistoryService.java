@@ -10,10 +10,10 @@ import java.util.List;
 
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.history.model.dto.HistoryResponse;
-import org.example.catch_line.reservation.model.entity.ReservationEntity;
-import org.example.catch_line.reservation.repository.ReservationRepository;
-import org.example.catch_line.waiting.model.entity.WaitingEntity;
-import org.example.catch_line.waiting.repository.WaitingRepository;
+import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
+import org.example.catch_line.booking.reservation.repository.ReservationRepository;
+import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
+import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;

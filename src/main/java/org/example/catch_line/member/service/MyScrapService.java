@@ -2,7 +2,7 @@ package org.example.catch_line.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.member.model.entity.MemberEntity;
-import org.example.catch_line.member.validate.MemberValidator;
+import org.example.catch_line.member.validation.MemberValidator;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
 import org.springframework.stereotype.Service;

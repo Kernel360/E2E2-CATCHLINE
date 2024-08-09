@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>로그인</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 400px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            color: #555;
+        }
+
+        .btn-orange {
+            background-color: orange;
+            color: white;
+            border: none;
+        }
+
+        .btn-orange:hover {
+            background-color: darkorange;
+        }
+
+        .text-danger {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .radio-label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>로그인</h1>
+    <form th:action="@{/login}" th:object="${loginRequest}" method="post">
+        <div class="form-group">
+            <label for="email">이메일:</label>
+            <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요" required/>
+        </div>
+        <div class="form-group">
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요" required/>
+        </div>
+        <div class="form-group">
+            <label>역할:</label><br>
+            <label for="role_user" class="radio-label">
+                <input type="radio" id="role_user" name="role" value="USER" required/>
+                USER
+            </label>
+            <label for="role_owner" class="radio-label">
+                <input type="radio" id="role_owner" name="role" value="OWNER" required/>
+                OWNER
+            </label>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-orange btn-block">로그인</button>
+        </div>
+    </form>
+
+    <br>
+
+    <div th:if="${exception}" class="alert alert-danger" role="alert">
+        <span th:text="${exception}">invalid login</span>
+    </div>
+</div>
+</body>
+</html>

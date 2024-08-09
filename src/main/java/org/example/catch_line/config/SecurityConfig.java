@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))  // frameOptions 설정
                 .authorizeHttpRequests(requests ->requests
-                        .requestMatchers("/**", "/restaurants/**", "/login/**", "/logout/**").permitAll()  // all paths can be accessed
+                        .requestMatchers("/**").permitAll()//, "/restaurants/**", "/login/**", "/logout/**").permitAll()  // all paths can be accessed
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

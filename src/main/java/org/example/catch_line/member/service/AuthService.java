@@ -3,6 +3,7 @@ package org.example.catch_line.member.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.member.model.dto.LoginRequest;
 import org.example.catch_line.member.model.dto.SignUpRequest;
 import org.example.catch_line.member.model.dto.MemberResponse;
@@ -12,8 +13,8 @@ import org.example.catch_line.member.model.vo.Email;
 import org.example.catch_line.member.model.vo.Password;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.member.repository.MemberRepository;
-import org.example.catch_line.member.validate.MemberValidator;
-import org.example.catch_line.member.validate.PasswordValidator;
+import org.example.catch_line.member.validation.MemberValidator;
+import org.example.catch_line.member.validation.PasswordValidator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,8 +59,9 @@ public class AuthService {
         return memberRepository.findByEmail(new Email(loginRequest.getEmail()))
                 .filter(member -> !member.isMemberDeleted()) // 탈퇴한 회언은 로그인 불가능
                 .filter(member -> passwordEncoder.matches(loginRequest.getPassword(), member.getPassword().getEncodedPassword())) // 비밀번호 비교
+                .filter(member -> loginRequest.getRole().equals(member.getRole()))
                 .map(MemberResponseMapper::entityToResponse)
-                .orElseThrow(() -> new IllegalArgumentException("로그인 실패"));
+                .orElseThrow(() -> new CatchLineException("로그인 실패"));
 
 
     }

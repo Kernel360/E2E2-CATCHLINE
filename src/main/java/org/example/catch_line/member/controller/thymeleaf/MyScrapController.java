@@ -1,4 +1,4 @@
-package org.example.catch_line.member.controller;
+package org.example.catch_line.member.controller.thymeleaf;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +7,7 @@ import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.member.service.MyScrapService;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Slf4j
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/my-page/scraps")
 public class MyScrapController {

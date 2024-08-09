@@ -41,12 +41,20 @@
     </div>
 
     <div class="row btn-container mb-3">
-        <div class="col-auto">
+        <!-- 로그아웃 버튼 -->
+        <div class="col-auto" th:if="${isLoggedIn}">
+            <form th:action="@{/logout}" method="post">
+                <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/logout}'|" type="submit">로그아웃</button>
+            </form>
+        </div>
+        <!-- 로그인 및 회원가입 버튼 -->
+        <div class="col-auto" th:if="${!isLoggedIn}">
             <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/login}'|" type="button">로그인</button>
         </div>
-        <div class="col-auto">
+        <div class="col-auto" th:if="${!isLoggedIn}">
             <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/signup}'|" type="button">회원가입</button>
         </div>
+
     </div>
 
     <hr class="my-4">

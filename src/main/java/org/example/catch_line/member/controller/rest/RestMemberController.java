@@ -1,4 +1,4 @@
-package org.example.catch_line.member.controller;
+package org.example.catch_line.member.controller.rest;
 
 
 import jakarta.servlet.http.HttpSession;
@@ -12,14 +12,11 @@ import org.example.catch_line.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import static org.example.catch_line.common.constant.SessionConst.MEMBER_ID;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members")
-public class MemberController {
+@RequestMapping("/api/members")
+public class RestMemberController {
 
     private final MemberService memberService;
 

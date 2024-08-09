@@ -41,6 +41,7 @@ public class HistoryController {
 		return "history/history";
 	}
 
+
 	@GetMapping("/history/waiting/{waitingId}")
 	public String getWaitingDetail(@PathVariable String waitingId, HttpSession session, Model model) {
 
@@ -94,5 +95,7 @@ public class HistoryController {
 
 		return "redirect:/history";
 	}
+
+
 
 }

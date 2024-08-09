@@ -37,7 +37,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="history : ${history}">
+        <tr th:each="history : ${history}"
+            th:data-service-type="${history.serviceType}"
+            th:data-waiting-id="${history.waitingId}"
+            th:data-reservation-id="${history.reservationId}"
+            onclick="redirectBasedOnServiceType(this)">
             <td th:text="${history.restaurantName}"></td>
             <td th:text="${history.serviceType}"></td>
             <td th:text="${history.memberCount}"></td>
@@ -45,7 +49,7 @@
             <td th:text="${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
             <td th:text="${history.modifiedAt != null ? #temporals.format(history.modifiedAt, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></td>
             <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingType : (history.reservationDate != null ? #temporals.format(history.reservationDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A')}"></td>
-            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingRegistrationId : 1}"></td>
+            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingRegistrationId : history.reservationId}"></td>
             <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.myWaitingPosition : 1}"></td>
         </tr>
         </tbody>
@@ -58,6 +62,18 @@
 <script>
     function refreshPage() {
         location.reload();
+    }
+
+    function redirectBasedOnServiceType(row) {
+        const serviceType = row.getAttribute('data-service-type');
+        const waitingId = row.getAttribute('data-waiting-id');
+        const reservationId = row.getAttribute('data-reservation-id');
+
+        if (serviceType === 'WAITING') {
+            location.href = `/history/waiting/${waitingId}`;
+        } else {
+            location.href = `/history/reservation/${reservationId}`;
+        }
     }
 </script>
 </body>

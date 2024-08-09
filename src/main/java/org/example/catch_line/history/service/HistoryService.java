@@ -15,6 +15,8 @@ import org.example.catch_line.reservation.repository.ReservationRepository;
 import org.example.catch_line.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.waiting.repository.WaitingRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +29,6 @@ public class HistoryService {
 	private final ReservationRepository reservationRepository;
 
 	public List<HistoryResponse> getAllHistory(Long memberId, Status status) {
-
-
 
 		List<HistoryResponse> historyResponseList = new ArrayList<>();
 
@@ -45,8 +45,9 @@ public class HistoryService {
 
 			for (int i = 0; i < waitingList.size(); i++) {
 				WaitingEntity waiting = waitingList.get(i);
-				int scheduledCount = waitingRepository.countScheduledWaitingBefore(waiting.getRestaurant().getRestaurantId(),waiting.getCreatedAt());
-				historyResponseList.add(waitingToHistoryResponse(waiting, i + 1,scheduledCount + 1));
+				int scheduledCount = waitingRepository.countScheduledWaitingBefore(
+					waiting.getRestaurant().getRestaurantId(), waiting.getCreatedAt());
+				historyResponseList.add(waitingToHistoryResponse(waiting, i + 1, scheduledCount + 1));
 			}
 		}
 
@@ -58,6 +59,20 @@ public class HistoryService {
 
 		return historyResponseList;
 
+	}
+
+	public HistoryResponse findWaitingDetailById(List<HistoryResponse> historyList, String waitingId) {
+		return historyList.stream()
+			.filter(h -> h.getWaitingId() != null && waitingId.equals(h.getWaitingId().toString()))  // null 체크 추가
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("오류: 해당 대기 정보를 찾을 수 없습니다."));
+	}
+
+	public HistoryResponse findReservationDetailById(List<HistoryResponse> historyList, String reservationId) {
+		return historyList.stream()
+			.filter(h -> h.getReservationId() != null && reservationId.equals(h.getReservationId().toString()))  // null 체크 추가
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("오류: 해당 대기 정보를 찾을 수 없습니다."));
 	}
 
 	private HistoryResponse waitingToHistoryResponse(WaitingEntity entity, int waitingRegistrationId,int myWaitingPosition) {
@@ -92,3 +107,4 @@ public class HistoryService {
 	}
 
 }
+

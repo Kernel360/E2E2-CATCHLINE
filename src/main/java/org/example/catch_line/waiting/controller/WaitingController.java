@@ -8,6 +8,7 @@ import org.example.catch_line.waiting.service.WaitingService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +34,7 @@ public class WaitingController {
 	@PostMapping("/restaurants/{restaurantId}/waiting")
 	public String addWaiting(
 		@PathVariable Long restaurantId,
+		// @ModelAttribute WaitingRequest waitingRequest,
 		@RequestParam Integer memberCount,
 		@RequestParam String waitingType,
 		Model model,

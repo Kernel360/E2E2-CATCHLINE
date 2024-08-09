@@ -4,12 +4,14 @@ import java.time.LocalDateTime;
 
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.model.dto.ReservationResponse;
+import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,23 +34,17 @@ public class ReservationController {
 		return "reservation/reservation";
 	}
 
+	//@RequestParam으로 변경
 	@PostMapping("/restaurants/{restaurantId}/reservation")
 	public String addReservation(
+		@ModelAttribute("ReservationRequest") ReservationRequest reservationRequest,
 		@PathVariable Long restaurantId,
-		@RequestParam Integer memberCount,
-		@RequestParam LocalDateTime reservationDate,
 		Model model,
 		HttpSession session,
 		RedirectAttributes redirectAttributes
 	) {
 		try {
 			Long memberId = SessionUtils.getMemberId(session);
-
-			ReservationRequest reservationRequest = ReservationRequest.builder()
-				.reservationDate(reservationDate)
-				.memberCount(memberCount)
-				.status(Status.SCHEDULED)
-				.build();
 
 			ReservationResponse reservationResponse = reservationService.addReserve(restaurantId,
 				reservationRequest, memberId);

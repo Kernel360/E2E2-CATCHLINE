@@ -8,6 +8,7 @@ import org.example.catch_line.common.SessionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,12 +31,11 @@ public class WaitingController {
 		return "waiting/waiting";
 	}
 
+	//@RequestParam으로 변경
 	@PostMapping("/restaurants/{restaurantId}/waiting")
 	public String addWaiting(
 		@PathVariable Long restaurantId,
-		// @ModelAttribute WaitingRequest waitingRequest,
-		@RequestParam Integer memberCount,
-		@RequestParam String waitingType,
+		@ModelAttribute WaitingRequest waitingRequest,
 		Model model,
 		HttpSession session,
 		RedirectAttributes redirectAttributes
@@ -43,12 +43,12 @@ public class WaitingController {
 		try {
 			Long memberId = SessionUtils.getMemberId(session);
 
-			WaitingType type = "DINE_IN".equals(waitingType) ? WaitingType.DINE_IN : WaitingType.TAKE_OUT;
-
-			WaitingRequest waitingRequest = WaitingRequest.builder()
-				.memberCount(memberCount)
-				.waitingType(type)
-				.build();
+			// WaitingType type = "DINE_IN".equals(waitingRequest.getWaitingType()) ? WaitingType.DINE_IN : WaitingType.TAKE_OUT;
+			//
+			// WaitingRequest waitingRequest = WaitingRequest.builder()
+			// 	.memberCount(memberCount)
+			// 	.waitingType(type)
+			// 	.build();
 
 			WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, memberId);
 

@@ -7,9 +7,8 @@ import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.member.validate.MemberValidator;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.mapper.RestaurantHourMapper;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
-import org.example.catch_line.restaurant.validate.RestaurantValidator;
+import org.example.catch_line.restaurant.validation.RestaurantValidator;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -31,6 +31,32 @@
         .sort-buttons .btn {
             margin: 0 5px;
         }
+        .btn-orange {
+            background-color: orange;
+            color: white;
+        }
+        .btn-orange.active {
+            background-color: white;
+            color: black;
+            border: 1px solid black;
+        }
+        .page-link {
+            color: white;
+            background-color: orange;
+            border-color: orange;
+        }
+        .page-link:hover {
+            background-color: darkorange;
+            border-color: darkorange;
+        }
+        .page-item.active .page-link {
+            background-color: white;
+            color: black;
+            border-color: black;
+        }
+        .list-group-item {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -62,11 +88,11 @@
     <!-- 정렬 버튼들 -->
     <div class="sort-buttons">
         <a th:href="@{/restaurants(criteria='reviewCount', page=0, size=${restaurantPreviewPage.size})}"
-           class="btn btn-primary" th:classappend="${criteria == 'reviewCount'} ? 'active' : ''">리뷰 순</a>
+           class="btn btn-orange" th:classappend="${criteria == 'reviewCount'} ? 'active' : ''">리뷰 순</a>
         <a th:href="@{/restaurants(criteria='scrapCount', page=0, size=${restaurantPreviewPage.size})}"
-           class="btn btn-primary" th:classappend="${criteria == 'scrapCount'} ? 'active' : ''">스크랩 순</a>
+           class="btn btn-orange" th:classappend="${criteria == 'scrapCount'} ? 'active' : ''">스크랩 순</a>
         <a th:href="@{/restaurants(criteria='rating', page=0, size=${restaurantPreviewPage.size})}"
-           class="btn btn-primary" th:classappend="${criteria == 'rating'} ? 'active' : ''">별점 순</a>
+           class="btn btn-orange" th:classappend="${criteria == 'rating'} ? 'active' : ''">별점 순</a>
     </div>
 
     <div class="card">

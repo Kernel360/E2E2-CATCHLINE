@@ -2,19 +2,22 @@ package org.example.catch_line.restaurant.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
+import org.example.catch_line.restaurant.model.dto.RestaurantUpdateRequest;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
-import org.example.catch_line.restaurant.validate.RestaurantValidator;
+import org.example.catch_line.restaurant.validation.RestaurantValidator;
 import org.example.catch_line.review.service.ReviewService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -50,6 +53,16 @@ public class RestaurantService {
         return RestaurantMapper.entityToResponse(entity);
     }
 
+//    public List<RestaurantResponse> findAllRestaurantByOwner(Long memberId, Role role) {
+//
+//    }
+
+    // TODO: 사장님 ID 넣어줘야 함.
+    public void updateRestaurant(Long restaurantId, RestaurantUpdateRequest request) {
+        RestaurantEntity entity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+        entity.updateReservation(request.getName(), request.getDescription(), new PhoneNumber(request.getPhoneNumber()), request.getFoodType(), request.getServiceType());
+    }
+
     public void deleteRestaurant(Long restaurantId) {
         restaurantRepository.deleteById(restaurantId);
     }
@@ -61,8 +74,6 @@ public class RestaurantService {
                 .name(request.getName())
                 .description(request.getDescription())
                 .phoneNumber(new PhoneNumber(request.getPhoneNumber()))
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
                 .foodType(request.getFoodType())
                 .serviceType(request.getServiceType())
                 .rating(new Rating(BigDecimal.valueOf(0)))

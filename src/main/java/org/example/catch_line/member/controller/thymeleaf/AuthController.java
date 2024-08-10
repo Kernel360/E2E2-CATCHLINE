@@ -70,7 +70,6 @@ public class AuthController {
             return "member/signup";
         }
 
-
         try {
             authService.signUp(signUpRequest);
         } catch (CatchLineException e) {

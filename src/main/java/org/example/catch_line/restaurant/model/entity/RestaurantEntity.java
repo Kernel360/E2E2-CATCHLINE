@@ -9,11 +9,11 @@ import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.model.mapper.converter.PhoneNumberConverter;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.menu.model.entity.MenuEntity;
-import org.example.catch_line.reservation.model.entity.ReservationEntity;
+import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.review.model.entity.ReviewEntity;
-import org.example.catch_line.waiting.model.entity.WaitingEntity;
+import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -79,13 +79,13 @@ public class RestaurantEntity extends BaseTimeEntity {
 
 
     @Builder
-    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, BigDecimal latitude, BigDecimal longitude, FoodType foodType, ServiceType serviceType) {
+    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType) {
         this.name = name;
         this.description = description;
         this.rating = rating;
         this.phoneNumber = phoneNumber;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latitude = BigDecimal.ZERO;
+        this.longitude = BigDecimal.ZERO;
         this.scrapCount = 0L;
         this.reviewCount = 0L;
         this.foodType = foodType;
@@ -95,6 +95,15 @@ public class RestaurantEntity extends BaseTimeEntity {
     public void updateReview(Rating rating, Long reviewCount) {
         this.rating = rating;
         this.reviewCount = reviewCount;
+    }
+
+    // TODO: 위도, 경도 값도 수정할 수 있도록 변경
+    public void updateReservation(String name, String description, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType) {
+        this.name = name;
+        this.description = description;
+        this.phoneNumber = phoneNumber;
+        this.foodType = foodType;
+        this.serviceType = serviceType;
     }
 
     // 사용자가 식당 스크랩 시 `scrapCount` 1 증가

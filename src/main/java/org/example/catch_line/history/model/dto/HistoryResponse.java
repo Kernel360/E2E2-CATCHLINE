@@ -4,13 +4,11 @@ import java.time.LocalDateTime;
 
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
-import org.example.catch_line.waiting.model.entity.WaitingType;
+import org.example.catch_line.booking.waiting.model.entity.WaitingType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @Builder
@@ -40,5 +38,7 @@ public class HistoryResponse {
 	private LocalDateTime modifiedAt;
 
 	private int waitingRegistrationId;
+
+	private int myWaitingPosition;
 
 }

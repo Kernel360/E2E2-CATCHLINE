@@ -10,10 +10,10 @@ import org.example.catch_line.member.model.mapper.converter.PhoneNumberConverter
 import org.example.catch_line.member.model.vo.Email;
 import org.example.catch_line.member.model.vo.Password;
 import org.example.catch_line.member.model.vo.PhoneNumber;
-import org.example.catch_line.reservation.model.entity.ReservationEntity;
+import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.review.model.entity.ReviewEntity;
-import org.example.catch_line.waiting.model.entity.WaitingEntity;
+import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 
 import java.util.ArrayList;
 import java.util.List;

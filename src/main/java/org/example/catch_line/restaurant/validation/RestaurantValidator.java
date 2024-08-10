@@ -1,4 +1,4 @@
-package org.example.catch_line.restaurant.validate;
+package org.example.catch_line.restaurant.validation;
 
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;

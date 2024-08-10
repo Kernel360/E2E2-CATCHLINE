@@ -79,13 +79,13 @@ public class RestaurantEntity extends BaseTimeEntity {
 
 
     @Builder
-    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, BigDecimal latitude, BigDecimal longitude, FoodType foodType, ServiceType serviceType) {
+    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType) {
         this.name = name;
         this.description = description;
         this.rating = rating;
         this.phoneNumber = phoneNumber;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.latitude = BigDecimal.ZERO;
+        this.longitude = BigDecimal.ZERO;
         this.scrapCount = 0L;
         this.reviewCount = 0L;
         this.foodType = foodType;
@@ -95,6 +95,15 @@ public class RestaurantEntity extends BaseTimeEntity {
     public void updateReview(Rating rating, Long reviewCount) {
         this.rating = rating;
         this.reviewCount = reviewCount;
+    }
+
+    // TODO: 위도, 경도 값도 수정할 수 있도록 변경
+    public void updateReservation(String name, String description, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType) {
+        this.name = name;
+        this.description = description;
+        this.phoneNumber = phoneNumber;
+        this.foodType = foodType;
+        this.serviceType = serviceType;
     }
 
     // 사용자가 식당 스크랩 시 `scrapCount` 1 증가

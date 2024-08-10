@@ -1,5 +1,6 @@
 package org.example.catch_line.common;
 
+import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.common.constant.SessionConst;
 
 import jakarta.servlet.http.HttpSession;
@@ -12,5 +13,9 @@ public class SessionUtils {
 			throw new InvalidSessionException();
 		}
 		return memberId;
+	}
+
+	public static Role getRole(HttpSession session) {
+		return (Role) session.getAttribute(SessionConst.ROLE);
 	}
 }

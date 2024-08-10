@@ -72,14 +72,14 @@ class RestaurantServiceTest {
         when(restaurantRepository.save(any(RestaurantEntity.class))).thenReturn(entity);
 
         // when
-        RestaurantResponse restaurant = restaurantService.createRestaurant(request);
+        RestaurantResponse response = restaurantService.createRestaurant(request);
 
         // then
-        assertThat(restaurant).isNotNull();
-        assertThat(restaurant.getName()).isEqualTo(entity.getName());
-        assertThat(restaurant.getDescription()).isEqualTo(entity.getDescription());
-        assertThat(restaurant.getPhoneNumber()).isEqualTo(entity.getPhoneNumber().getPhoneNumberValue());
-        assertThat(restaurant.getAverageRating()).isEqualTo(entity.getRating().getRating());
+        assertThat(response).isNotNull();
+        assertThat(response.getName()).isEqualTo(entity.getName());
+        assertThat(response.getDescription()).isEqualTo(entity.getDescription());
+        assertThat(response.getPhoneNumber()).isEqualTo(entity.getPhoneNumber().getPhoneNumberValue());
+        assertThat(response.getAverageRating()).isEqualTo(entity.getRating().getRating());
     }
 
     @Test
@@ -109,12 +109,12 @@ class RestaurantServiceTest {
         when(reviewService.getReviewCount(restaurantId)).thenReturn(0L);
 
         // when
-        RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
+        RestaurantResponse response = restaurantService.findRestaurant(restaurantId);
 
         // then
-        assertThat(restaurant).isNotNull();
-        assertThat(restaurant.getName()).isEqualTo(restaurantEntity.getName());
-        assertThat(restaurant.getDescription()).isEqualTo(restaurantEntity.getDescription());
+        assertThat(response).isNotNull();
+        assertThat(response.getName()).isEqualTo(restaurantEntity.getName());
+        assertThat(response.getDescription()).isEqualTo(restaurantEntity.getDescription());
     }
 
     @Test
@@ -134,14 +134,14 @@ class RestaurantServiceTest {
         // when().thenReturn() 스터빙을 통해,
         // restaurantService.findRestaurant() 에서 필요한 모든 외부 의존성을 미리 정의된 값으로 대체하여 사용함
         // 그렇기 때문에 'RestaurantResponse'에 예상된 값들이 포함되게 된다.
-        RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
+        RestaurantResponse response = restaurantService.findRestaurant(restaurantId);
 
         // then
-        assertThat(restaurant).isNotNull();
-        assertThat(restaurant.getName()).isEqualTo(restaurantEntity.getName());
-        assertThat(restaurant.getDescription()).isEqualTo(restaurantEntity.getDescription());
-        assertThat(restaurant.getAverageRating()).isEqualTo(BigDecimal.valueOf(averageRating)); // 4.5
-        assertThat(restaurant.getReviewCount()).isEqualTo(3L);
+        assertThat(response).isNotNull();
+        assertThat(response.getName()).isEqualTo(restaurantEntity.getName());
+        assertThat(response.getDescription()).isEqualTo(restaurantEntity.getDescription());
+        assertThat(response.getAverageRating()).isEqualTo(BigDecimal.valueOf(averageRating)); // 4.5
+        assertThat(response.getReviewCount()).isEqualTo(3L);
     }
 
     @Test
@@ -149,19 +149,19 @@ class RestaurantServiceTest {
     void restaurant_update() {
         // given
         Long restaurantId = 1L;
-        RestaurantUpdateRequest restaurant = getRestaurantUpdateRequest();
+        RestaurantUpdateRequest request = getRestaurantUpdateRequest();
 
         when(restaurantValidator.checkIfRestaurantPresent(restaurantId)).thenReturn(restaurantEntity);
 
         // when
-        restaurantService.updateRestaurant(restaurantId, restaurant);
+        restaurantService.updateRestaurant(restaurantId, request);
 
         // then
-        assertThat(restaurant.getName()).isEqualTo(restaurantEntity.getName());
-        assertThat(restaurant.getDescription()).isEqualTo(restaurantEntity.getDescription());
-        assertThat(restaurant.getPhoneNumber()).isEqualTo(restaurantEntity.getPhoneNumber().getPhoneNumberValue());
-        assertThat(restaurant.getFoodType()).isEqualTo(restaurantEntity.getFoodType());
-        assertThat(restaurant.getServiceType()).isEqualTo(restaurantEntity.getServiceType());
+        assertThat(request.getName()).isEqualTo(restaurantEntity.getName());
+        assertThat(request.getDescription()).isEqualTo(restaurantEntity.getDescription());
+        assertThat(request.getPhoneNumber()).isEqualTo(restaurantEntity.getPhoneNumber().getPhoneNumberValue());
+        assertThat(request.getFoodType()).isEqualTo(restaurantEntity.getFoodType());
+        assertThat(request.getServiceType()).isEqualTo(restaurantEntity.getServiceType());
     }
 
 

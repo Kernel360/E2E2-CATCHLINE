@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 @Slf4j
 @ExtendWith(MockitoExtension.class)
-public class RestaurantHourServiceTest {
+class RestaurantHourServiceTest {
 
     @Mock RestaurantHourRepository restaurantHourRepository;
     @InjectMocks RestaurantHourService restaurantHourService;
@@ -54,9 +54,9 @@ public class RestaurantHourServiceTest {
         // given
         Long restaurantId = 1L;
         DayOfWeeks dayOfWeek = DayOfWeeks.MONDAY;
-        RestaurantHourEntity hour = getRestaurantHourResponseList().get(0);
+        RestaurantHourEntity hourEntity = getRestaurantHourResponseList().get(0);
 
-        when(restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(restaurantId, dayOfWeek)).thenReturn(hour);
+        when(restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(restaurantId, dayOfWeek)).thenReturn(hourEntity);
 
         // when
         RestaurantHourResponse response = restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek);
@@ -71,15 +71,15 @@ public class RestaurantHourServiceTest {
     void restaurant_close_test() {
         // given
         Long restaurantHourId = 1L;
-        RestaurantHourEntity hour = getRestaurantHourResponseList().get(0);
+        RestaurantHourEntity hourEntity = getRestaurantHourResponseList().get(0);
 
-        when(restaurantHourRepository.findById(restaurantHourId)).thenReturn(Optional.of(hour));
+        when(restaurantHourRepository.findById(restaurantHourId)).thenReturn(Optional.of(hourEntity));
 
         // when
         restaurantHourService.closeBusiness(restaurantHourId);
 
         // then
-        assertThat(hour.getOpenStatus()).isEqualTo(OpenStatus.CLOSE);
+        assertThat(hourEntity.getOpenStatus()).isEqualTo(OpenStatus.CLOSE);
         verify(restaurantHourRepository, times(1)).findById(restaurantHourId);  // findById가 한 번 호출되었는지 확인
     }
 
@@ -88,7 +88,6 @@ public class RestaurantHourServiceTest {
     void restaurant_close_invalidId_test() {
         // given
         Long restaurantHourId = 1L;
-        RestaurantHourEntity hour = getRestaurantHourResponseList().get(0);
 
         when(restaurantHourRepository.findById(restaurantHourId)).thenReturn(Optional.empty());
 

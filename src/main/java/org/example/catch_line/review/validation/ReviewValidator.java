@@ -13,6 +13,6 @@ public class ReviewValidator {
 
     public ReviewEntity checkIfReviewPresent(Long reviewId) {
         return reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 식당이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 리뷰가 없습니다."));
     }
 }

@@ -46,7 +46,7 @@ public class OwnerController {
         try {
             restaurantService.createRestaurant(request);
         } catch (InvalidPhoneNumberException e) {
-            return saveDuplicateException(e, bindingResult);
+            return invalidPhoneNumberException(e, bindingResult);
         }
 
         return "redirect:/owner";
@@ -78,7 +78,7 @@ public class OwnerController {
         return "redirect:/restaurants/" + restaurantId;
     }
 
-    private String saveDuplicateException(Exception e, BindingResult bindingResult) {
+    private String invalidPhoneNumberException(Exception e, BindingResult bindingResult) {
         bindingResult.rejectValue("phoneNumber", null, e.getMessage());
         return "owner/createRestaurant";
     }

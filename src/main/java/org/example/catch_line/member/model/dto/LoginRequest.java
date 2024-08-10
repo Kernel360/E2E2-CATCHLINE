@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.example.catch_line.common.constant.Role;
 
+// TODO: No, Setter 타임리프에서 왜  붙여야 하는지? -> 뺐음.
 @AllArgsConstructor
 @Getter
 @Builder
@@ -14,7 +15,6 @@ public class LoginRequest {
 
 
     @NotBlank
-    @Email
     private String email;
 
     @NotBlank

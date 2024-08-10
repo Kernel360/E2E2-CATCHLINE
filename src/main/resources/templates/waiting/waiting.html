@@ -6,22 +6,90 @@
     <!-- Include Bootstrap CSS -->
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5; /* 백그라운드 색상 추가 */
             font-family: Arial, sans-serif;
         }
 
         .container {
-            margin-top: 50px;
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            background-color: white; /* 배경을 흰색으로 설정 */
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary {
-            background-color: #007BFF;
-            border-color: #007BFF;
+            background-color: orange;
+            border-color: #ff5722;
+            color: white;
+            transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004085;
+            background-color: #ff8c00;
+            border-color: #e64a19;
+        }
+
+        .alert-success {
+            background-color: #fff8e1; /* 연한 노란색 */
+            border-color: #ffeb3b; /* 노란색 */
+            color: orange;
+            border-radius: 5px;
+        }
+
+        .alert-danger {
+            background-color: #ffebee; /* 연한 빨간색 */
+            border-color: #f44336;
+            color: orange;
+            border-radius: 5px;
+        }
+
+        .form-select, .form-control {
+            border: 1px solid orange;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-select:focus, .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 102, 0, 0.25); /* 주황색 그림자 */
+            border-color: orange;
+        }
+
+        .form-label {
+            color: orange;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: orange;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .btn-primary {
+                font-size: 1em;
+                padding: 8px 16px;
+            }
+
+            .alert-success, .alert-danger {
+                font-size: 1em;
+            }
+
+            .form-select, .form-control {
+                font-size: 1em;
+                padding: 8px;
+            }
         }
     </style>
 </head>
@@ -45,8 +113,7 @@
 
         <div class="mb-3">
             <label for="memberCount" class="form-label">Number of Members:</label>
-            <input type="number" id="memberCount" name="memberCount" th:value="${memberCount}" class="form-control"
-                   required/>
+            <input type="number" id="memberCount" name="memberCount" th:value="${memberCount}" class="form-control" required/>
         </div>
 
         <div class="mb-3">

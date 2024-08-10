@@ -1,6 +1,8 @@
 package org.example.catch_line.restaurant.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.restaurant.service.RestaurantPreviewService;
 import org.springframework.data.domain.Page;
@@ -20,9 +22,14 @@ public class RestaurantPreviewController {
 
     @GetMapping("/restaurants")
     public String getRestaurantPreviewList(
-        @RequestParam(required = false, defaultValue = "reviewCount") String criteria,
-        @PageableDefault(page=0, size = 2)Pageable pageable,
-        Model model) {
+            @RequestParam(required = false, defaultValue = "reviewCount") String criteria,
+            @PageableDefault(page=0, size = 2)Pageable pageable,
+            Model model,
+            HttpSession httpSession
+    ) {
+
+        boolean isLoggedIn = httpSession.getAttribute(SessionConst.MEMBER_ID) != null; // "user" 세션 속성으로 로그인 상태 확인
+        model.addAttribute("isLoggedIn", isLoggedIn);
 
         Page<RestaurantPreviewResponse> restaurantPreviewPage = restaurantPreviewService.restaurantPreviewPaging(pageable, criteria);
 

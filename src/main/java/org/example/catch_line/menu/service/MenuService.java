@@ -7,7 +7,7 @@ import org.example.catch_line.menu.model.entity.MenuEntity;
 import org.example.catch_line.menu.model.mapper.MenuMapper;
 import org.example.catch_line.menu.repository.MenuRepository;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.validate.RestaurantValidator;
+import org.example.catch_line.restaurant.validation.RestaurantValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

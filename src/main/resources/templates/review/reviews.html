@@ -12,6 +12,10 @@
         .card {
             margin-bottom: 20px;
         }
+        .btn-orange {
+            background-color: orange;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -31,7 +35,7 @@
     </div>
     <div class="row">
         <div class="col">
-            <button class="w-100 btn btn-info btn-lg"
+            <button class="w-100 btn btn-orange btn-lg"
                     th:onclick="|location.href='@{/restaurants/{restaurantId}(restaurantId=${restaurantId})}'|"
                     type="button">뒤로</button>
         </div>

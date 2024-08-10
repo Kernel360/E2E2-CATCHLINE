@@ -19,12 +19,13 @@ import static org.example.catch_line.common.constant.SessionConst.ROLE;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class RestAuthController {
 
     private final AuthService authService;
 
 
-    @PostMapping("/api/signup")
+    @PostMapping("/signup")
     public ResponseEntity<MemberResponse> signup(
             @Valid
             @RequestBody SignUpRequest signUpRequest
@@ -34,7 +35,7 @@ public class RestAuthController {
 
     }
 
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     public ResponseEntity<MemberResponse> login(
             @Valid
             @RequestBody LoginRequest loginRequest,
@@ -48,7 +49,7 @@ public class RestAuthController {
 
     }
 
-    @PostMapping("/api/logout")
+    @PostMapping("/logout")
     public String logout(
         HttpSession httpSession
     ) {

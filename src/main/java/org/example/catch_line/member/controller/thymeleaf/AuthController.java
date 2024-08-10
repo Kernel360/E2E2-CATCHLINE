@@ -38,7 +38,7 @@ public class AuthController {
 
     @GetMapping("/check-email")
     @ResponseBody // jquery 쓰려면 필요
-    public boolean checkEmail(@RequestParam("email") String email) {
+    public boolean checkEmail(@RequestParam String email) {
 
         try {
             // TODO: validate 메서드를 controller에서 가져다 쓰는게 맞을까요?
@@ -60,7 +60,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public String signup(
-            @Valid @ModelAttribute("signUpRequest") SignUpRequest signUpRequest,
+            @Valid @ModelAttribute SignUpRequest signUpRequest,
             BindingResult bindingResult,
             Model model
     ) {
@@ -83,7 +83,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public String login(
-            @Valid @ModelAttribute("loginRequest") LoginRequest loginRequest,
+            @Valid @ModelAttribute LoginRequest loginRequest,
             BindingResult bindingResult,
             HttpSession httpSession,
             Model model

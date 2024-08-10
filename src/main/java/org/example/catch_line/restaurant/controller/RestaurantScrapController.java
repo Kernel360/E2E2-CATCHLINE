@@ -2,6 +2,7 @@ package org.example.catch_line.restaurant.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.service.RestaurantScrapService;
@@ -24,7 +25,7 @@ public class RestaurantScrapController {
             @PathVariable Long restaurantId,
             HttpSession httpSession
     ) {
-        RestaurantResponse restaurantResponse = restaurantScrapService.saveRestaurantScrap((Long) httpSession.getAttribute(SessionConst.MEMBER_ID), restaurantId);
+        RestaurantResponse restaurantResponse = restaurantScrapService.saveRestaurantScrap(SessionUtils.getMemberId(httpSession), restaurantId);
         return ResponseEntity.ok().body(restaurantResponse);
     }
 
@@ -33,7 +34,7 @@ public class RestaurantScrapController {
             @PathVariable Long restaurantId,
             HttpSession httpSession
     ) {
-        RestaurantResponse restaurantResponse = restaurantScrapService.deleteRestaurantScrap((Long) httpSession.getAttribute(SessionConst.MEMBER_ID), restaurantId);
+        RestaurantResponse restaurantResponse = restaurantScrapService.deleteRestaurantScrap(SessionUtils.getMemberId(httpSession), restaurantId);
         return ResponseEntity.ok().body(restaurantResponse);
     }
 

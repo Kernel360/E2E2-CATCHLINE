@@ -33,6 +33,7 @@ public class AuthService {
     // 회원가입
     public MemberResponse signUp(SignUpRequest signUpRequest) {
 
+        // TODO: 컨트롤러에서 한 번 체크하고 있습니다. -> 서비스에는 해당 검증 빼려고 합니다.
         // 이메일 중복 체크에 해당하는 메서드를 따로 만들었습니다. (이유: 회원 수정 시에도 필요)
         memberValidator.checkDuplicateEmail(new Email(signUpRequest.getEmail()));
 

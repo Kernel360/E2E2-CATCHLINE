@@ -1,4 +1,4 @@
-package org.example.catch_line.member.validate;
+package org.example.catch_line.member.validation;
 
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.exception.email.DuplicateEmailException;

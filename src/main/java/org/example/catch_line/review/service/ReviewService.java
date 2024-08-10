@@ -3,7 +3,7 @@ package org.example.catch_line.review.service;
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.member.model.entity.MemberEntity;
-import org.example.catch_line.member.validate.MemberValidator;
+import org.example.catch_line.member.validation.MemberValidator;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.validate.RestaurantValidator;
 import org.example.catch_line.review.model.dto.ReviewCreateRequest;

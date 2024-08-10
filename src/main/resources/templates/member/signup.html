@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원가입</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script> <!-- jQuery 사용 -->
+    <script th:src="@{/js/emailCheck.js}"></script> <!-- 이메일 체크 스크립트 -->
+    <style>
+        body {
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            color: #555;
+            font-weight: bold;
+        }
+
+        .btn-orange {
+            background-color: orange;
+            color: white;
+            border: none;
+        }
+
+        .btn-orange:hover {
+            background-color: darkorange;
+        }
+
+        .btn-orange:disabled {
+            background-color: #ffa726; /* 밝은 오렌지 색상 */
+            color: white;
+            opacity: 0.8;
+        }
+
+        .text-danger {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .radio-label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .is-invalid {
+            border-color: red;
+        }
+
+        .is-invalid + .text-danger {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>회원가입</h1>
+
+    <form th:action="@{/signup}" method="post" th:object="${signUpRequest}">
+        <div class="form-group">
+            <label for="email">이메일:</label>
+            <div class="input-group">
+                <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="이메일을 입력하세요" required/>
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-orange" onclick="checkEmail()">중복 체크</button>
+                </div>
+            </div>
+            <div id="emailCheckResult" class="text-danger mt-2"></div> <!-- 중복 체크 결과 표시 -->
+        </div>
+        <div class="form-group">
+            <label for="name">이름:</label>
+            <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요" required/>
+        </div>
+        <div class="form-group">
+            <div class="form-group">
+                <label for="nickname">닉네임:</label>
+                <input type="text" id="nickname" th:field="*{nickname}" class="form-control" placeholder="닉네임을 입력하세요" required/>
+            </div>
+            <label for="password">비밀번호:</label>
+            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요" required
+                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>
+            <div th:if="${#fields.hasErrors('password')}" class="text-danger mt-2">
+                <span th:errors="*{password}"></span> <!-- 비밀번호 검증 오류 메시지 -->
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="phoneNumber">전화번호:</label>
+            <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" placeholder="전화번호를 입력하세요" required
+                   th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid'"/>
+            <div th:if="${#fields.hasErrors('phoneNumber')}" class="text-danger mt-2">
+                <span th:errors="*{phoneNumber}"></span> <!-- 전화번호 검증 오류 메시지 -->
+            </div>
+        </div>
+        <div class="form-group">
+            <label>역할:</label><br>
+            <label for="role_user" class="radio-label">
+                <input type="radio" id="role_user" name="role" value="USER" required/>
+                USER
+            </label>
+            <label for="role_owner" class="radio-label">
+                <input type="radio" id="role_owner" name="role" value="OWNER" required/>
+                OWNER
+            </label>
+        </div>
+        <div class="form-group">
+            <button type="submit" id="signupButton" class="btn btn-orange btn-block" disabled>회원가입</button>
+        </div>
+    </form>
+
+    <br>
+
+    <div th:if="${exception}" class="alert alert-danger" role="alert">
+        <span th:text="${exception}">invalid signup form</span>
+    </div>
+
+    <br>
+
+</div>
+</body>
+</html>

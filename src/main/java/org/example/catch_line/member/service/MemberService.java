@@ -11,8 +11,8 @@ import org.example.catch_line.member.model.vo.Email;
 import org.example.catch_line.member.model.vo.Password;
 import org.example.catch_line.member.model.vo.PhoneNumber;
 import org.example.catch_line.member.repository.MemberRepository;
-import org.example.catch_line.member.validate.MemberValidator;
-import org.example.catch_line.member.validate.PasswordValidator;
+import org.example.catch_line.member.validation.MemberValidator;
+import org.example.catch_line.member.validation.PasswordValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

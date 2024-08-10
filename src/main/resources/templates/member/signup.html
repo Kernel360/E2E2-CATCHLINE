@@ -41,16 +41,39 @@
             background-color: orange;
             color: white;
             border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
 
         .btn-orange:hover {
             background-color: darkorange;
+            color: white;
         }
 
-        .btn-orange:disabled {
-            background-color: #ffa726; /* 밝은 오렌지 색상 */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header .close {
+            background-color: orange;
             color: white;
-            opacity: 0.8;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            line-height: 1;
+            padding: 5px 10px;
+            cursor: pointer;
+            opacity: 1;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-header .close:hover {
+            background-color: darkorange;
+            color: white;
         }
 
         .text-danger {
@@ -125,17 +148,27 @@
             </label>
         </div>
         <div class="form-group">
-            <button type="submit" id="signupButton" class="btn btn-orange btn-block" disabled>회원가입</button>
+            <button type="submit" id="signupButton" class="btn btn-orange btn-block">회원가입</button>
         </div>
     </form>
 
-    <br>
-
-    <div th:if="${exception}" class="alert alert-danger" role="alert">
-        <span th:text="${exception}">invalid signup form</span>
+    <!-- 예외 발생 시 모달 창 -->
+    <div th:if="${exception}" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true" style="display: block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">회원가입 실패</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="this.closest('.modal').style.display='none'">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <span th:text="${exception}">회원가입 중 오류가 발생했습니다.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-orange" onclick="this.closest('.modal').style.display='none'">닫기</button>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <br>
 
 </div>
 </body>

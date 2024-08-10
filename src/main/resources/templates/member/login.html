@@ -10,48 +10,123 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
 
         .container {
             max-width: 400px;
             background-color: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-family: 'Arial', sans-serif;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             color: #555;
+            font-weight: bold;
         }
 
         .btn-orange {
             background-color: orange;
             color: white;
             border: none;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
 
         .btn-orange:hover {
-            background-color: darkorange;
+            background-color: #E64A19;
+        }
+
+        .btn-orange:focus {
+            box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
         }
 
         .text-danger {
-            color: red;
+            color: #FF5722;
             font-size: 0.9em;
             margin-top: 10px;
         }
 
         .radio-label {
-            margin-right: 10px;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+        }
+
+        .modal-header {
+            background-color: orange;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 10px 20px;
+            text-align: right;
+            border-top: none;
+        }
+
+        .close {
+            background-color: white;
+            border: none;
+            color: orange;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .close:hover {
+            background-color: #E64A19;
+            color: white;
+        }
+
+        /* 통일된 버튼 스타일 */
+        .btn-secondary, .btn-primary {
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover, .btn-primary:hover {
+            background-color: #E64A19;
         }
     </style>
 </head>
@@ -79,15 +154,28 @@
             </label>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-orange btn-block">로그인</button>
+            <button type="submit" class="btn btn-orange">로그인</button>
         </div>
     </form>
 
-    <br>
-
-    <div th:if="${exception}" class="alert alert-danger" role="alert">
-        <span th:text="${exception}">invalid login</span>
+    <!-- 모달 -->
+    <div th:if="${exception}" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true" style="display: block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">로그인 실패</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="this.closest('.modal').style.display='none'">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <span>사용자를 찾을 수 없거나, 잘못된 비밀번호를 입력하셨습니다.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').style.display='none'">닫기</button>
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>
 </body>
 </html>

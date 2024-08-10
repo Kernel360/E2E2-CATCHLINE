@@ -36,7 +36,7 @@ public class RestaurantController {
 
         RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
         List<RestaurantHourResponse> restaurantHours = restaurantHourService.getAllRestaurantHours(restaurantId);
-        RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHours(restaurantId, dayOfWeek);
+        RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek);
 
         model.addAttribute("restaurant", restaurant);
         model.addAttribute("restaurantHours", restaurantHours);

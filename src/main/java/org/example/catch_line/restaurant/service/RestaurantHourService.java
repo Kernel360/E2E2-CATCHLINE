@@ -26,8 +26,8 @@ public class RestaurantHourService {
                 .collect(Collectors.toList());
     }
 
-    // 요일 별 영업 시간 조회
-    public RestaurantHourResponse getRestaurantHours(Long restaurantId, DayOfWeeks dayOfWeek) {
+    // 오늘 영업 시간 조회
+    public RestaurantHourResponse getRestaurantHour(Long restaurantId, DayOfWeeks dayOfWeek) {
         RestaurantHourEntity entity = restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(restaurantId, dayOfWeek);
         return RestaurantHourMapper.entityToResponse(entity);
     }

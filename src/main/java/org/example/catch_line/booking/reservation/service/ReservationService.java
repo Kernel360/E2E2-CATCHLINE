@@ -32,9 +32,6 @@ public class ReservationService {
 
 	public ReservationResponse addReserve(Long restaurantId, ReservationRequest reservationRequest, Long memberId) {
 
-
-
-
 		MemberEntity member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new ServiceIdException());
 
@@ -58,20 +55,6 @@ public class ReservationService {
 		return reservationResponseMapper.convertToResponse(savedEntity);
 	}
 
-	public List<ReservationResponse> getAllReservation(Long memberId) {
-		List<ReservationEntity> reservationEntities = reservationRepository.findByMemberMemberId(memberId);
-
-		return reservationEntities.stream()
-			.map(reservationResponseMapper::convertToResponse)
-			.collect(Collectors.toList());
-	}
-
-	public ReservationResponse getReservationById(Long id) {
-		ReservationEntity reservationEntity = reservationRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("정확한 아이디가 아닙니다: " + id));
-		return reservationResponseMapper.convertToResponse(reservationEntity);
-	}
-
 	public void cancelReservation(Long id) {
 		ReservationEntity reservationEntity = reservationRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("예약 아이디가 다릅니다: " + id));
@@ -79,12 +62,12 @@ public class ReservationService {
 		reservationRepository.save(reservationEntity);
 	}
 
-	public void editReservation(Long id, ReservationRequest reservationRequest) {
-		ReservationEntity reservationEntity = reservationRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("예약 아이디가 다릅니다: " + id));
-
-		reservationEntity.updateReservation(reservationRequest);
-		reservationRepository.save(reservationEntity);
-	}
+	// public void editReservation(Long id, ReservationRequest reservationRequest) {
+	// 	ReservationEntity reservationEntity = reservationRepository.findById(id)
+	// 		.orElseThrow(() -> new IllegalArgumentException("예약 아이디가 다릅니다: " + id));
+	//
+	// 	reservationEntity.updateReservation(reservationRequest);
+	// 	reservationRepository.save(reservationEntity);
+	// }
 
 }

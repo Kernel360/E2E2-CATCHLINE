@@ -24,8 +24,6 @@ public class RestaurantMapper {
                 .reviewCount(entity.getReviewCount())
                 .foodType(entity.getFoodType())
                 .serviceType(entity.getServiceType())
-                .createdAt(entity.getCreatedAt())
-                .modifiedAt(entity.getModifiedAt())
                 .build();
     }
 

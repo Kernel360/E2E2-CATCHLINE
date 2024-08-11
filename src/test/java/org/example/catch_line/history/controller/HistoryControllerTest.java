@@ -11,6 +11,7 @@ import java.util.List;
 import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,6 +92,26 @@ class HistoryControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /history/waiting/{waitingId} - 세션에 히스토리 리스트가 없는 경우")
+	void testGetWaitingDetail_NoHistoryList() throws Exception {
+		mockMvc.perform(get("/history/waiting/1"))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(redirectedUrl("/history"));
+	}
+
+	@Test
+	@DisplayName("GET /history/waiting/{waitingId} - 잘못된 ID로 인한 예외 발생")
+	void testGetWaitingDetail_InvalidId() throws Exception {
+		when(historyService.findWaitingDetailById(any(List.class), anyLong()))
+			.thenThrow(new IllegalArgumentException("Invalid waiting ID"));
+
+		mockMvc.perform(get("/history/waiting/1")
+				.sessionAttr("historyList", Collections.emptyList()))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(redirectedUrl("/history"));
+	}
+
+	@Test
 	@DisplayName("GET /history/reservation/{reservationId} - 예약 상세보기")
 	void testGetReservationDetail() throws Exception {
 		HistoryResponse historyResponse = HistoryResponse.builder()
@@ -105,6 +126,27 @@ class HistoryControllerTest {
 			.andExpect(status().isOk())
 			.andExpect(view().name("history/reservationDetail"))
 			.andExpect(model().attributeExists("historyResponse"));
+	}
+
+	@Test
+	@DisplayName("GET /history/reservation/{reservationId} - 세션에 히스토리 리스트가 없는 경우")
+	void testGetReservationDetail_NoHistoryList() throws Exception {
+		mockMvc.perform(get("/history/reservation/1"))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(redirectedUrl("/history"));
+	}
+
+	@Test
+	@DisplayName("GET /history/reservation/{reservationId} - 예외 발생")
+	void testGetReservationDetail_Exception() throws Exception {
+		when(historyService.findReservationDetailById(any(List.class), anyLong()))
+			.thenThrow(new HistoryException());
+
+		mockMvc.perform(get("/history/reservation/1")
+				.sessionAttr("historyList", Collections.emptyList()))
+			.andExpect(status().isOk())
+			.andExpect(view().name("error"))
+			.andExpect(model().attributeExists("errorMessage"));
 	}
 
 	@Test
@@ -126,4 +168,27 @@ class HistoryControllerTest {
 			.andExpect(status().is3xxRedirection())
 			.andExpect(redirectedUrl("/history"));
 	}
+
+	@Test
+	@DisplayName("POST /history/reservation/{reservationId} - 예약 삭제 실패")
+	void testDeleteReservation_Failure() throws Exception {
+		doThrow(new RuntimeException("Deletion failed")).when(reservationService).cancelReservation(anyLong());
+
+		mockMvc.perform(post("/history/reservation/1"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("error"))
+			.andExpect(model().attributeExists("errorMessage"));
+	}
+
+	@Test
+	@DisplayName("POST /history/waiting/{waitingId} - 웨이팅 삭제 실패")
+	void testDeleteWaiting_Failure() throws Exception {
+		doThrow(new RuntimeException("Deletion failed")).when(waitingService).cancelWaiting(anyLong());
+
+		mockMvc.perform(post("/history/waiting/1"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("error"))
+			.andExpect(model().attributeExists("errorMessage"));
+	}
+
 }

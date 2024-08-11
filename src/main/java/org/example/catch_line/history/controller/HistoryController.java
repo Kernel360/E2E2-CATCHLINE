@@ -81,17 +81,25 @@ public class HistoryController {
 	}
 
 	@PostMapping("/history/reservation/{reservationId}")
-	public String deleteReservation(@PathVariable Long reservationId) {
-
-		reservationService.cancelReservation(reservationId);
+	public String deleteReservation(@PathVariable Long reservationId, Model model) {
+		try {
+			reservationService.cancelReservation(reservationId);
+		} catch (RuntimeException e) {
+			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
+			return "error"; // 오류 페이지로 리다이렉트
+		}
 
 		return "redirect:/history";
 	}
 
 	@PostMapping("/history/waiting/{waitingId}")
-	public String deleteWaiting(@PathVariable Long waitingId) {
-
-		waitingService.cancelWaiting(waitingId);
+	public String deleteWaiting(@PathVariable Long waitingId, Model model) {
+		try {
+			waitingService.cancelWaiting(waitingId);
+		} catch (RuntimeException e) {
+			model.addAttribute("errorMessage", "웨이팅 삭제 중 오류가 발생했습니다.");
+			return "error"; // 오류 페이지로 리다이렉트
+		}
 
 		return "redirect:/history";
 	}

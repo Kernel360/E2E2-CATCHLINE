@@ -140,7 +140,7 @@ public class WaitingServiceTest {
 	}
 
 	@Test
-	@DisplayName("웨이팅 등록 실패: 서비스 타입 예외")
+	@DisplayName("웨이팅 등록 예외 처리 테스트")
 	void add_waiting_failure_invalid_service_type() {
 		// given
 		Long restaurantId = 1L;
@@ -170,7 +170,7 @@ public class WaitingServiceTest {
 	}
 
 	@Test
-	@DisplayName("웨이팅 취소 성공 테스트")
+	@DisplayName("웨이팅 취소 테스트")
 	void cancel_waiting_success() {
 		// given
 		Long id = 1L;
@@ -190,7 +190,7 @@ public class WaitingServiceTest {
 	}
 
 	@Test
-	@DisplayName("웨이팅 취소 실패 테스트: 엔티티를 찾지 못하는 경우")
+	@DisplayName("웨이팅 취소 예외 처리 테스트")
 	void cancel_waiting_failure() {
 		// given
 		Long id = 1L;

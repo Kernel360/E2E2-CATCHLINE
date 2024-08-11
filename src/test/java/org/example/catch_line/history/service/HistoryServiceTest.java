@@ -112,10 +112,10 @@ public class HistoryServiceTest {
 				createdAtField.set(entity, createdAt);
 			} else {
 				throw new RuntimeException(
-					"Field 'createdAt' not found in class hierarchy: " + entity.getClass().getName());
+					"'createdAt'을 찾을 수 없습니다': " + entity.getClass().getName());
 			}
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException("Failed to access 'createdAt' field in class: " + entity.getClass().getName(),
+			throw new RuntimeException("'createdAt'을 찾을 수 없습니다': " + entity.getClass().getName(),
 				e);
 		}
 	}
@@ -132,7 +132,7 @@ public class HistoryServiceTest {
 	}
 
 	@Test
-	@DisplayName("getAllHistory returns a list of history responses")
+	@DisplayName("History 전체조회 테스트")
 	void getAllHistory_returnsHistoryResponses() {
 		// Given
 		when(waitingRepository.findByMemberMemberIdAndStatusAndCreatedAtBetween(anyLong(), any(Status.class),
@@ -159,7 +159,7 @@ public class HistoryServiceTest {
 	}
 
 	@Test
-	@DisplayName("findReservationDetailById returns the correct reservation")
+	@DisplayName("상세 예약 조회 테스트")
 	void findReservationDetailById_returnsReservationDetail() {
 		// Given
 		HistoryResponse reservationHistoryResponse = HistoryResponse.builder()
@@ -178,7 +178,7 @@ public class HistoryServiceTest {
 	}
 
 	@Test
-	@DisplayName("findReservationDetailById throws exception if reservation not found")
+	@DisplayName("상세 예약 조회 예외처리 테스트")
 	void findReservationDetailById_throwsException() {
 		// Given
 		List<HistoryResponse> historyResponses = Collections.emptyList();
@@ -190,7 +190,7 @@ public class HistoryServiceTest {
 	}
 
 	@Test
-	@DisplayName("findWaitingDetailById returns the correct waiting")
+	@DisplayName("상세 웨이팅 조회 테스트")
 	void findWaitingDetailById_returnsWaitingDetail() {
 		// Given
 		HistoryResponse waitingHistoryResponse = HistoryResponse.builder()
@@ -209,7 +209,7 @@ public class HistoryServiceTest {
 	}
 
 	@Test
-	@DisplayName("findWaitingDetailById throws exception if waiting not found")
+	@DisplayName("상세 웨이팅 조회 예외 처리 테스트")
 	void findWaitingDetailById_throwsException() {
 		// Given
 		List<HistoryResponse> historyResponses = Collections.emptyList();

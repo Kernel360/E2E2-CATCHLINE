@@ -53,7 +53,7 @@ class WaitingControllerTest {
 	}
 
 	@Test
-	@DisplayName("POST /restaurants/{restaurantId}/waiting - 웨이팅 추가 성공")
+	@DisplayName("POST /restaurants/{restaurantId}/waiting - 웨이팅 등록 테스트")
 	void testAddWaitingSuccess() throws Exception {
 		WaitingRequest waitingRequest = WaitingRequest.builder()
 			.memberCount(3)
@@ -77,7 +77,7 @@ class WaitingControllerTest {
 	}
 
 	@Test
-	@DisplayName("POST /restaurants/{restaurantId}/waiting - 웨이팅 추가 실패")
+	@DisplayName("POST /restaurants/{restaurantId}/waiting - 웨이팅 등록 예외처리 테스트")
 	void testAddWaitingFailure() throws Exception {
 		WaitingRequest waitingRequest = WaitingRequest.builder()
 			.memberCount(3)

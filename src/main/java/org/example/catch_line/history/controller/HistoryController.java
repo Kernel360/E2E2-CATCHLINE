@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
@@ -91,6 +92,8 @@ public class HistoryController {
 
 		return "redirect:/history";
 	}
+
+
 
 	@PostMapping("/history/waiting/{waitingId}")
 	public String deleteWaiting(@PathVariable Long waitingId, Model model) {

@@ -61,7 +61,7 @@
             </button>
         </div>
     </div>
-    <h1 class="mb-4">History</h1>
+    <h1 class="mb-4">나의 예약</h1>
     <div class="row mb-4 btn-group">
         <div class="col">
             <button type="button" class="btn btn-orange btn-lg" th:onclick="|location.href='@{/history(status=SCHEDULED)}'|">예정</button>
@@ -82,12 +82,12 @@
             <th>식당 이름</th>
             <th>서비스 타입</th>
             <th>예약 인원</th>
-            <th>상태</th>
-            <th>Created At</th>
-            <th>Modified At</th>
-            <th>Waiting Type / Reservation Date</th>
-            <th>WaitingRegistrationId</th>
-            <th>MyWaitingPosition</th>
+<!--            <th>상태</th>-->
+<!--            <th>등록 시간</th>-->
+<!--            <th>수정 시간</th>-->
+            <th>포장 및 매장 / 예약 날짜</th>
+<!--            <th>등록 ID</th>-->
+<!--            <th>대기순번</th>-->
         </tr>
         </thead>
         <tbody>
@@ -97,14 +97,14 @@
             th:data-reservation-id="${history.reservationId}"
             onclick="redirectBasedOnServiceType(this)">
             <td th:text="${history.restaurantName}"></td>
-            <td th:text="${history.serviceType}"></td>
+            <td th:text="${history.serviceType.description}"></td>
             <td th:text="${history.memberCount}"></td>
-            <td th:text="${history.status}"></td>
-            <td th:text="${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
-            <td th:text="${history.modifiedAt != null ? #temporals.format(history.modifiedAt, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></td>
-            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingType : (history.reservationDate != null ? #temporals.format(history.reservationDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A')}"></td>
-            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingRegistrationId : 1}"></td>
-            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.myWaitingPosition : 1}"></td>
+<!--            <td th:text="${history.status}"></td>-->
+<!--            <td th:text="${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>-->
+<!--            <td th:text="${history.modifiedAt != null ? #temporals.format(history.modifiedAt, 'yyyy-MM-dd HH:mm:ss') : 'N/A'}"></td>-->
+            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingType.description : (history.reservationDate != null ? #temporals.format(history.reservationDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A')}"></td>
+<!--            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingRegistrationId : 1}"></td>-->
+<!--            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.myWaitingPosition : 1}"></td>-->
         </tr>
         </tbody>
     </table>

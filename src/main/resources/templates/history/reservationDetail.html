@@ -69,7 +69,7 @@
             </button>
         </div>
     </div>
-    <h1 class="mb-4">Reservation Details</h1>
+    <h1 class="mb-4">예약 상세정보</h1>
 
     <div class="card">
         <div class="card-header">
@@ -85,13 +85,13 @@
                     <!-- 인원수 -->
                     <p><strong>인원수:</strong> <span th:text="${historyResponse.memberCount}">4</span></p>
                     <!-- 이용 상태 -->
-                    <p><strong>이용 상태:</strong> <span th:text="${historyResponse.status}">예약 완료</span></p>
+                    <p><strong>이용 상태:</strong> <span th:text="${historyResponse.status.description}">예약 완료</span></p>
                 </div>
-                <div class="col-md-6">
+<!--                <div class="col-md-6">-->
                     <h5>추가 정보</h5>
-                    <!-- 예약 ID -->
+<!--                    &lt;!&ndash; 예약 ID &ndash;&gt;-->
                     <p><strong>예약 등록 ID:</strong> <span id="reservationId" th:text="${historyResponse.reservationId}">123456</span></p>
-                </div>
+<!--                </div>-->
             </div>
             <div class="row">
                 <div class="col text-right">
@@ -129,12 +129,14 @@
     }
 
     function editReservation() {
+        // 예약 ID를 HTML 요소에서 가져옴
         const reservationId = document.getElementById('reservationId').innerText;
-        const url = `/history/reservation/edit/${reservationId}`;
+        const url = `/history/reservation/${reservationId}/edit`;
 
         // 수정 페이지로 리디렉션
         window.location.href = url;
     }
+
 </script>
 </body>
 </html>

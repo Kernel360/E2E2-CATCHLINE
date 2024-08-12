@@ -30,4 +30,8 @@ public interface WaitingRepository extends JpaRepository<WaitingEntity, Long> {
 
 	List<WaitingEntity> findByMemberMemberIdAndCreatedAtBetween(Long memberId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 
+	boolean existsByMemberMemberIdAndStatus(Long memberId, Status status);
+
+
+
 }

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
@@ -15,6 +16,7 @@ import org.example.catch_line.booking.reservation.model.entity.ReservationEntity
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -137,6 +139,23 @@ public class HistoryService {
 			.findFirst()
 			.orElseThrow(() -> new HistoryException());
 	}
+
+	public HistoryResponse updateReservation(Long reservationId, ReservationRequest updateRequest) {
+		ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId);
+		if(reservationEntity == null ) {
+			throw new HistoryException();
+		}
+
+		// 상태를 업데이트하지 않도록 수정
+		reservationEntity.updateReservation(updateRequest);
+
+		ReservationEntity savedEntity = reservationRepository.save(reservationEntity);
+
+		return reservationToHistoryResponse(savedEntity);
+	}
+
+
+
 
 }
 

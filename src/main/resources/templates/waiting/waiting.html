@@ -103,7 +103,7 @@
             </button>
         </div>
     </div>
-    <h1 class="text-center mb-4">Add Waiting Information</h1>
+    <h1 class="text-center mb-4">웨이팅 등록</h1>
 
     <!-- Error message -->
     <div th:if="${error}" class="alert alert-danger text-center" role="alert">
@@ -120,21 +120,21 @@
         <input type="hidden" th:value="${memberId}" name="memberId"/>
 
         <div class="mb-3">
-            <label for="memberCount" class="form-label">Number of Members:</label>
+            <label for="memberCount" class="form-label">예약 인원:</label>
             <input type="number" id="memberCount" name="memberCount" th:value="${memberCount}" class="form-control" required/>
         </div>
 
         <div class="mb-3">
-            <label for="waitingType" class="form-label">Waiting Type:</label>
+            <label for="waitingType" class="form-label">매장 / 포장:</label>
             <select id="waitingType" name="waitingType" class="form-select" required>
-                <option value="DINE_IN" th:selected="${waitingType == 'DINE_IN'}">DINE_IN</option>
-                <option value="TAKE_OUT" th:selected="${waitingType == 'TAKE_OUT'}">TAKE_OUT</option>
+                <option value="DINE_IN" th:selected="${waitingType == 'DINE_IN'}">매장</option>
+                <option value="TAKE_OUT" th:selected="${waitingType == 'TAKE_OUT'}">포장</option>
                 <!-- Add more options as needed -->
             </select>
         </div>
 
         <div class="text-center">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">등록하기</button>
         </div>
     </form>
 </div>

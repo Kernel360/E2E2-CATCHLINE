@@ -69,7 +69,6 @@ public class ReservationEntity extends BaseTimeEntity {
 	public void updateReservation(ReservationRequest reservationRequest) {
 		this.memberCount = reservationRequest.getMemberCount();
 		this.reservationDate = reservationRequest.getReservationDate();
-		this.status = reservationRequest.getStatus();
 	}
 
 	public void changeReservationStatus(Status newStatus) {

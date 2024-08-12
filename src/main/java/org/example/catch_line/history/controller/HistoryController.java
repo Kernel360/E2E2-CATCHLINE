@@ -2,6 +2,9 @@ package org.example.catch_line.history.controller;
 
 import java.util.List;
 
+import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
+import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
+import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.SessionUtils;
@@ -12,10 +15,12 @@ import org.example.catch_line.history.service.HistoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +32,7 @@ public class HistoryController {
 	private final ReservationService reservationService;
 	private final WaitingService waitingService;
 	private final HistoryService historyService;
+	private final ReservationRepository reservationRepository;
 
 	@GetMapping("/history")
 	public String getHistories(
@@ -92,6 +98,40 @@ public class HistoryController {
 
 		return "redirect:/history";
 	}
+
+	@GetMapping("/history/reservation/{reservationId}/edit")
+	public String editForm(@PathVariable Long reservationId, Model model) {
+		ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId);
+		if (reservationEntity == null) {
+			throw new HistoryException();
+		}
+
+		ReservationRequest reservationRequest = ReservationRequest.builder()
+			.memberCount(reservationEntity.getMemberCount())
+			.reservationDate(reservationEntity.getReservationDate())
+			.build();
+
+		model.addAttribute("reservationRequest", reservationRequest);
+		model.addAttribute("reservationId", reservationId);
+
+		return "reservation/updateReservation";
+	}
+
+
+
+
+	@PutMapping("/history/reservation/{reservationId}")
+	public String editReservation(@PathVariable Long reservationId, @ModelAttribute ReservationRequest updateRequest, RedirectAttributes redirectAttributes) {
+		try {
+			HistoryResponse updateReservation = historyService.updateReservation(reservationId, updateRequest);
+			redirectAttributes.addFlashAttribute("message", "예약이 업데이트 되었습니다");
+		} catch (HistoryException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", "예약 업데이트를 실패했습니다");
+		}
+
+		return "redirect:/history";
+	}
+
 
 
 

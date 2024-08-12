@@ -1,6 +1,7 @@
 package org.example.catch_line.member.validation;
 
 import lombok.RequiredArgsConstructor;
+import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.email.DuplicateEmailException;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.model.vo.Email;
@@ -23,6 +24,6 @@ public class MemberValidator {
     // TODO: 탈퇴한 회원은 제외하고 회원 존재 여부 검사
     public MemberEntity checkIfMemberPresent(Long memberId) {
         return memberRepository.findByMemberIdAndIsMemberDeletedFalse(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자가 없습니다."));
+                .orElseThrow(() -> new CatchLineException("해당하는 사용자가 없습니다."));
     }
 }

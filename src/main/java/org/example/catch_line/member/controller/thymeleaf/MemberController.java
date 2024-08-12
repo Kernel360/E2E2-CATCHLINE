@@ -9,7 +9,6 @@ import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.member.model.dto.MemberResponse;
 import org.example.catch_line.member.model.dto.MemberUpdateRequest;
 import org.example.catch_line.member.service.MemberService;
-import org.example.catch_line.member.validation.MemberValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,20 +22,18 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    private final MemberValidator memberValidator;
-
     @GetMapping
     public String findMember(HttpSession httpSession, Model model) {
         MemberResponse memberResponse = memberService.findMember(SessionUtils.getMemberId(httpSession));
         model.addAttribute("member", memberResponse);
-        return "member/memberDetail";  // 타임리프 템플릿 파일 이름
+        return "member/memberDetail";
     }
 
     @GetMapping("/update")
     public String showUpdateMemberForm(
             HttpSession httpSession,
             Model model) {
-        model.addAttribute("memberUpdateRequest", new MemberUpdateRequest("", "", "", ""));
+        model.addAttribute("memberUpdateRequest", new MemberUpdateRequest(null, null, null,  null));
         MemberResponse memberResponse = memberService.findMember(SessionUtils.getMemberId(httpSession));
         model.addAttribute("member", memberResponse);
         return "member/memberUpdate";
@@ -45,18 +42,29 @@ public class MemberController {
     @PostMapping("/update")
     public String updateMember(
             @Valid @ModelAttribute MemberUpdateRequest memberUpdateRequest,
+            BindingResult bindingResult, // @Valid 어노테이션 바로 뒤에 위치해야 함.
             HttpSession httpSession,
-            BindingResult bindingResult,
             Model model
     ) {
+
         if(bindingResult.hasErrors()) {
-            log.info("회원수정 에러");
+            log.info("error : {}", bindingResult);
+            MemberResponse memberResponse = memberService.findMember(SessionUtils.getMemberId(httpSession));
+            model.addAttribute("member", memberResponse);
+
+            model.addAttribute("bindingResult", bindingResult);
             return "member/memberUpdate";
         }
+
         try {
             memberService.updateMember(memberUpdateRequest, SessionUtils.getMemberId(httpSession));
         } catch (CatchLineException e) {
-            log.error("회원수정 중 예외 발생", e);
+            log.info("error : {}", e.getMessage());
+
+            // 현재 세션에서 memberId를 가져와서 다시 조회
+            MemberResponse memberResponse = memberService.findMember(SessionUtils.getMemberId(httpSession));
+            model.addAttribute("member", memberResponse);
+
             model.addAttribute("exception", e.getMessage());
             return "member/memberUpdate";
 

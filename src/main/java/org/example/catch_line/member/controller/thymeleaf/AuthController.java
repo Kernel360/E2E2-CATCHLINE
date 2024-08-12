@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.email.DuplicateEmailException;
 import org.example.catch_line.member.model.dto.LoginRequest;
@@ -32,10 +31,11 @@ public class AuthController {
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
-        model.addAttribute("loginRequest", new LoginRequest("", "", Role.USER));
+        model.addAttribute("loginRequest", new LoginRequest(null, null, null));
         return "member/login";
     }
 
+    // TODO: boolean 말고 response 반환
     @GetMapping("/check-email")
     @ResponseBody // jquery 쓰려면 필요
     public boolean checkEmail(@RequestParam String email) {
@@ -53,7 +53,7 @@ public class AuthController {
 
     @GetMapping("/signup")
     public String showSignUpForm(Model model) {
-        model.addAttribute("signUpRequest", new SignUpRequest("", "", "", "", "", Role.USER));
+        model.addAttribute("signUpRequest", new SignUpRequest(null, null, null, null, null, null));
         return "member/signup";
     }
 

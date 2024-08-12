@@ -51,6 +51,16 @@
             opacity: 1;
         }
 
+        .form-error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .is-invalid {
+            border-color: red;
+        }
+
         .btn-orange {
             background-color: orange;
             color: white;
@@ -89,6 +99,39 @@
         .btn-group {
             text-align: right;
         }
+
+        /* 모달 스타일 */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header .close {
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            line-height: 1;
+            padding: 5px 10px;
+            cursor: pointer;
+            opacity: 1;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-header .close:hover {
+            background-color: darkorange;
+            color: white;
+        }
+
+        .modal-body {
+            font-size: 16px;
+        }
+
+        .modal-footer {
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -106,28 +149,36 @@
 
         <div class="form-group">
             <label for="name">이름</label>
-            <input type="text" id="name" th:field="*{name}" th:value="${member.name}" class="form-control" placeholder="이름" required/>
+            <input type="text" id="name" th:field="*{name}" class="form-control"
+                   placeholder="이름" required th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"/>
+            <div class="form-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
         </div>
 
         <hr>
 
         <div class="form-group">
             <label for="nickname">닉네임</label>
-            <input type="text" id="nickname" th:field="*{nickname}" th:value="${member.nickname}" class="form-control" placeholder="닉네임" required/>
+            <input type="text" id="nickname" th:field="*{nickname}" class="form-control"
+                   placeholder="닉네임" required th:classappend="${#fields.hasErrors('nickname')} ? 'is-invalid' : ''"/>
+            <div class="form-error" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></div>
         </div>
 
         <hr>
 
         <div class="form-group">
             <label for="phoneNumber">전화번호</label>
-            <input type="text" id="phoneNumber" th:field="*{phoneNumber}" th:value="${member.phoneNumber}" class="form-control" placeholder="전화번호" required/>
+            <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control"
+                   placeholder="전화번호" required th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid' : ''"/>
+            <div class="form-error" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
         </div>
 
         <hr>
 
         <div class="form-group">
             <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="새 비밀번호"/>
+            <input type="password" id="password" th:field="*{password}" class="form-control"
+                   placeholder="새 비밀번호" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"/>
+            <div class="form-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
         </div>
 
         <hr>
@@ -137,6 +188,30 @@
             <a th:href="@{/members}" class="btn btn-secondary">취소</a>
         </div>
     </form>
+
+    <!-- 예외 발생 시 모달 창 -->
+    <div th:if="${exception}" class="modal fade show" tabindex="-1" role="dialog"
+         aria-labelledby="errorModalLabel" aria-hidden="true"
+         style="display: block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">회원 정보 수정 실패</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            onclick="this.closest('.modal').style.display='none'">&times;
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span th:text="${exception}">회원 정보 수정 중 오류가 발생했습니다.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-orange"
+                            onclick="this.closest('.modal').style.display='none'">닫기
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

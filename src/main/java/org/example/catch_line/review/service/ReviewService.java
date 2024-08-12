@@ -12,6 +12,7 @@ import org.example.catch_line.review.model.dto.ReviewUpdateRequest;
 import org.example.catch_line.review.model.entity.ReviewEntity;
 import org.example.catch_line.review.model.mapper.ReviewMapper;
 import org.example.catch_line.review.repository.ReviewRepository;
+import org.example.catch_line.review.validation.ReviewValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final MemberValidator memberValidator;
     private final RestaurantValidator restaurantValidator;
+    private final ReviewValidator reviewValidator;
 
     // 식당 별 리뷰 전체 조회
     public List<ReviewResponse> getRestaurantReviewList(Long restaurantId) {
@@ -42,15 +44,16 @@ public class ReviewService {
         RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
 
         ReviewEntity reviewEntity = createRequestToEntity(reviewCreateRequest, memberEntity, restaurantEntity);
-        return ReviewMapper.entityToResponse(reviewEntity);
+        ReviewEntity savedEntity = reviewRepository.save(reviewEntity);
+        return ReviewMapper.entityToResponse(savedEntity);
     }
 
     // 리뷰 수정
-    public void updateReview(Long memberId, Long restaurantId, ReviewUpdateRequest reviewUpdateRequest) {
+    public void updateReview(Long memberId, Long restaurantId, Long reviewId, ReviewUpdateRequest reviewUpdateRequest) {
         MemberEntity memberEntity = memberValidator.checkIfMemberPresent(memberId);
         RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+        ReviewEntity reviewEntity = reviewValidator.checkIfReviewPresent(reviewId);
 
-        ReviewEntity reviewEntity = updateRequestToEntity(reviewUpdateRequest, memberEntity, restaurantEntity);
         reviewEntity.updateContent(reviewUpdateRequest.getContent());
 //        reviewRepository.save(reviewEntity);
     }
@@ -80,11 +83,4 @@ public class ReviewService {
                 .build();
     }
 
-    private ReviewEntity updateRequestToEntity(ReviewUpdateRequest reviewUpdateRequest, MemberEntity memberEntity, RestaurantEntity restaurantEntity) {
-        return ReviewEntity.builder()
-                .content(reviewUpdateRequest.getContent())
-                .member(memberEntity)
-                .restaurant(restaurantEntity)
-                .build();
-    }
 }

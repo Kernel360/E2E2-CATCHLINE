@@ -1,6 +1,7 @@
 package org.example.catch_line.restaurant.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
@@ -16,6 +17,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/restaurants")
 @RequiredArgsConstructor
@@ -36,7 +38,7 @@ public class RestaurantController {
 
         RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
         List<RestaurantHourResponse> restaurantHours = restaurantHourService.getAllRestaurantHours(restaurantId);
-        RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHours(restaurantId, dayOfWeek);
+        RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek);
 
         model.addAttribute("restaurant", restaurant);
         model.addAttribute("restaurantHours", restaurantHours);

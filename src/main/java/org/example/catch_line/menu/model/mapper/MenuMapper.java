@@ -1,7 +1,9 @@
 package org.example.catch_line.menu.model.mapper;
 
+import org.example.catch_line.menu.model.dto.MenuRequest;
 import org.example.catch_line.menu.model.dto.MenuResponse;
 import org.example.catch_line.menu.model.entity.MenuEntity;
+import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
@@ -16,6 +18,14 @@ public class MenuMapper {
                 .menuId(menuEntity.getMenuId())
                 .name(menuEntity.getName())
                 .price(formatter.format(menuEntity.getPrice()))
+                .build();
+    }
+
+    public static MenuEntity requestToEntity(MenuRequest menuRequest, RestaurantEntity restaurantEntity) {
+        return MenuEntity.builder()
+                .name(menuRequest.getName())
+                .price(menuRequest.getPrice())
+                .restaurant(restaurantEntity)
                 .build();
     }
 }

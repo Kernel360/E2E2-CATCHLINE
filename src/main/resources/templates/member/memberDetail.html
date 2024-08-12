@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원 프로필</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            color: #555;
+            margin-right: 20px;
+            width: 30%;
+            text-align: left;
+        }
+
+        .form-group span {
+            width: 65%;
+            text-align: left;
+        }
+
+        hr {
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .btn-orange {
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-orange:hover {
+            background-color: #E64A19;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-white {
+            background-color: white;
+            color: orange;
+            border: 1px solid orange;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-white:hover {
+            background-color: #FFE0B2;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>회원 프로필</h1>
+
+    <div class="form-group">
+        <label for="email">이메일 아이디</label>
+        <span id="email" th:text="${member.email}">carol0724@naver.com</span>
+    </div>
+
+    <hr>
+
+    <div class="form-group">
+        <label for="name">이름</label>
+        <span id="name" th:text="${member.name}">박소은</span>
+    </div>
+
+    <hr>
+
+    <div class="form-group">
+        <label for="nickname">닉네임</label>
+        <span id="nickname" th:text="${member.nickname}">닉네임</span>
+    </div>
+
+    <hr>
+
+    <div class="form-group">
+        <label for="phoneNumber">전화번호</label>
+        <span id="phoneNumber" th:text="${member.phoneNumber}">010-7583-1219</span>
+    </div>
+
+    <hr>
+
+    <div class="btn-group">
+        <button class="btn btn-white" onclick="window.location.href='/'">취소</button>
+        <button class="btn btn-orange" onclick="window.location.href='/members/update'">수정하기</button>
+    </div>
+</div>
+</body>
+</html>

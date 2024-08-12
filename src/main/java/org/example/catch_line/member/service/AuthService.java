@@ -49,7 +49,6 @@ public class AuthService {
         memberRepository.save(member);
         return MemberResponseMapper.entityToResponse(member);
 
-
     }
 
 

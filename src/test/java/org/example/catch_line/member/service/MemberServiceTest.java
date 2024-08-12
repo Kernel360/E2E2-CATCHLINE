@@ -68,7 +68,6 @@ class MemberServiceTest {
 
         MemberUpdateRequest memberUpdateRequest =
                 MemberUpdateRequest.builder()
-                        .email("test_update@gmail.com")
                         .name("update test name")
                         .nickname("update test nickname")
                         .password("1234!@#$qwert")
@@ -78,7 +77,6 @@ class MemberServiceTest {
         memberService.updateMember(memberUpdateRequest, 1L);
 
         // 검증
-        assertEquals("test_update@gmail.com", defaultMember.getEmail().getEmailValue());
         assertEquals("update test name", defaultMember.getName());
         assertEquals("update test nickname", defaultMember.getNickname());
         assertEquals(defaultMember.getPassword().getEncodedPassword(), defaultMember.getPassword().getEncodedPassword());

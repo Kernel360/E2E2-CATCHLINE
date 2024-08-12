@@ -1,8 +1,10 @@
 package org.example.catch_line.exception.booking;
 
-public class WaitingException extends RuntimeException {
-	
+import org.example.catch_line.exception.CatchLineException;
+
+public class WaitingException extends CatchLineException {
+
 	public WaitingException() {
-		super("이미 예약을 한 사용자입니다");
+		super("웨이팅 등록이 되어있습니다");
 	}
 }

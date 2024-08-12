@@ -8,6 +8,7 @@ import org.example.catch_line.booking.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.booking.reservation.model.mapper.ReservationResponseMapper;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.member.model.entity.MemberEntity;
 import org.example.catch_line.member.repository.MemberRepository;
 import org.example.catch_line.exception.booking.ServiceIdException;
@@ -62,12 +63,13 @@ public class ReservationService {
 		reservationRepository.save(reservationEntity);
 	}
 
-	// public void editReservation(Long id, ReservationRequest reservationRequest) {
-	// 	ReservationEntity reservationEntity = reservationRepository.findById(id)
-	// 		.orElseThrow(() -> new IllegalArgumentException("예약 아이디가 다릅니다: " + id));
-	//
-	// 	reservationEntity.updateReservation(reservationRequest);
-	// 	reservationRepository.save(reservationEntity);
-	// }
+	public ReservationEntity findByReservationId(Long reservationId) {
+		ReservationEntity byReservationId = reservationRepository.findByReservationId(reservationId);
+
+		if(byReservationId == null) {
+			throw new HistoryException();
+		}
+		return byReservationId;
+	}
 
 }

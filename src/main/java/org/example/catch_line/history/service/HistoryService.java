@@ -140,14 +140,14 @@ public class HistoryService {
 			.orElseThrow(() -> new HistoryException());
 	}
 
-	public HistoryResponse updateReservation(Long reservationId, ReservationRequest updateRequest) {
+	public HistoryResponse updateReservation(Long reservationId, int memberCount, LocalDateTime reservationDate) {
 		ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId);
 		if(reservationEntity == null ) {
 			throw new HistoryException();
 		}
 
 		// 상태를 업데이트하지 않도록 수정
-		reservationEntity.updateReservation(updateRequest);
+		reservationEntity.updateReservation(memberCount, reservationDate);
 
 		ReservationEntity savedEntity = reservationRepository.save(reservationEntity);
 

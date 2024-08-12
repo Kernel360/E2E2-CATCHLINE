@@ -59,4 +59,8 @@ public class WaitingService {
 		waitingRepository.save(entity);
 	}
 
+	public boolean isExistingWaiting(Long memberId,Status status) {
+		return waitingRepository.existsByMemberMemberIdAndStatus(memberId, status);
+	}
+
 }

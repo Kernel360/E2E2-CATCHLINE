@@ -47,7 +47,7 @@ public class WaitingController {
 		try {
 			Long memberId = SessionUtils.getMemberId(session);
 
-			boolean isExisting = waitingRepository.existsByMemberMemberIdAndStatus(memberId, Status.SCHEDULED);
+			boolean isExisting = waitingService.isExistingWaiting(memberId, Status.SCHEDULED);
 			if (isExisting) {
 				// 오류 메시지를 추가하고 현재 페이지로 리디렉션
 				model.addAttribute("error", "이미 예약이 존재합니다");

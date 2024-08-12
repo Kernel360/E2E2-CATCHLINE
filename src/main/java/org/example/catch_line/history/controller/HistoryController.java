@@ -100,11 +100,8 @@ public class HistoryController {
 	}
 
 	@GetMapping("/history/reservation/{reservationId}/edit")
-	public String editForm(@PathVariable Long reservationId, Model model) {
-		ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId);
-		if (reservationEntity == null) {
-			throw new HistoryException();
-		}
+	public String updateForm(@PathVariable Long reservationId, Model model) {
+		ReservationEntity reservationEntity = reservationService.findByReservationId(reservationId);
 
 		ReservationRequest reservationRequest = ReservationRequest.builder()
 			.memberCount(reservationEntity.getMemberCount())
@@ -121,9 +118,10 @@ public class HistoryController {
 
 
 	@PutMapping("/history/reservation/{reservationId}")
-	public String editReservation(@PathVariable Long reservationId, @ModelAttribute ReservationRequest updateRequest, RedirectAttributes redirectAttributes) {
+	public String updateReservation(@PathVariable Long reservationId, @ModelAttribute ReservationRequest updateRequest, RedirectAttributes redirectAttributes) {
 		try {
-			HistoryResponse updateReservation = historyService.updateReservation(reservationId, updateRequest);
+			HistoryResponse updateReservation = historyService.updateReservation(reservationId,
+				updateRequest.getMemberCount(), updateRequest.getReservationDate());
 			redirectAttributes.addFlashAttribute("message", "예약이 업데이트 되었습니다");
 		} catch (HistoryException e) {
 			redirectAttributes.addFlashAttribute("errorMessage", "예약 업데이트를 실패했습니다");

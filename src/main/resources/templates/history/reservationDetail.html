@@ -20,6 +20,17 @@
             border-color: white;
         }
 
+        .btn-cancel {
+            background-color: red;
+            border-color: darkred;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: darkred;
+            border-color: black;
+        }
+
         .card-header {
             background-color: orange;
             color: #fff;
@@ -77,7 +88,9 @@
             <div class="row">
                 <div class="col text-right">
                     <!-- 예약 취소 버튼 -->
-                    <button type="button" class="btn btn-orange" onclick="cancelReservation()">취소하기</button>
+                    <button type="button" class="btn btn-cancel" onclick="cancelReservation()">취소하기</button>
+                    <!-- 예약 수정 버튼 -->
+                    <button type="button" class="btn btn-primary ml-2" onclick="editReservation()">수정하기</button>
                 </div>
             </div>
         </div>
@@ -105,6 +118,14 @@
                 console.error('Error:', error);
                 alert('예약 취소에 실패했습니다.');
             });
+    }
+
+    function editReservation() {
+        const reservationId = document.getElementById('reservationId').innerText;
+        const url = `/history/reservation/edit/${reservationId}`;
+
+        // 수정 페이지로 리디렉션
+        window.location.href = url;
     }
 </script>
 </body>

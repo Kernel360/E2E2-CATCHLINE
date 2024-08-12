@@ -1,9 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
             max-width: 800px;
@@ -22,12 +21,57 @@
             background-color: orange;
             color: white;
         }
+
+        .btn-orange:hover {
+            background-color: darkorange;
+            color: white;
+        }
+
+        .button-container {
+            margin-bottom: 20px;
+        }
+
+        .top-right-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .card-body {
+            position: relative;
+        }
+
+        .map-container {
+            margin-top: 20px;
+        }
     </style>
 </head>
+<body>
 <div class="container">
 
-    <div class="col text-center">
-        <h2 th:text="#{restaurant.information}">식당 정보</h2>
+    <div class="position-relative">
+        <div class="top-right-buttons">
+            <!-- 조건에 따라 버튼 표시 -->
+            <div class="d-flex flex-column align-items-end">
+                <!-- 웨이팅 등록 버튼 -->
+                <button class="btn btn-orange btn-lg mb-2"
+                        th:if="${restaurant.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING}"
+                        th:onclick="|location.href='@{/restaurants/{restaurantId}/waiting(restaurantId=${restaurant.restaurantId})}'|"
+                        type="button">웨이팅 등록
+                </button>
+
+                <!-- 예약 등록 버튼 -->
+                <button class="btn btn-orange btn-lg"
+                        th:if="${restaurant.serviceType != T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING}"
+                        th:onclick="|location.href='@{/restaurants/{restaurantId}/reservation(restaurantId=${restaurant.restaurantId})}'|"
+                        type="button">예약 등록
+                </button>
+            </div>
+        </div>
+        <div class="col text-center">
+            <h2 th:text="#{restaurant.information}">식당 정보</h2>
+        </div>
     </div>
 
     <div class="row mb-4 btn-container">
@@ -56,7 +100,6 @@
                     <span th:text="${hourResponse.openStatus}">OPEN</span>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -64,10 +107,7 @@
 
     <div class="row">
         <div class="col">
-            <button class="w-100 btn btn-secondary btn-lg"
-                    th:if="${true}" disabled
-                    type="button">홈
-            </button>
+            <button class="w-100 btn btn-secondary btn-lg" th:if="${true}" disabled type="button">홈</button>
         </div>
         <div class="col">
             <button class="w-100 btn btn-orange btn-lg"
@@ -81,7 +121,6 @@
                     type="button">리뷰
             </button>
         </div>
-
     </div>
 
     <hr class="my-4">
@@ -100,17 +139,14 @@
             <div class="list-group phone-number">
                 <p class="card-text" th:text="'전화번호 : ' + ${restaurant.phoneNumber}">전화번호</p>
             </div>
-
         </div>
     </div>
 
-    <div class="card">
-
+    <!-- 위치 정보 -->
+    <div class="card map-container">
         <div class="card-body">
             <h5 class="card-title">위치 정보</h5>
-
-
-            <div id="map" style="width:750px; height:400px;"></div>
+            <div id="map" style="width:100%; height:400px;"></div>
             <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6c55265d765d5ba3b25c374a0fd028eb&libraries=services,clusterer,drawing"></script>
             <script>
                 var mapContainer = document.getElementById('map'), // 지도를 표시할 div
@@ -135,9 +171,6 @@
             <p class="card-text">주소</p>
         </div>
     </div>
-
-
-
 
 </div> <!-- /container -->
 

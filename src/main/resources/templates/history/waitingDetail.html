@@ -50,6 +50,14 @@
 </head>
 <body>
 <div class="container mt-5">
+    <div class="row mb-4 btn-container">
+        <div class="col-auto">
+            <button class="btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/history}'|"
+                    type="button">뒤로
+            </button>
+        </div>
+    </div>
     <h1 class="mb-4">Waiting Details</h1>
 
     <div class="card">

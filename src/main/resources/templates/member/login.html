@@ -132,6 +132,14 @@
 </head>
 <body>
 <div class="container">
+    <div class="row mb-4 btn-container">
+        <div class="col-auto">
+            <button class="btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/restaurants}'|"
+                    type="button">뒤로
+            </button>
+        </div>
+    </div>
     <h1>로그인</h1>
     <form th:action="@{/login}" th:object="${loginRequest}" method="post">
         <div class="form-group">

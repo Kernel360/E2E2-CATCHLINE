@@ -5,7 +5,97 @@
     <title>예약 수정</title>
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* 기존 스타일 유지 */
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5; /* 백그라운드 색상 추가 */
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            background-color: white; /* 배경을 흰색으로 설정 */
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: orange;
+            border-color: #ff5722;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff8c00;
+            border-color: #e64a19;
+        }
+
+        .alert-success {
+            background-color: orange;
+            border-color: #ffeb3b;
+            color: #333;
+            border-radius: 5px;
+        }
+
+        .alert-danger {
+            background-color: #ffebee;
+            border-color: #f44336;
+            color: orange;
+            border-radius: 5px;
+        }
+
+
+
+        .form-select, .form-control {
+            border: 1px solid orange;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: orange;
+            box-shadow: 0 0 0 0.2rem rgba(255, 87, 34, 0.25);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            color: orange;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: orange;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .btn-primary {
+                font-size: 1.1em;
+                padding: 8px 16px;
+            }
+
+            .alert-success, .alert-danger {
+                font-size: 1em;
+            }
+
+            .form-control {
+                font-size: 1em;
+                padding: 8px;
+            }
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

@@ -135,6 +135,8 @@ public class HistoryController {
 
 
 
+
+
 	@PostMapping("/history/waiting/{waitingId}")
 	public String deleteWaiting(@PathVariable Long waitingId, Model model) {
 		try {

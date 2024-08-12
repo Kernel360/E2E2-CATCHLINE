@@ -23,6 +23,4 @@ public class RestaurantResponse {
     private Long reviewCount;
     private FoodType foodType;
     private ServiceType serviceType;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
 }

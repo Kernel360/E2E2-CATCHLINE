@@ -5,6 +5,7 @@ import org.example.catch_line.menu.model.dto.MenuRequest;
 import org.example.catch_line.menu.model.dto.MenuResponse;
 import org.example.catch_line.menu.model.entity.MenuEntity;
 import org.example.catch_line.menu.model.mapper.MenuMapper;
+import org.example.catch_line.menu.model.validation.MenuValidator;
 import org.example.catch_line.menu.repository.MenuRepository;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.validation.RestaurantValidator;
@@ -21,6 +22,7 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final RestaurantValidator restaurantValidator;
+    private final MenuValidator menuValidator;
 
     // 식당에 대한 메뉴 조회
     public List<MenuResponse> getRestaurantMenuList(Long restaurantId) {
@@ -37,15 +39,15 @@ public class MenuService {
     // 메뉴 추가
     public MenuResponse createRestaurantMenu(Long restaurantId, MenuRequest menuRequest) {
         RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
-        MenuEntity menuEntity = requestToEntity(menuRequest, restaurantEntity);
+        MenuEntity menuEntity = MenuMapper.requestToEntity(menuRequest, restaurantEntity);
         MenuEntity savedEntity = menuRepository.save(menuEntity);
         return MenuMapper.entityToResponse(savedEntity);
     }
 
     // 메뉴 수정
-    public void updateRestaurantMenu(Long restaurantId, MenuRequest menuRequest) {
+    public void updateRestaurantMenu(Long restaurantId, Long menuId, MenuRequest menuRequest) {
         RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
-        MenuEntity menuEntity = requestToEntity(menuRequest, restaurantEntity);
+        MenuEntity menuEntity = menuValidator.checkIfMenuPresent(menuId);
         menuEntity.updateMenu(menuRequest.getName(), menuRequest.getPrice());
         // menuRepository.save(menuEntity);
     }
@@ -55,11 +57,4 @@ public class MenuService {
         menuRepository.deleteById(restaurantId);
     }
 
-    private MenuEntity requestToEntity(MenuRequest menuRequest, RestaurantEntity restaurantEntity) {
-        return MenuEntity.builder()
-                .name(menuRequest.getName())
-                .price(menuRequest.getPrice())
-                .restaurant(restaurantEntity)
-                .build();
-    }
 }

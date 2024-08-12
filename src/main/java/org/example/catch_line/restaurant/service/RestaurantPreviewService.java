@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 public class RestaurantPreviewService {
 
 	private final RestaurantRepository restaurantRepository;
-	private final ReviewService reviewService;
 
 	// 식당 프리뷰 리스트 조회
 	// 변경 사항 : 프리뷰 조회 시 리뷰 수, 평점을 항상 DB에서 조회했음 -> 식당 상세 정보 조회시에만 리뷰 수, 평점 DB에서 조회

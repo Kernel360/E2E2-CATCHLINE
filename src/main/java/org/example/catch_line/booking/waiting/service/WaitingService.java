@@ -1,20 +1,17 @@
 package org.example.catch_line.booking.waiting.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.member.model.entity.MemberEntity;
-import org.example.catch_line.member.repository.MemberRepository;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
-import org.example.catch_line.restaurant.repository.RestaurantRepository;
-import org.example.catch_line.exception.booking.ServiceTypeException;
 import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.model.mapper.WaitingResponseMapper;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
+import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.booking.ServiceTypeException;
+import org.example.catch_line.member.model.entity.MemberEntity;
+import org.example.catch_line.member.repository.MemberRepository;
+import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
+import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -30,9 +27,7 @@ public class WaitingService {
 	private final MemberRepository memberRepository;
 	private final RestaurantRepository restaurantRepository;
 
-	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest,Long memberId) {
-
-
+	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest, Long memberId) {
 
 		MemberEntity member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("member 아이디가 틀립니다: " + memberId));
@@ -54,20 +49,6 @@ public class WaitingService {
 		WaitingEntity savedEntity = waitingRepository.save(waiting);
 
 		return waitingResponseMapper.convertToResponse(savedEntity);
-	}
-
-	public List<WaitingResponse> getAllWaiting(Long memberId) {
-		List<WaitingEntity> waitingEntities = waitingRepository.findByMemberMemberId(memberId);
-
-		return waitingEntities.stream()
-			.map(waitingResponseMapper::convertToResponse)
-			.collect(Collectors.toList());
-	}
-
-	public WaitingResponse getWaitingById(Long id) {
-		WaitingEntity waitingEntity = waitingRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("정확한 아이디가 아닙니다: " + id));
-		return waitingResponseMapper.convertToResponse(waitingEntity);
 	}
 
 	public void cancelWaiting(Long id) {

@@ -30,12 +30,11 @@ public class RestaurantService {
     private final ReviewService reviewService;
 
     public RestaurantResponse createRestaurant(RestaurantCreateRequest request) {
-        // TODO: 식당 이름은 중복되도 되지 않을까?
         if(restaurantRepository.findByName(request.getName()).isPresent()) {
             throw new IllegalArgumentException("중복된 식당 이름입니다.");
         }
 
-        RestaurantEntity entity = toEntity(request);
+        RestaurantEntity entity = RestaurantMapper.requestToEntity(request);
         RestaurantEntity savedEntity = restaurantRepository.save(entity);
         return RestaurantMapper.entityToResponse(savedEntity);
     }
@@ -67,16 +66,6 @@ public class RestaurantService {
         restaurantRepository.deleteById(restaurantId);
     }
 
-    // TODO: 식당 위치 조회 구현하기
 
-    private static RestaurantEntity toEntity(RestaurantCreateRequest request) {
-        return RestaurantEntity.builder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .phoneNumber(new PhoneNumber(request.getPhoneNumber()))
-                .foodType(request.getFoodType())
-                .serviceType(request.getServiceType())
-                .rating(new Rating(BigDecimal.valueOf(0)))
-                .build();
-    }
+
 }

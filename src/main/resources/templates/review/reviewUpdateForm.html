@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 수정</title>
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .custom-button {
+            background-color: orange;
+            color: white;
+        }
+        .custom-button:hover {
+            background-color: darkorange;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1>리뷰 수정</h1>
+    <form th:action="@{/restaurants/{restaurantId}/reviews/{reviewId}/update(restaurantId=${restaurantId}, reviewId=${review.reviewId})}" th:object="${review}" method="post">
+        <div class="form-group">
+            <label for="rating">평점</label>
+            <input type="number" id="rating" th:field="*{rating}" class="form-control" min="1" max="5" placeholder="1에서 5 사이의 점수를 입력하세요" required>
+        </div>
+        <div class="form-group">
+            <label for="content">리뷰 내용</label>
+            <textarea id="content" th:field="*{content}" class="form-control" rows="5" placeholder="리뷰 내용을 입력하세요" required></textarea>
+        </div>
+        <button type="submit" class="btn custom-button">리뷰 수정</button>
+    </form>
+</div>
+</body>
+</html>

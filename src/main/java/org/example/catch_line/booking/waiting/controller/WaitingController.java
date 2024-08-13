@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 public class WaitingController {
 
 	private final WaitingService waitingService;
-	private final WaitingRepository waitingRepository;
 
 	@GetMapping("/restaurants/{restaurantId}/waiting")
 	public String addWaitingForm(

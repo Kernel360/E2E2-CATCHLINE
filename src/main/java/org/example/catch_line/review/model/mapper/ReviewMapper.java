@@ -2,15 +2,18 @@ package org.example.catch_line.review.model.mapper;
 
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.model.entity.ReviewEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 
+@Component
 public class ReviewMapper {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static ReviewResponse entityToResponse(ReviewEntity reviewEntity) {
+    public ReviewResponse entityToResponse(ReviewEntity reviewEntity) {
         return ReviewResponse.builder()
                 .reviewId(reviewEntity.getReviewId())
                 .rating(reviewEntity.getRating())

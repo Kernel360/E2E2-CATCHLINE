@@ -69,6 +69,14 @@
 </head>
 <body>
 <div class="container">
+    <div class="row mb-4 btn-container">
+        <div class="col-auto">
+            <button class="btn btn-lilac btn-lg"
+                    th:onclick="|location.href='@{/restaurants}'|"
+                    type="button">뒤로
+            </button>
+        </div>
+    </div>
     <!-- 상단 로그인, 회원가입 및 로그아웃 버튼 -->
     <div class="header-buttons">
         <button type="button" class="btn btn-outline-lilac" th:if="${!isLoggedIn}" th:onclick="|location.href='@{/owner/login}'|">로그인</button>

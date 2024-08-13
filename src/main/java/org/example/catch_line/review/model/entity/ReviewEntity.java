@@ -19,7 +19,7 @@ public class ReviewEntity extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer rating;
 
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "text")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -47,8 +47,8 @@ public class RestaurantController {
         List<RestaurantHourResponse> restaurantHours = restaurantHourService.getAllRestaurantHours(restaurantId);
         RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek);
 
-        String x = String.valueOf(restaurant.getLatitude());
-        String y = String.valueOf(restaurant.getLongitude());
+        String x = String.valueOf(restaurant.getLongitude()); // 경도 == x 좌표
+        String y = String.valueOf(restaurant.getLatitude()); // 위도 == y 좌표
 
         KakaoAddressResponse kakaoAddressResponse = kakaoAddressService.coordinateToAddress(x, y);
         KakaoAddressResponse.Document document = kakaoAddressResponse.getDocuments().get(0);

@@ -150,8 +150,8 @@
             <script th:inline="javascript">
                 /*<![CDATA[*/
                 var jsKey = /*[[${jsKey}]]*/ '';
-                var latitude = /*[[${restaurant.latitude}]]*/ '';
-                var longitude = /*[[${restaurant.longitude}]]*/ ''; //
+                var latitude = /*[[${restaurant.latitude}]]*/ ''; // y 좌표
+                var longitude = /*[[${restaurant.longitude}]]*/ ''; // x 좌표
 
                 document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsKey + '&libraries=services,clusterer,drawing"><\/script>');
                 /*]]>*/
@@ -160,7 +160,7 @@
                 // 지도가 표시될 div와 지도 옵션을 설정
                 var mapContainer = document.getElementById('map'),
                     mapOption = {
-                        center: new kakao.maps.LatLng(longitude, latitude), // 지도의 중심좌표
+                        center: new kakao.maps.LatLng(latitude, longitude), // 지도의 중심좌표
                         level: 3 // 지도의 확대 레벨
                     };
 
@@ -168,7 +168,7 @@
                 var map = new kakao.maps.Map(mapContainer, mapOption);
 
                 // 마커가 표시될 위치입니다
-                var markerPosition  = new kakao.maps.LatLng(longitude, latitude);
+                var markerPosition  = new kakao.maps.LatLng(latitude, longitude);
 
                 // 마커를 생성합니다
                 var marker = new kakao.maps.Marker({

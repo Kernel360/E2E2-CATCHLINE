@@ -8,7 +8,7 @@ values
     ('최유진', '민트', 'mint%Yu-22!!', 'yoo@gmail.com', '010-4321-3214', 'OWNER', false, '2024-01-05 00:00:00', '2024-07-03 12:00:00');
 
 
-insert into restaurant (name, description, phone_number, rating, latitude, longitude, review_count, scrap_count, food_type, service_type, created_at, modified_at)
+insert into restaurant (name, description, phone_number, rating, longitude, latitude, review_count, scrap_count, food_type, service_type, created_at, modified_at)
 values
     ('연돈', '골목식당 돈까스 맛집', '010-1234-1234', 3.3, 126.406107495042, 33.2588494316337, 3, 12000, 'KOREAN', 'RESERVATION', '2019-01-01 00:00:00', '2024-08-03 12:00:00'),
     ('하노이', '봉은사 쌀국수 맛집', '02-1234-1234', 4.5, 127.063851151366, 37.5141649803156, 2, 400, 'KOREAN', 'WAITING', '2022-03-04 00:00:00', '2024-07-03 12:00:00'),

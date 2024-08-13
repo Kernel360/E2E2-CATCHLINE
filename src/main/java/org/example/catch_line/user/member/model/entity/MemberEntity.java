@@ -3,7 +3,6 @@ package org.example.catch_line.user.member.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.catch_line.common.BaseTimeEntity;
-import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.user.member.model.mapper.converter.EmailConverter;
 import org.example.catch_line.user.member.model.mapper.converter.PasswordConverter;
 import org.example.catch_line.user.member.model.mapper.converter.PhoneNumberConverter;

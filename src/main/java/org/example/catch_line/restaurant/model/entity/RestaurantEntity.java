@@ -41,10 +41,10 @@ public class RestaurantEntity extends BaseTimeEntity {
     @Convert(converter = PhoneNumberConverter.class)
     private PhoneNumber phoneNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 30, scale = 20)
     private BigDecimal latitude;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 30, scale = 20)
     private BigDecimal longitude;
 
     @Column(nullable = false)

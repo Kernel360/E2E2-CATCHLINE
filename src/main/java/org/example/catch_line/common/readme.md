@@ -1,1 +1,0 @@
-`@EnableJpaAuditing` 추가해야 합니다.

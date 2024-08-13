@@ -39,7 +39,8 @@ public class ReviewEntity extends BaseTimeEntity {
         this.restaurant = restaurant;
     }
 
-    public void updateContent(String content) {
+    public void updateContent(Integer rating, String content) {
+        this.rating = rating;
         this.content = content;
     }
 }

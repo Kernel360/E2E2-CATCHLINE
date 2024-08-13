@@ -9,5 +9,7 @@ import lombok.Getter;
 @Builder
 public class ReviewUpdateRequest {
 
+    private Integer rating;
+
     private String content;
 }

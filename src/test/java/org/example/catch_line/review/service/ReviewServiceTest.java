@@ -110,7 +110,7 @@ class ReviewServiceTest {
         when(reviewValidator.checkIfReviewPresent(restaurantId)).thenReturn(review);
 
         // when
-        reviewService.updateReview(memberId, restaurantId, reviewId, request);
+        reviewService.updateReview(memberId, request.getRating(), request.getContent());
 
         // then
         assertThat(request.getContent()).isEqualTo(review.getContent());

@@ -66,10 +66,9 @@ public class ReservationEntity extends BaseTimeEntity {
 		this.restaurant = restaurant;
 	}
 
-	public void updateReservation(ReservationRequest reservationRequest) {
-		this.memberCount = reservationRequest.getMemberCount();
-		this.reservationDate = reservationRequest.getReservationDate();
-		this.status = reservationRequest.getStatus();
+	public void updateReservation(int memberCount, LocalDateTime reservationDate) {
+		this.memberCount = memberCount;
+		this.reservationDate = reservationDate;
 	}
 
 	public void changeReservationStatus(Status newStatus) {

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>예약 수정</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5; /* 백그라운드 색상 추가 */
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            padding: 20px;
+            background-color: white; /* 배경을 흰색으로 설정 */
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: orange;
+            border-color: #ff5722;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff8c00;
+            border-color: #e64a19;
+        }
+
+        .alert-success {
+            background-color: orange;
+            border-color: #ffeb3b;
+            color: #333;
+            border-radius: 5px;
+        }
+
+        .alert-danger {
+            background-color: #ffebee;
+            border-color: #f44336;
+            color: orange;
+            border-radius: 5px;
+        }
+
+
+
+        .form-select, .form-control {
+            border: 1px solid orange;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: orange;
+            box-shadow: 0 0 0 0.2rem rgba(255, 87, 34, 0.25);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            color: orange;
+            font-weight: bold;
+        }
+
+        h1 {
+            color: orange;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .btn-primary {
+                font-size: 1.1em;
+                padding: 8px 16px;
+            }
+
+            .alert-success, .alert-danger {
+                font-size: 1em;
+            }
+
+            .form-control {
+                font-size: 1em;
+                padding: 8px;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const today = new Date();
+            const nextDay = new Date(today);
+            nextDay.setDate(today.getDate() + 1);
+            nextDay.setHours(0, 0, 0, 0); // 다음 날 00:00으로 설정
+
+            const lastDay = new Date(today);
+            lastDay.setDate(today.getDate() + 7);
+
+            const formatDateTime = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            };
+
+            const nextDayStr = formatDateTime(nextDay);
+            const lastDayStr = formatDateTime(lastDay);
+
+            const reservationDateInput = document.getElementById('reservationDate');
+            reservationDateInput.setAttribute('min', nextDayStr);
+            reservationDateInput.setAttribute('max', lastDayStr);
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="row mb-4 btn-container">
+        <div class="col-auto">
+            <button class="btn btn-orange btn-lg" th:onclick="|location.href='@{/restaurants}'|" type="button">뒤로</button>
+        </div>
+    </div>
+    <h1 class="text-center">예약 수정</h1>
+
+    <!-- Error message -->
+    <div th:if="${errorMessage}" class="alert alert-danger text-center" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Success message -->
+    <div th:if="${message}" class="alert alert-success text-center" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+
+    <!-- 예약 수정 폼 -->
+    <form th:action="@{/history/reservation/{reservationId}(reservationId=${reservationId})}" method="post" th:object="${reservationRequest}">
+        <!-- Thymeleaf를 사용하여 기존 예약 정보를 폼에 채우기 -->
+        <div class="form-group">
+            <label for="memberCount" class="form-label">인원 수:</label>
+            <input type="number" id="memberCount" name="memberCount" class="form-control" th:value="${reservationRequest.memberCount}" min="1" required>
+        </div>
+        <div class="form-group">
+            <label for="reservationDate" class="form-label">예약 날짜 및 시간:</label>
+            <input type="datetime-local" id="reservationDate" name="reservationDate" class="form-control" th:value="${reservationRequest.reservationDate}" required>
+        </div>
+        <!-- CSRF 토큰 추가 (Spring Security가 활성화된 경우) -->
+        <input type="hidden" name="_method" value="put"/>
+        <button type="submit" class="btn btn-primary w-100">예약 수정하기</button>
+    </form>
+</div>
+</body>
+</html>

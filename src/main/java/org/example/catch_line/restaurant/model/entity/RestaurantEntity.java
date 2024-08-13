@@ -74,6 +74,9 @@ public class RestaurantEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "restaurant")
     private List<RestaurantHourEntity> restaurantHours = new ArrayList<>();
 
+    @OneToMany(mappedBy = "restaurant")
+    private List<RestaurantImageEntity> restaurantImages = new ArrayList<>();
+
     @ManyToMany(mappedBy = "restaurantScraps")
     private List<MemberEntity> scraps = new ArrayList<>();
 

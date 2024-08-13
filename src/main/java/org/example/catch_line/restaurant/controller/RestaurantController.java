@@ -6,8 +6,10 @@ import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
+import org.example.catch_line.restaurant.model.entity.RestaurantImageEntity;
 import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
 import org.example.catch_line.restaurant.service.RestaurantHourService;
+import org.example.catch_line.restaurant.service.RestaurantImageService;
 import org.example.catch_line.restaurant.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -28,13 +30,12 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
     private final RestaurantHourService restaurantHourService;
+    private final RestaurantImageService restaurantImageService;
     private final KakaoAddressService kakaoAddressService;
 
     @Value("${kakao.maps.js-key}")
     private String jsKey;
 
-    // TODO: 리뷰 개수는 실제 DB 조회해서 count하고, 평점은 DB에서 리뷰 점수 다 가져와서 평균 계산해야함.
-    // TODO: 현재 날짜 기준으로 보여줘야 함.
     @GetMapping("/{restaurantId}")
     public String viewRestaurant(
             @PathVariable Long restaurantId,
@@ -53,9 +54,12 @@ public class RestaurantController {
         KakaoAddressResponse kakaoAddressResponse = kakaoAddressService.coordinateToAddress(x, y);
         KakaoAddressResponse.Document document = kakaoAddressResponse.getDocuments().get(0);
 
+        List<RestaurantImageEntity> imageList = restaurantImageService.getImageList(restaurantId);
+
         model.addAttribute("restaurant", restaurant);
         model.addAttribute("restaurantHours", restaurantHours);
         model.addAttribute("hourResponse", hourResponse);
+        model.addAttribute("imageList", imageList);
         model.addAttribute("document", document);
         model.addAttribute("jsKey", jsKey);
         model.addAttribute("dayOfWeek", dayOfWeek.getDescription());

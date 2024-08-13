@@ -2,9 +2,8 @@ package org.example.catch_line.restaurant.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.member.model.vo.PhoneNumber;
+import org.example.catch_line.user.member.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantUpdateRequest;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Slf4j
 @Service

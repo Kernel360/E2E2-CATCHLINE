@@ -1,19 +1,20 @@
 package org.example.catch_line.member.service;
 
 import org.example.catch_line.common.constant.Role;
-import org.example.catch_line.member.model.dto.LoginRequest;
-import org.example.catch_line.member.model.dto.MemberResponse;
-import org.example.catch_line.member.model.dto.SignUpRequest;
-import org.example.catch_line.member.model.vo.Email;
-import org.example.catch_line.member.model.vo.Password;
-import org.example.catch_line.member.model.vo.PhoneNumber;
-import org.example.catch_line.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.dto.LoginRequest;
+import org.example.catch_line.user.member.model.dto.MemberResponse;
+import org.example.catch_line.user.member.model.dto.SignUpRequest;
+import org.example.catch_line.user.member.model.vo.Email;
+import org.example.catch_line.user.member.model.vo.Password;
+import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.user.member.service.AuthService;
+import org.example.catch_line.user.member.validation.MemberValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.example.catch_line.member.model.entity.MemberEntity;
-import org.example.catch_line.member.repository.MemberRepository;
+import org.example.catch_line.user.member.model.entity.MemberEntity;
+import org.example.catch_line.user.member.repository.MemberRepository;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

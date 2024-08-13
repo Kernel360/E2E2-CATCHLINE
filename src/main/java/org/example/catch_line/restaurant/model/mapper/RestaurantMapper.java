@@ -1,11 +1,10 @@
 package org.example.catch_line.restaurant.model.mapper;
 
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.member.model.vo.PhoneNumber;
+import org.example.catch_line.user.member.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 

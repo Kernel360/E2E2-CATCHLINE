@@ -1,17 +1,18 @@
 package org.example.catch_line.member.service;
 
 import org.example.catch_line.common.constant.Role;
-import org.example.catch_line.member.model.dto.MemberUpdateRequest;
-import org.example.catch_line.member.model.vo.Email;
-import org.example.catch_line.member.model.vo.Password;
-import org.example.catch_line.member.model.vo.PhoneNumber;
-import org.example.catch_line.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.dto.MemberUpdateRequest;
+import org.example.catch_line.user.member.model.vo.Email;
+import org.example.catch_line.user.member.model.vo.Password;
+import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.user.member.service.MemberService;
+import org.example.catch_line.user.member.validation.MemberValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.example.catch_line.member.model.entity.MemberEntity;
-import org.example.catch_line.member.repository.MemberRepository;
+import org.example.catch_line.user.member.model.entity.MemberEntity;
+import org.example.catch_line.user.member.repository.MemberRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

@@ -1,14 +1,13 @@
 package org.example.catch_line.review.service;
 
-import org.assertj.core.api.Assertions;
 import org.example.catch_line.common.BaseTimeEntity;
 import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.member.model.entity.MemberEntity;
-import org.example.catch_line.member.model.vo.Email;
-import org.example.catch_line.member.model.vo.Password;
-import org.example.catch_line.member.model.vo.PhoneNumber;
-import org.example.catch_line.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.entity.MemberEntity;
+import org.example.catch_line.user.member.model.vo.Email;
+import org.example.catch_line.user.member.model.vo.Password;
+import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.user.member.validation.MemberValidator;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
@@ -25,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.lang.reflect.Field;

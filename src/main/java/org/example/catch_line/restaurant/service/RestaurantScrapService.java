@@ -2,9 +2,9 @@ package org.example.catch_line.restaurant.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.member.model.entity.MemberEntity;
-import org.example.catch_line.member.repository.MemberRepository;
-import org.example.catch_line.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.entity.MemberEntity;
+import org.example.catch_line.user.member.repository.MemberRepository;
+import org.example.catch_line.user.member.validation.MemberValidator;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;

@@ -1,9 +1,8 @@
 package org.example.catch_line.restaurant.service;
 
 
-import org.assertj.core.api.Assertions;
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.member.model.vo.PhoneNumber;
+import org.example.catch_line.user.member.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;

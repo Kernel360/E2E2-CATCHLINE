@@ -6,12 +6,10 @@ import org.example.catch_line.booking.reservation.model.entity.ReservationEntity
 import org.example.catch_line.booking.reservation.model.mapper.ReservationResponseMapper;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.exception.booking.ServiceTypeException;
 import org.example.catch_line.history.validation.HistoryValidator;
-import org.example.catch_line.member.model.entity.MemberEntity;
-import org.example.catch_line.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.entity.MemberEntity;
+import org.example.catch_line.user.member.validation.MemberValidator;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.validation.RestaurantValidator;
 import org.springframework.stereotype.Service;
 

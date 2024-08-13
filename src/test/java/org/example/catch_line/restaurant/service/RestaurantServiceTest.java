@@ -2,7 +2,7 @@ package org.example.catch_line.restaurant.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.member.model.vo.PhoneNumber;
+import org.example.catch_line.user.member.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantUpdateRequest;
@@ -12,7 +12,6 @@ import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.example.catch_line.restaurant.validation.RestaurantValidator;
-import org.example.catch_line.review.repository.ReviewRepository;
 import org.example.catch_line.review.service.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,11 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;

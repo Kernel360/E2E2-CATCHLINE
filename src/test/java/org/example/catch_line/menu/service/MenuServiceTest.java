@@ -1,9 +1,8 @@
 package org.example.catch_line.menu.service;
 
 
-import org.assertj.core.api.Assertions;
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.member.model.vo.PhoneNumber;
+import org.example.catch_line.user.member.model.vo.PhoneNumber;
 import org.example.catch_line.menu.model.dto.MenuRequest;
 import org.example.catch_line.menu.model.dto.MenuResponse;
 import org.example.catch_line.menu.model.entity.MenuEntity;

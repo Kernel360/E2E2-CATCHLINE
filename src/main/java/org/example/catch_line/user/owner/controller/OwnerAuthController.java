@@ -56,7 +56,7 @@ public class OwnerAuthController {
 
         }
 
-        return "redirect:/";
+        return "redirect:/owner";
     }
 
     @PostMapping("/login")
@@ -76,19 +76,19 @@ public class OwnerAuthController {
                     ownerAuthService.login(ownerLoginRequest);
         } catch (CatchLineException e) {
             model.addAttribute("exception", e.getMessage());
-            return "owner/ownerlogin";
+            return "owner/ownerLogin";
         }
 
         httpSession.setAttribute(MEMBER_ID, ownerResponse.getOwnerId());
         httpSession.setAttribute(ROLE, Role.OWNER);
 
-        return "redirect:/";
+        return "redirect:/owner";
     }
 
     @PostMapping("/logout")
     public String logout(HttpSession httpSession) {
         httpSession.invalidate();
-        return "redirect:/";
+        return "redirect:/owner";
     }
 
 }

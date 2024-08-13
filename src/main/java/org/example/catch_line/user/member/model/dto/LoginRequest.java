@@ -20,8 +20,8 @@ public class LoginRequest {
     @NotBlank
     private String password;
 
-    @NotNull(message = "역할을 선택해야 합니다.")
-    private Role role;
+//    @NotNull(message = "역할을 선택해야 합니다.")
+//    private Role role;
 
 
 }

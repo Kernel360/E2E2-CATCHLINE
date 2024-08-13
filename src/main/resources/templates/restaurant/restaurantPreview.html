@@ -34,11 +34,20 @@
         .btn-orange {
             background-color: orange;
             color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .btn-orange.active {
             background-color: white;
-            color: black;
-            border: 1px solid black;
+            color: orange;
+            border: 1px solid orange;
+        }
+        .btn-orange:hover {
+            background-color: darkorange;
+            border-color: darkorange;
         }
         .page-link {
             color: white;
@@ -57,6 +66,19 @@
         .list-group-item {
             cursor: pointer;
         }
+        .owner-link {
+            display: block;
+            text-align: right;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: orange;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .owner-link:hover {
+            color: darkorange;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -66,26 +88,27 @@
         <h2 th:text="'식당 리스트'">식당 리스트</h2>
     </div>
 
+    <!-- 식당 사장님용 링크 추가 -->
+    <div class="owner-link" th:if="${!isLoggedIn}">
+        <a th:href="@{/owner}">식당 사장님이신가요?</a>
+    </div>
+
     <div class="row btn-container mb-3">
-        <!-- 로그아웃 버튼 -->
+        <!-- 로그아웃, 나의 예약, 내 프로필 버튼 -->
         <div class="col-auto" th:if="${isLoggedIn}">
-            <form th:action="@{/logout}" method="post">
-                <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/logout}'|" type="submit">로그아웃</button>
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button class="btn btn-outline-secondary" type="submit">로그아웃</button>
             </form>
+            <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/history}'|" type="button">나의 예약</button>
+            <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/members}'|" type="button">내 프로필</button>
         </div>
+
         <!-- 로그인 및 회원가입 버튼 -->
         <div class="col-auto" th:if="${!isLoggedIn}">
             <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/login}'|" type="button">로그인</button>
         </div>
         <div class="col-auto" th:if="${!isLoggedIn}">
             <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/signup}'|" type="button">회원가입</button>
-        </div>
-
-        <!-- history 내역 버튼 추가 -->
-        <div class="col-auto" th:if="${isLoggedIn}">
-        <div class="col-auto">
-            <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/history}'|" type="button">나의 예약</button>
-        </div>
         </div>
     </div>
 

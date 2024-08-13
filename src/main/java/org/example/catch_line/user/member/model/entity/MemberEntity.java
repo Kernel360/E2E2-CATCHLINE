@@ -46,10 +46,6 @@ public class MemberEntity extends BaseTimeEntity {
     @Convert(converter = PhoneNumberConverter.class)
     private PhoneNumber phoneNumber;
 
-    @Enumerated(EnumType.STRING) // request dto에서 string으로 받을 수 있음.
-    @Column(nullable = false)
-    private Role role;
-
     @Column(nullable = false)
     private boolean isMemberDeleted;
 
@@ -73,13 +69,12 @@ public class MemberEntity extends BaseTimeEntity {
 
 
     @Builder
-    public MemberEntity(Email email, String name, String nickname, Password password, PhoneNumber phoneNumber, Role role) {
+    public MemberEntity(Email email, String name, String nickname, Password password, PhoneNumber phoneNumber) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.role = role;
 //        this.isMemberDeleted = false;
     }
 

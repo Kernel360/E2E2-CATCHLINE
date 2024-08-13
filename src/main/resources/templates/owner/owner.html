@@ -4,13 +4,28 @@
     <meta charset="utf-8">
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f3e6f7; /* 라일락 배경 색상 */
+            font-family: Arial, sans-serif;
+        }
         .container {
             max-width: 800px;
-            margin-top: 20px;
+            margin-top: 40px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .card {
             margin-bottom: 20px;
             padding: 20px;
+            border: none;
+            background-color: #fafafa;
+            border-radius: 8px;
+        }
+        .card-title {
+            font-size: 24px;
+            color: #5c4b7d; /* 라일락 톤 텍스트 색상 */
         }
         .btn-container {
             text-align: center;
@@ -19,31 +34,66 @@
         .btn {
             display: inline-block;
             width: auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            border: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .btn-orange {
-            background-color: orange;
+        .btn-lilac {
+            background-color: #c6a9e2; /* 연한 라일락 색상 */
             color: white;
+        }
+        .btn-lilac:hover {
+            background-color: #b292d1; /* 조금 더 진한 라일락 색상 */
+        }
+        .btn-outline-lilac {
+            background-color: white;
+            color: #c6a9e2;
+            border: 2px solid #c6a9e2;
+        }
+        .btn-outline-lilac:hover {
+            background-color: #c6a9e2;
+            color: white;
+        }
+        .header-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .header-buttons .btn {
+            margin-left: 10px;
         }
     </style>
 </head>
 <body>
 <div class="container">
+    <!-- 상단 로그인 및 회원가입 버튼 -->
+    <div class="header-buttons">
+        <button type="button" class="btn btn-outline-lilac" th:onclick="|location.href='@{/owner/login}'|">로그인</button>
+        <button type="button" class="btn btn-outline-lilac" th:onclick="|location.href='@{/owner/signup}'|">회원가입</button>
+    </div>
+
+    <!-- 관리자 페이지 제목 -->
     <h2 class="card-title text-center">식당 관리자 페이지</h2>
     <hr class="my-4">
+
+    <!-- 관리 버튼들 -->
     <div class="card">
         <div class="card-body btn-container">
-            <button type="button" class="btn btn-orange"
+            <button type="button" class="btn btn-lilac"
                     th:onclick="|location.href='@{/owner/restaurants}'|">식당 추가</button>
         </div>
         <div class="card-body btn-container">
-            <button type="button" class="btn btn-orange"
+            <button type="button" class="btn btn-lilac"
                     th:onclick="|location.href='@{/owner/restaurants}'|">식당 관리</button>
         </div>
         <div class="card-body btn-container">
-            <button type="button" class="btn btn-orange">예약 관리</button>
+            <button type="button" class="btn btn-lilac">예약 관리</button>
         </div>
         <div class="card-body btn-container">
-            <button type="button" class="btn btn-orange">웨이팅 관리</button>
+            <button type="button" class="btn btn-lilac">웨이팅 관리</button>
         </div>
     </div>
 </div> <!-- /container -->

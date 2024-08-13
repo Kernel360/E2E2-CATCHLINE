@@ -27,10 +27,6 @@
             color: white;
         }
 
-        .button-container {
-            margin-bottom: 20px;
-        }
-
         .top-right-buttons {
             position: absolute;
             top: 20px;
@@ -45,6 +41,29 @@
         .map-container {
             margin-top: 20px;
         }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .image-container img {
+            width: 100%; /* 컨테이너의 너비에 맞춰 이미지를 조정 */
+            height: auto; /* 자동으로 높이를 조정 */
+            margin: 10px auto; /* 중앙 정렬을 위한 자동 여백 */
+            display: block; /* 이미지를 블록 요소로 설정하여 중앙 정렬 */
+            object-fit: cover;
+        }
+        /* Image Gallery 왼쪽에 버튼 위치시키기 */
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header .left-buttons {
+            margin-right: 20px; /* 여백을 추가 */
+        }
+
     </style>
 </head>
 <body>
@@ -80,6 +99,49 @@
                     th:onclick="|location.href='@{/restaurants}'|"
                     type="button">뒤로
             </button>
+            <button class="btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/restaurants/{restaurantId}/upload(restaurantId=${restaurant.restaurantId})}'|"
+                    type="button">사진 등록
+            </button>
+        </div>
+    </div>
+
+    <!-- 첫 번째 이미지만 표시 -->
+    <div class="image-container">
+        <div th:if="${imageList != null and !imageList.isEmpty()}">
+            <img th:src="@{'/images/' + ${imageList[0].restaurantImageId}}" th:alt="${imageList[0].fileName}" style="cursor: pointer; max-width: 200px;" data-toggle="modal" data-target="#imageModal"/>
+        </div>
+    </div>
+
+    <!-- 모달 구조 -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Image Gallery</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span> <!-- 닫기 기호 -->
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Carousel -->
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div th:each="image, iterStat : ${imageList}" th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item">
+                                <img class="d-block w-100" th:src="@{'/images/' + ${image.restaurantImageId}}" th:alt="${image.fileName}">
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -147,18 +209,28 @@
         <div class="card-body">
             <h5 class="card-title">위치 정보</h5>
             <div id="map" style="width:100%; height:400px;"></div>
-            <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6c55265d765d5ba3b25c374a0fd028eb&libraries=services,clusterer,drawing"></script>
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                var jsKey = /*[[${jsKey}]]*/ '';
+                var latitude = /*[[${restaurant.latitude}]]*/ ''; // y 좌표
+                var longitude = /*[[${restaurant.longitude}]]*/ ''; // x 좌표
+
+                document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsKey + '&libraries=services,clusterer,drawing"><\/script>');
+                /*]]>*/
+            </script>
             <script>
-                var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+                // 지도가 표시될 div와 지도 옵션을 설정
+                var mapContainer = document.getElementById('map'),
                     mapOption = {
-                        center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+                        center: new kakao.maps.LatLng(latitude, longitude), // 지도의 중심좌표
                         level: 3 // 지도의 확대 레벨
                     };
 
-                var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+                // 지도를 생성합니다
+                var map = new kakao.maps.Map(mapContainer, mapOption);
 
                 // 마커가 표시될 위치입니다
-                var markerPosition  = new kakao.maps.LatLng(33.450701, 126.570667);
+                var markerPosition  = new kakao.maps.LatLng(latitude, longitude);
 
                 // 마커를 생성합니다
                 var marker = new kakao.maps.Marker({
@@ -168,11 +240,15 @@
                 // 마커가 지도 위에 표시되도록 설정합니다
                 marker.setMap(map);
             </script>
-            <p class="card-text">주소</p>
+            <p th:text="'도로명 주소 : ' + ${document.roadAddress.addressName}"></p>
+            <p th:text="'지번 주소 : ' + ${document.address.addressName}"></p>
         </div>
     </div>
 
 </div> <!-- /container -->
-
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>이미지 업로드</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            color: #555;
+            font-weight: bold;
+        }
+
+        .btn-orange {
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-orange:hover {
+            background-color: darkorange;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row mb-4 btn-container">
+        <div class="col-auto">
+            <button class="btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/restaurants/{restaurantId}(restaurantId=${restaurantId})}'|"
+                    type="button">뒤로
+            </button>
+        </div>
+    </div>
+
+    <h1>이미지 업로드</h1>
+
+    <form th:action method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="image">이미지 선택:</label>
+            <input type="file" name="image" id="image" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-orange btn-block">업로드</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -41,10 +41,10 @@ public class RestaurantEntity extends BaseTimeEntity {
     @Convert(converter = PhoneNumberConverter.class)
     private PhoneNumber phoneNumber;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 30, scale = 20)
     private BigDecimal latitude;
 
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 30, scale = 20)
     private BigDecimal longitude;
 
     @Column(nullable = false)
@@ -73,6 +73,9 @@ public class RestaurantEntity extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "restaurant")
     private List<RestaurantHourEntity> restaurantHours = new ArrayList<>();
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<RestaurantImageEntity> restaurantImages = new ArrayList<>();
 
     @ManyToMany(mappedBy = "restaurantScraps")
     private List<MemberEntity> scraps = new ArrayList<>();

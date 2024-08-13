@@ -19,6 +19,8 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 application.properties
+application-API-KEY.properties
+
 ### IntelliJ IDEA ###
 .idea
 *.iws

@@ -2,11 +2,11 @@ package org.example.catch_line.booking.waiting.controller;
 
 import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
-import org.example.catch_line.booking.waiting.model.entity.WaitingType;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.booking.WaitingException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
@@ -31,7 +30,6 @@ public class WaitingController {
 	public String addWaitingForm(
 		@PathVariable("restaurantId") Long restaurantId
 	) {
-
 		return "waiting/waiting";
 	}
 
@@ -59,12 +57,11 @@ public class WaitingController {
 			model.addAttribute("waitingResponse", waitingResponse);
 
 			return "redirect:/history";
-		} catch (IllegalArgumentException e) {
+		} catch (WaitingException e) {
 			// 오류 메시지를 추가하고 현재 페이지로 리디렉션
 			model.addAttribute("error", "Waiting failed: " + e.getMessage());
 			return "waiting/waiting"; // 현재 페이지를 보여주는 템플릿 이름으로 수정
 		}
 	}
-
 
 }

@@ -9,6 +9,8 @@ import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.booking.BookingErrorException;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
@@ -58,8 +60,9 @@ public class HistoryController {
 				HistoryResponse historyResponse = historyService.findWaitingDetailById(historyList, waitingId);
 				model.addAttribute("historyResponse", historyResponse);
 				return "history/waitingDetail";
-			} catch (IllegalArgumentException e) {
-				// 오류 처리: 메시지 표시 또는 로그 기록 등
+			} catch (HistoryException e) {
+				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
+				return "error";
 			}
 		}
 
@@ -91,7 +94,7 @@ public class HistoryController {
 	public String deleteReservation(@PathVariable Long reservationId, Model model) {
 		try {
 			reservationService.cancelReservation(reservationId);
-		} catch (RuntimeException e) {
+		} catch (BookingErrorException e) {
 			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
 			return "error"; // 오류 페이지로 리다이렉트
 		}
@@ -101,7 +104,7 @@ public class HistoryController {
 
 	@GetMapping("/history/reservation/{reservationId}/edit")
 	public String updateForm(@PathVariable Long reservationId, Model model) {
-		ReservationEntity reservationEntity = reservationService.findByReservationId(reservationId);
+		ReservationEntity reservationEntity = reservationService.findReservationById(reservationId);
 
 		ReservationRequest reservationRequest = ReservationRequest.builder()
 			.memberCount(reservationEntity.getMemberCount())
@@ -114,32 +117,25 @@ public class HistoryController {
 		return "reservation/updateReservation";
 	}
 
-
-
-
 	@PutMapping("/history/reservation/{reservationId}")
-	public String updateReservation(@PathVariable Long reservationId, @ModelAttribute ReservationRequest updateRequest, RedirectAttributes redirectAttributes) {
+	public String updateReservation(@PathVariable Long reservationId, @ModelAttribute ReservationRequest updateRequest,
+		RedirectAttributes redirectAttributes) {
 		try {
 			HistoryResponse updateReservation = historyService.updateReservation(reservationId,
 				updateRequest.getMemberCount(), updateRequest.getReservationDate());
 			redirectAttributes.addFlashAttribute("message", "예약이 업데이트 되었습니다");
-		} catch (HistoryException e) {
+		} catch (BookingErrorException e) {
 			redirectAttributes.addFlashAttribute("errorMessage", "예약 업데이트를 실패했습니다");
 		}
 
 		return "redirect:/history";
 	}
 
-
-
-
-
-
 	@PostMapping("/history/waiting/{waitingId}")
 	public String deleteWaiting(@PathVariable Long waitingId, Model model) {
 		try {
 			waitingService.cancelWaiting(waitingId);
-		} catch (RuntimeException e) {
+		} catch (BookingErrorException e) {
 			model.addAttribute("errorMessage", "웨이팅 삭제 중 오류가 발생했습니다.");
 			return "error"; // 오류 페이지로 리다이렉트
 		}

@@ -8,6 +8,7 @@ import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.booking.reservation.service.ReservationService;
+import org.example.catch_line.exception.CatchLineException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +53,7 @@ public class ReservationController {
 			model.addAttribute("reservationResponse", reservationResponse);
 
 			return "redirect:/history";
-		} catch (IllegalArgumentException e) {
+		} catch (CatchLineException e) {
 			redirectAttributes.addFlashAttribute("error", "Reservation failed: " + e.getMessage());
 			return "redirect:/restaurants/" + restaurantId + "/reservation";
 		}

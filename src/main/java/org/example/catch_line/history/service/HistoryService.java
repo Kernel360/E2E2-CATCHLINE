@@ -8,15 +8,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
-import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.exception.booking.HistoryException;
-import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
-import org.springframework.beans.BeanUtils;
+import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.booking.HistoryException;
+import org.example.catch_line.history.model.dto.HistoryResponse;
+import org.example.catch_line.history.validation.HistoryValidator;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +26,7 @@ public class HistoryService {
 
 	private final WaitingRepository waitingRepository;
 	private final ReservationRepository reservationRepository;
+	private final HistoryValidator historyValidator;
 
 	public List<HistoryResponse> getAllHistory(Long memberId, Status status) {
 		List<HistoryResponse> historyResponseList = new ArrayList<>();
@@ -36,7 +36,8 @@ public class HistoryService {
 		LocalDateTime endOfDay = getEndOfDay();
 
 		// 오늘 등록된 상태가 SCHEDULED인 웨이팅 리스트 가져오기
-		List<WaitingEntity> scheduledWaitingEntities = getWaitingEntitiesScheduledForToday(memberId, status, startOfDay, endOfDay);
+		List<WaitingEntity> scheduledWaitingEntities = getWaitingEntitiesScheduledForToday(memberId, status, startOfDay,
+			endOfDay);
 		List<ReservationEntity> allReservation = getReservationEntities(memberId, status);
 
 		// 각 웨이팅 엔티티를 HistoryResponse로 변환
@@ -64,8 +65,10 @@ public class HistoryService {
 	}
 
 	// 상태가 예정이고 날짜가 오늘인 웨이팅 리스트
-	private List<WaitingEntity> getWaitingEntitiesScheduledForToday(Long memberId, Status status, LocalDateTime startOfDay, LocalDateTime endOfDay) {
-		return waitingRepository.findByMemberMemberIdAndStatusAndCreatedAtBetween(memberId, status, startOfDay, endOfDay);
+	private List<WaitingEntity> getWaitingEntitiesScheduledForToday(Long memberId, Status status,
+		LocalDateTime startOfDay, LocalDateTime endOfDay) {
+		return waitingRepository.findByMemberMemberIdAndStatusAndCreatedAtBetween(memberId, status, startOfDay,
+			endOfDay);
 	}
 
 	// 예약 리스트 가져오기
@@ -73,7 +76,43 @@ public class HistoryService {
 		return reservationRepository.findByMemberMemberIdAndStatus(memberId, status);
 	}
 
-	private HistoryResponse entityToHistoryResponse(WaitingEntity waiting, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+	private int calculateWaitingRegistrationId(WaitingEntity waiting, LocalDateTime startOfDay,
+		LocalDateTime endOfDay) {
+		long count = waitingRepository.countByRestaurantAndCreatedAtBetweenAndCreatedAtBefore(
+			waiting.getRestaurant(), startOfDay, endOfDay, waiting.getCreatedAt());
+		return (int)count + 1;
+	}
+
+	private int calculateMyWaitingPosition(WaitingEntity waiting, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+		long count = waitingRepository.countByRestaurantAndStatusAndCreatedAtBefore(
+			waiting.getRestaurant(), Status.SCHEDULED, waiting.getCreatedAt());
+		return (int)count + 1;
+	}
+
+	private void sortHistoryResponsesByCreatedAt(List<HistoryResponse> historyResponseList) {
+		Collections.sort(historyResponseList, Comparator.comparing(HistoryResponse::getCreatedAt).reversed());
+	}
+
+	//ReservationEntity -> HistoryResponse
+	private HistoryResponse reservationToHistoryResponse(ReservationEntity entity) {
+		return HistoryResponse.builder()
+			.restaurantId(entity.getRestaurant().getRestaurantId())
+			.reservationId(entity.getReservationId())
+			.memberCount(entity.getMemberCount())
+			.restaurantName(entity.getRestaurant().getName())
+			.status(entity.getStatus())
+			.reservationDate(entity.getReservationDate())
+			.serviceType(entity.getRestaurant().getServiceType())
+			.createdAt(entity.getCreatedAt())
+			.modifiedAt(entity.getModifiedAt())
+			.waitingRegistrationId(1) // 항상 1로 설정
+			.myWaitingPosition(1) // 항상 1로 설정
+			.build();
+	}
+
+	//WaitingEntity -> HistoryResponse
+	private HistoryResponse entityToHistoryResponse(WaitingEntity waiting, LocalDateTime startOfDay,
+		LocalDateTime endOfDay) {
 		int waitingRegistrationId = calculateWaitingRegistrationId(waiting, startOfDay, endOfDay);
 		int myWaitingPosition = calculateMyWaitingPosition(waiting, startOfDay, endOfDay);
 
@@ -89,38 +128,6 @@ public class HistoryService {
 			.modifiedAt(waiting.getModifiedAt())
 			.waitingRegistrationId(waitingRegistrationId)
 			.myWaitingPosition(myWaitingPosition)
-			.build();
-	}
-
-	private int calculateWaitingRegistrationId(WaitingEntity waiting, LocalDateTime startOfDay, LocalDateTime endOfDay) {
-		long count = waitingRepository.countByRestaurantAndCreatedAtBetweenAndCreatedAtBefore(
-			waiting.getRestaurant(), startOfDay, endOfDay, waiting.getCreatedAt());
-		return (int) count + 1;
-	}
-
-	private int calculateMyWaitingPosition(WaitingEntity waiting, LocalDateTime startOfDay, LocalDateTime endOfDay) {
-		long count = waitingRepository.countByRestaurantAndStatusAndCreatedAtBefore(
-			waiting.getRestaurant(), Status.SCHEDULED, waiting.getCreatedAt());
-		return (int) count + 1;
-	}
-
-	private void sortHistoryResponsesByCreatedAt(List<HistoryResponse> historyResponseList) {
-		Collections.sort(historyResponseList, Comparator.comparing(HistoryResponse::getCreatedAt).reversed());
-	}
-
-	private HistoryResponse reservationToHistoryResponse(ReservationEntity entity) {
-		return HistoryResponse.builder()
-			.restaurantId(entity.getRestaurant().getRestaurantId())
-			.reservationId(entity.getReservationId())
-			.memberCount(entity.getMemberCount())
-			.restaurantName(entity.getRestaurant().getName())
-			.status(entity.getStatus())
-			.reservationDate(entity.getReservationDate())
-			.serviceType(entity.getRestaurant().getServiceType())
-			.createdAt(entity.getCreatedAt())
-			.modifiedAt(entity.getModifiedAt())
-			.waitingRegistrationId(1) // 항상 1로 설정
-			.myWaitingPosition(1) // 항상 1로 설정
 			.build();
 	}
 
@@ -141,10 +148,8 @@ public class HistoryService {
 	}
 
 	public HistoryResponse updateReservation(Long reservationId, int memberCount, LocalDateTime reservationDate) {
-		ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId);
-		if(reservationEntity == null ) {
-			throw new HistoryException();
-		}
+
+		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);
 
 		// 상태를 업데이트하지 않도록 수정
 		reservationEntity.updateReservation(memberCount, reservationDate);
@@ -153,10 +158,6 @@ public class HistoryService {
 
 		return reservationToHistoryResponse(savedEntity);
 	}
-
-
-
-
 }
 
 

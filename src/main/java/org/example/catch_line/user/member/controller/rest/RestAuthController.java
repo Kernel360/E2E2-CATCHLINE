@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.user.member.model.dto.LoginRequest;
 import org.example.catch_line.user.member.model.dto.MemberResponse;
 import org.example.catch_line.user.member.model.dto.SignUpRequest;
@@ -43,7 +44,7 @@ public class RestAuthController {
     ) {
         MemberResponse memberResponse = authService.login(loginRequest);
         httpSession.setAttribute(MEMBER_ID, memberResponse.getMemberId());
-        httpSession.setAttribute(ROLE, memberResponse.getRole());
+        httpSession.setAttribute(ROLE, Role.USER);
 
         return ResponseEntity.ok().body(memberResponse);
 

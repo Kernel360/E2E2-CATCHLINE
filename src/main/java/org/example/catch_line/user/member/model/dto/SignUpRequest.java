@@ -28,7 +28,7 @@ public class SignUpRequest {
     @Size(min = 11, max = 14)
     private String phoneNumber;
 
-    @NotNull
-    private Role role;
+//    @NotNull
+//    private Role role;
 
 }

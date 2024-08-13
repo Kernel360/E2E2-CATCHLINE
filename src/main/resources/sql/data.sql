@@ -1,11 +1,11 @@
-insert into member (name, nickname, password, email, phone_number, role, is_member_deleted, created_at, modified_at)
+insert into member (name, nickname, password, email, phone_number, is_member_deleted, created_at, modified_at)
 values
-    ('홍길동', '홍', 'honggildong1@!', 'abc@gmail.com', '010-1234-1234', 'USER', false, '2022-08-04 00:00:00', '2022-08-04 00:00:00'),
-    ('김민준', '민', 'minJJun^#1111!', 'min@gmail.com', '010-4321-4321', 'USER', false, '2023-01-04 00:00:00', '2023-01-04 00:00:00'),
-    ('박지훈', '박지성', 'park^+JH345!', 'park@gmail.com', '010-8888-8888', 'USER', false, '2024-03-04 00:00:00', '2024-04-03 12:00:00'),
-    ('이지아', '솔라', 'leezi=-a1234!', 'lee@gmail.com', '010-0000-0000', 'USER', false, '2024-04-01 00:00:00', '2024-05-01 12:00:00'),
-    ('정지수', '초코', 'chocOJs$oo4!', 'jisoo@gmail.com', '010-4568-3321', 'USER', false, '2024-05-23 00:00:00', '2024-08-03 12:00:00'),
-    ('최유진', '민트', 'mint%Yu-22!!', 'yoo@gmail.com', '010-4321-3214', 'OWNER', false, '2024-01-05 00:00:00', '2024-07-03 12:00:00');
+    ('홍길동', '홍', 'honggildong1@!', 'abc@gmail.com', '010-1234-1234', false, '2022-08-04 00:00:00', '2022-08-04 00:00:00'),
+    ('김민준', '민', 'minJJun^#1111!', 'min@gmail.com', '010-4321-4321', false, '2023-01-04 00:00:00', '2023-01-04 00:00:00'),
+    ('박지훈', '박지성', 'park^+JH345!', 'park@gmail.com', '010-8888-8888', false, '2024-03-04 00:00:00', '2024-04-03 12:00:00'),
+    ('이지아', '솔라', 'leezi=-a1234!', 'lee@gmail.com', '010-0000-0000', false, '2024-04-01 00:00:00', '2024-05-01 12:00:00'),
+    ('정지수', '초코', 'chocOJs$oo4!', 'jisoo@gmail.com', '010-4568-3321', false, '2024-05-23 00:00:00', '2024-08-03 12:00:00'),
+    ('최유진', '민트', 'mint%Yu-22!!', 'yoo@gmail.com', '010-4321-3214', false, '2024-01-05 00:00:00', '2024-07-03 12:00:00');
 
 
 insert into restaurant (name, description, phone_number, rating, latitude, longitude, review_count, scrap_count, food_type, service_type, created_at, modified_at)

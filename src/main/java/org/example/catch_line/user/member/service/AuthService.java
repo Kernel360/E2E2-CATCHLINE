@@ -57,7 +57,6 @@ public class AuthService {
 
         return memberRepository.findByEmailAndIsMemberDeletedFalse(new Email(loginRequest.getEmail()))
                 .filter(member -> passwordEncoder.matches(loginRequest.getPassword(), member.getPassword().getEncodedPassword())) // 비밀번호 비교
-                .filter(member -> loginRequest.getRole().equals(member.getRole()))
                 .map(MemberResponseMapper::entityToResponse)
                 .orElseThrow(() -> new CatchLineException("로그인에 실패하였습니다.")); // TODO: 기능별 예외 생성
 
@@ -73,7 +72,6 @@ public class AuthService {
                 .nickname(signUpRequest.getNickname())
                 .password(new Password(encodedPassword))
                 .phoneNumber(new PhoneNumber(signUpRequest.getPhoneNumber()))
-                .role(signUpRequest.getRole())
                 .build();
     }
 

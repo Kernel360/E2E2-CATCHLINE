@@ -3,6 +3,7 @@ package org.example.catch_line.restaurant.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.model.vo.Rating;
+import org.example.catch_line.scrap.service.ScrapService;
 import org.example.catch_line.user.member.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
@@ -26,6 +27,7 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final RestaurantValidator restaurantValidator;
     private final ReviewService reviewService;
+    private final ScrapService scrapService;
 
     public RestaurantResponse createRestaurant(RestaurantCreateRequest request) {
         if(restaurantRepository.findByName(request.getName()).isPresent()) {
@@ -45,8 +47,10 @@ public class RestaurantService {
         RestaurantEntity entity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
         BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
         Long reviewCount = reviewService.getReviewCount(restaurantId);
+        Long scrapCount = scrapService.getRestaurantScraps(restaurantId);
 
         entity.updateReview(new Rating(averageRating), reviewCount);
+        entity.updateScrap(scrapCount);
         return RestaurantMapper.entityToResponse(entity);
     }
 

@@ -19,6 +19,7 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            position: relative; /* 부모 요소에 상대적 위치 지정 */
         }
 
         h1 {
@@ -86,10 +87,29 @@
         .btn-white:hover {
             background-color: #FFE0B2;
         }
+
+        /* 오른쪽 상단 버튼 스타일 */
+        .top-right-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column; /* 수직 정렬 */
+        }
+
+        .top-right-buttons .btn {
+            margin-bottom: 10px; /* 버튼 간격 조정 */
+        }
     </style>
 </head>
 <body>
 <div class="container">
+    <!-- 오른쪽 상단의 버튼 그룹 -->
+    <div class="top-right-buttons">
+        <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/my-page/reviews}'|" type="button">내 리뷰</button>
+        <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/my-page/scraps}'|" type="button">내 스크랩</button>
+    </div>
+
     <h1>회원 프로필</h1>
 
     <div class="form-group">

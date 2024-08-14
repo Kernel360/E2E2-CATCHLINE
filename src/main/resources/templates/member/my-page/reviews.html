@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa; /* 부드러운 회색 배경 */
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+            border-radius: 10px; /* 둥근 모서리 */
+        }
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f1f1f1; /* 밝은 배경 */
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .card-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .list-group-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px; /* 아이템 둥근 모서리 */
+            padding: 15px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        .review-rating {
+            font-size: 20px;
+            font-weight: bold;
+            color: orange; /* 부드러운 주황색 */
+        }
+        .review-content {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            background-color: #fafafa;
+            width: 600px; /* 고정된 가로 길이를 더 넓게 설정 */
+            max-width: 100%; /* 최대 폭을 설정하여 컨테이너를 넘지 않도록 함 */
+            white-space: normal; /* 긴 텍스트는 자동으로 줄바꿈 */
+            word-wrap: break-word; /* 긴 단어가 있을 때 줄바꿈 */
+            overflow-wrap: break-word; /* 긴 단어가 있을 때 줄바꿈 */
+        }
+
+        .review-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            margin-left: 10px;
+        }
+        .btn-orange {
+            background-color: orange; /* 부드러운 주황색 */
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+            margin-bottom: 5px;
+        }
+        .btn-orange:hover {
+            background-color: orange; /* 어두운 주황색 */
+        }
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 5px; /* 둥근 버튼 */
+        }
+        .btn-danger {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 5px; /* 둥근 버튼 */
+        }
+        .btn-lg {
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #842029;
+            border-radius: 10px;
+            font-size: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">리뷰 정보</h5>
+            <div class="row mb-4 btn-container">
+                <div class="col-auto">
+                    <button class="btn btn-orange btn-lg"
+                            th:onclick="|location.href='@{/members}'|"
+                            type="button">뒤로
+                    </button>
+                </div>
+            </div>
+            <div class="list-group">
+                <div class="list-group-item" th:each="review : ${reviewList}">
+                    <div>
+                        <div class="review-rating" th:text="'평점: ' + ${review.rating}">rating</div>
+                        <div class="review-content" th:text="${review.content}">content</div>
+                        <small th:text="${review.createdAt}">createdAt</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,11 +1,11 @@
 insert into member (name, nickname, password, email, phone_number, is_member_deleted, created_at, modified_at)
 values
-    ('홍길동', '홍', 'honggildong1@!', 'abc@gmail.com', '010-1234-1234', false, '2022-08-04 00:00:00', '2022-08-04 00:00:00'),
-    ('김민준', '민', 'minJJun^#1111!', 'min@gmail.com', '010-4321-4321', false, '2023-01-04 00:00:00', '2023-01-04 00:00:00'),
-    ('박지훈', '박지성', 'park^+JH345!', 'park@gmail.com', '010-8888-8888', false, '2024-03-04 00:00:00', '2024-04-03 12:00:00'),
-    ('이지아', '솔라', 'leezi=-a1234!', 'lee@gmail.com', '010-0000-0000', false, '2024-04-01 00:00:00', '2024-05-01 12:00:00'),
-    ('정지수', '초코', 'chocOJs$oo4!', 'jisoo@gmail.com', '010-4568-3321', false, '2024-05-23 00:00:00', '2024-08-03 12:00:00'),
-    ('최유진', '민트', 'mint%Yu-22!!', 'yoo@gmail.com', '010-4321-3214', false, '2024-01-05 00:00:00', '2024-07-03 12:00:00');
+    ('홍길동', '홍', '$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2', 'abc@gmail.com', '010-1234-1234', false, '2022-08-04 00:00:00', '2022-08-04 00:00:00'),
+    ('김민준', '민', '$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2', 'min@gmail.com', '010-4321-4321', false, '2023-01-04 00:00:00', '2023-01-04 00:00:00'),
+    ('박지훈', '박지성', '$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2', 'park@gmail.com', '010-8888-8888', false, '2024-03-04 00:00:00', '2024-04-03 12:00:00'),
+    ('이지아', '솔라', '$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2', 'lee@gmail.com', '010-0000-0000', false, '2024-04-01 00:00:00', '2024-05-01 12:00:00'),
+    ('정지수', '초코', '$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2', 'jisoo@gmail.com', '010-4568-3321', false, '2024-05-23 00:00:00', '2024-08-03 12:00:00'),
+    ('최유진', '민트', '$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2', 'yoo@gmail.com', '010-4321-3214', false, '2024-01-05 00:00:00', '2024-07-03 12:00:00');
 
 
 insert into restaurant (name, description, phone_number, rating, longitude, latitude, review_count, scrap_count, food_type, service_type, created_at, modified_at)
@@ -59,7 +59,7 @@ values
     (1, 'TAKE_OUT','CANCELED', 6, 4, '2024-08-01 16:30:00', '2024-08-01 16:35:00'),
     (22, 'TAKE_OUT','COMPLETED', 1, 5, '2024-08-02 16:30:00', '2024-08-02 17:30:00');
 
-insert into scrap (member_id, restaurant_id)
+insert into scrap (member_member_id, restaurant_restaurant_id)
 values
     (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6),
     (2, 1), (2, 3), (2, 5), (2, 6),

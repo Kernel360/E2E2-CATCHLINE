@@ -39,8 +39,24 @@ public class RestaurantMapper {
                 .serviceType(request.getServiceType())
                 .rating(new Rating(BigDecimal.ZERO))
                 .owner(request.getOwner())
-                .latitude(request.getLatitude())
-                .longitude(request.getLongitude())
                 .build();
     }
+
+    public static RestaurantEntity requestToEntity(RestaurantCreateRequest request, BigDecimal latitude, BigDecimal longitude,OwnerEntity owner) {
+
+        return RestaurantEntity.builder()
+            .name(request.getName())
+            .description(request.getDescription())
+            .phoneNumber(new PhoneNumber(request.getPhoneNumber()))
+            .foodType(request.getFoodType())
+            .serviceType(request.getServiceType())
+            .rating(new Rating(BigDecimal.ZERO))
+            .owner(request.getOwner())
+            .longitude(longitude)
+            .latitude(latitude)
+            .owner(owner)
+            .build();
+    }
+
+
 }

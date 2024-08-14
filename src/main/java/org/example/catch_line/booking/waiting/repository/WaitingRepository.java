@@ -26,6 +26,8 @@ public interface WaitingRepository extends JpaRepository<WaitingEntity, Long> {
 	List<WaitingEntity> findByMemberMemberIdAndStatusAndCreatedAtBetween(Long memberId, Status status,
 		LocalDateTime startOfDay, LocalDateTime endOfDay);
 
+	List<WaitingEntity> findByMemberMemberIdAndStatus(Long memberId, Status status);
+
 	@Query("SELECT COUNT(w) FROM WaitingEntity w WHERE w.restaurant.restaurantId = :restaurantId AND w.status = 'Scheduled' AND w.createdAt < :createdAt")
 	int countScheduledWaitingBefore(@Param("restaurantId") Long restaurantId,
 		@Param("createdAt") LocalDateTime createdAt);

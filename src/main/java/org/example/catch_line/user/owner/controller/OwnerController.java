@@ -49,7 +49,7 @@ public class OwnerController {
 	@GetMapping("/restaurants")
 	public String createRestaurantForm(Model model) {
 		model.addAttribute("request",
-			new RestaurantCreateRequest("", "", "", "", FoodType.KOREAN, ServiceType.WAITING,null));
+			new RestaurantCreateRequest("", "", "", "", FoodType.KOREAN, ServiceType.WAITING));
 		return "owner/createRestaurant";
 	}
 

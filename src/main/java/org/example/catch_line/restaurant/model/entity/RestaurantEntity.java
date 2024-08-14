@@ -6,7 +6,6 @@ import org.example.catch_line.common.BaseTimeEntity;
 import org.example.catch_line.common.model.mapper.RatingConverter;
 import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.scrap.model.entity.ScrapEntity;
-import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.model.mapper.converter.PhoneNumberConverter;
 import org.example.catch_line.user.member.model.vo.PhoneNumber;
 import org.example.catch_line.menu.model.entity.MenuEntity;

@@ -1,6 +1,8 @@
 package org.example.catch_line.restaurant.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantHourEntity;
 import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RestaurantHourService {
@@ -20,6 +23,8 @@ public class RestaurantHourService {
     // 영업 시간 전체 조회
     public List<RestaurantHourResponse> getAllRestaurantHours(Long restaurantId) {
         List<RestaurantHourEntity> restaurantHourList = restaurantHourRepository.findAllByRestaurantRestaurantId(restaurantId);
+
+        log.info("size : {}", restaurantHourList.size());
 
         return restaurantHourList.stream()
                 .map(RestaurantHourMapper::entityToResponse)

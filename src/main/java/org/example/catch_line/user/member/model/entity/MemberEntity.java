@@ -3,6 +3,7 @@ package org.example.catch_line.user.member.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.catch_line.common.BaseTimeEntity;
+import org.example.catch_line.scrap.model.entity.ScrapEntity;
 import org.example.catch_line.user.member.model.mapper.converter.EmailConverter;
 import org.example.catch_line.user.member.model.mapper.converter.PasswordConverter;
 import org.example.catch_line.user.member.model.mapper.converter.PhoneNumberConverter;
@@ -58,14 +59,8 @@ public class MemberEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<WaitingEntity> waitings = new ArrayList<>();
 
-
-    @ManyToMany
-    @JoinTable(
-            name = "scrap",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "restaurant_id"))
-    List<RestaurantEntity> restaurantScraps = new ArrayList<>();
-
+    @OneToMany(mappedBy = "member")
+    private List<ScrapEntity> scraps = new ArrayList<>();
 
     @Builder
     public MemberEntity(Email email, String name, String nickname, Password password, PhoneNumber phoneNumber) {

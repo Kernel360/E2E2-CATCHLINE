@@ -5,6 +5,7 @@ import lombok.*;
 import org.example.catch_line.common.BaseTimeEntity;
 import org.example.catch_line.common.model.mapper.RatingConverter;
 import org.example.catch_line.common.model.vo.Rating;
+import org.example.catch_line.scrap.model.entity.ScrapEntity;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.model.mapper.converter.PhoneNumberConverter;
 import org.example.catch_line.user.member.model.vo.PhoneNumber;
@@ -77,8 +78,8 @@ public class RestaurantEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "restaurant")
     private List<RestaurantImageEntity> restaurantImages = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "restaurantScraps")
-    private List<MemberEntity> scraps = new ArrayList<>();
+    @OneToMany(mappedBy = "restaurant")
+    private List<ScrapEntity> scraps = new ArrayList<>();
 
 
     @Builder
@@ -98,6 +99,10 @@ public class RestaurantEntity extends BaseTimeEntity {
     public void updateReview(Rating rating, Long reviewCount) {
         this.rating = rating;
         this.reviewCount = reviewCount;
+    }
+
+    public void updateScrap(Long scrapCount) {
+        this.scrapCount = scrapCount;
     }
 
     // TODO: 위도, 경도 값도 수정할 수 있도록 변경

@@ -15,4 +15,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     List<Integer> findRatingsByRestaurantId(@Param("restaurantId") Long restaurantId);
 
     List<ReviewEntity> findAllByRestaurantRestaurantIdOrderByCreatedAtDesc(Long restaurantId);
+
+    // 특정 사용자가 작성한 모든 리뷰 조회
+    List<ReviewEntity> findAllByMemberMemberIdOrderByCreatedAtDesc(Long memberId);
 }

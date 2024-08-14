@@ -1,19 +1,79 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f8f9fa; /* 부드러운 회색 배경 */
+            font-family: 'Arial', sans-serif;
+        }
         .container {
             max-width: 800px;
-            margin-top: 20px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+            border-radius: 10px; /* 둥근 모서리 */
         }
         .card {
             margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f1f1f1; /* 밝은 배경 */
         }
-        .btn-container {
+        .card-body {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .list-group-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px; /* 아이템 둥근 모서리 */
+            padding: 15px;
+            transition: background-color 0.3s ease;
             display: flex;
-            justify-content: flex-end; /* 오른쪽으로 정렬 */
+            justify-content: space-between;
+            align-items: flex-start;
+            cursor: pointer;
+        }
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        .btn-orange {
+            background-color: orange; /* 부드러운 주황색 */
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+            margin-bottom: 5px;
+        }
+        .btn-orange.active {
+            background-color: white;
+            color: orange;
+            border: 1px solid orange;
+        }
+        .btn-orange:hover {
+            background-color: darkorange; /* 어두운 주황색 */
+        }
+        .owner-link {
+            display: block;
+            text-align: right;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: orange;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .owner-link:hover {
+            color: darkorange;
+            text-decoration: underline;
         }
         .pagination {
             display: flex;
@@ -22,32 +82,6 @@
         }
         .page-item {
             margin: 0 5px;
-        }
-        .sort-buttons {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .sort-buttons .btn {
-            margin: 0 5px;
-        }
-        .btn-orange {
-            background-color: orange;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        .btn-orange.active {
-            background-color: white;
-            color: orange;
-            border: 1px solid orange;
-        }
-        .btn-orange:hover {
-            background-color: darkorange;
-            border-color: darkorange;
         }
         .page-link {
             color: white;
@@ -63,21 +97,18 @@
             color: black;
             border-color: black;
         }
-        .list-group-item {
-            cursor: pointer;
+        .sort-buttons {
+            display: flex;
+            justify-content: center; /* 가운데 정렬 */
+            margin-bottom: 20px;
         }
-        .owner-link {
-            display: block;
-            text-align: right;
-            margin-bottom: 15px;
-            font-weight: bold;
-            color: orange;
-            cursor: pointer;
-            transition: color 0.3s ease;
+        .sort-buttons .btn {
+            margin: 0 5px;
         }
-        .owner-link:hover {
-            color: darkorange;
-            text-decoration: underline;
+        .btn-container {
+            display: flex;
+            justify-content: flex-end; /* 오른쪽 정렬 */
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -93,7 +124,7 @@
         <a th:href="@{/owner}">식당 사장님이신가요?</a>
     </div>
 
-    <div class="row btn-container mb-3">
+    <div class="row btn-container">
         <!-- 로그아웃, 나의 예약, 내 프로필 버튼 -->
         <div class="col-auto" th:if="${isLoggedIn}">
             <form th:action="@{/logout}" method="post" style="display: inline;">
@@ -131,11 +162,13 @@
                 <!-- 식당 정보 리스트 -->
                 <div class="list-group-item" th:each="preview : ${restaurantPreviewPage.content}"
                      th:onclick="|location.href='@{/restaurants/{restaurantId}(restaurantId=${preview.restaurantId})}'|">
-                    <span th:text="${preview.name}">식당 이름</span>
-                    <span th:text="${preview.averageRating}">평점</span>
-                    <span th:text="${preview.reviewCount}">리뷰 수</span>
-                    <span th:text="${preview.foodType}">음식 종류</span>
-                    <span th:text="${preview.serviceType}">서비스 종류</span>
+                    <div>
+                        <span th:text="${preview.name}">식당 이름</span><br>
+                        <span th:text="'평점: ' + ${preview.averageRating}">평점</span><br>
+                        <span th:text="'리뷰 수: ' + ${preview.reviewCount}">리뷰 수</span><br>
+                        <span th:text="'음식 종류: ' + ${preview.foodType}">음식 종류</span><br>
+                        <span th:text="'서비스 종류: ' + ${preview.serviceType}">서비스 종류</span>
+                    </div>
                 </div>
             </div>
         </div>

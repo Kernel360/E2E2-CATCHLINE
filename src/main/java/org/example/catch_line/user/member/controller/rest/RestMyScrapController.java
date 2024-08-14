@@ -4,10 +4,12 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.constant.SessionConst;
+import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.user.member.service.MyScrapService;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,12 +24,11 @@ public class RestMyScrapController {
     private final MyScrapService myScrapService;
 
     @GetMapping
-    public ResponseEntity<List<RestaurantResponse>> findMyRestaurantsByScrap(
+    public ResponseEntity<List<RestaurantPreviewResponse>> findMyRestaurantsByScrap(
             HttpSession httpSession
     ) {
-        List<RestaurantResponse> myRestaurants = myScrapService.findMyRestaurants((Long) httpSession.getAttribute(SessionConst.MEMBER_ID));
+        List<RestaurantPreviewResponse> myRestaurants = myScrapService.findMyRestaurants((Long) httpSession.getAttribute(SessionConst.MEMBER_ID));
         return ResponseEntity.ok().body(myRestaurants);
     }
-
 
 }

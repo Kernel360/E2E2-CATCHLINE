@@ -156,10 +156,10 @@
             <div class="list-group">
                 <p class="card-text">영업 시간</p>
                 <div class="list-group-item">
-                    <span th:text="${dayOfWeek}">Monday</span>
-                    <span th:text="${hourResponse.openTime}">09:00</span>
-                    <span th:text="${hourResponse.closeTime}">21:00</span>
-                    <span th:text="${hourResponse.openStatus}">OPEN</span>
+                    <span th:if="${dayOfWeek != null}" th:text="${dayOfWeek}">Monday</span>
+                    <span th:if="${hourResponse.openTime != null}" th:text="${hourResponse.openTime}">09:00</span>
+                    <span th:if="${hourResponse.closeTime != null}" th:text="${hourResponse.closeTime}">21:00</span>
+                    <span th:if="${hourResponse.openStatus != null}" th:text="${hourResponse.openStatus}">OPEN</span>
                 </div>
             </div>
         </div>
@@ -192,10 +192,12 @@
             <h5 class="card-title">영업 정보</h5>
             <div class="list-group">
                 <p class="card-text">영업 시간</p>
-                <div class="list-group-item" th:each="restaurantHour : ${restaurantHours}">
-                    <span th:text="${restaurantHour.dayOfWeek}">Monday</span>
-                    <span th:text="${restaurantHour.openTime}">09:00</span>
-                    <span th:text="${restaurantHour.closeTime}">21:00</span>
+                <div th:if="${restaurantHours != null}">
+                    <div class="list-group-item" th:each="restaurantHour : ${restaurantHours}">
+                        <span th:if="${restaurantHour.dayOfWeek != null}" th:text="${restaurantHour.dayOfWeek}">Monday</span>
+                        <span th:if="${restaurantHour.openTime != null}" th:text="${restaurantHour.openTime}">09:00</span>
+                        <span th:if="${restaurantHour.closeTime != null}" th:text="${restaurantHour.closeTime}">21:00</span>
+                    </div>
                 </div>
             </div>
             <div class="list-group phone-number">
@@ -211,29 +213,29 @@
             <div id="map" style="width:100%; height:400px;"></div>
             <script th:inline="javascript">
                 /*<![CDATA[*/
-                var jsKey = /*[[${jsKey}]]*/ '';
-                var latitude = /*[[${restaurant.latitude}]]*/ ''; // y 좌표
-                var longitude = /*[[${restaurant.longitude}]]*/ ''; // x 좌표
+                let jsKey = /*[[${jsKey}]]*/ '';
+                let latitude = /*[[${restaurant.latitude}]]*/ ''; // y 좌표
+                let longitude = /*[[${restaurant.longitude}]]*/ ''; // x 좌표
 
                 document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsKey + '&libraries=services,clusterer,drawing"><\/script>');
                 /*]]>*/
             </script>
             <script>
                 // 지도가 표시될 div와 지도 옵션을 설정
-                var mapContainer = document.getElementById('map'),
+                let mapContainer = document.getElementById('map'),
                     mapOption = {
                         center: new kakao.maps.LatLng(latitude, longitude), // 지도의 중심좌표
                         level: 3 // 지도의 확대 레벨
                     };
 
                 // 지도를 생성합니다
-                var map = new kakao.maps.Map(mapContainer, mapOption);
+                let map = new kakao.maps.Map(mapContainer, mapOption);
 
                 // 마커가 표시될 위치입니다
-                var markerPosition  = new kakao.maps.LatLng(latitude, longitude);
+                let markerPosition  = new kakao.maps.LatLng(latitude, longitude);
 
                 // 마커를 생성합니다
-                var marker = new kakao.maps.Marker({
+                let marker = new kakao.maps.Marker({
                     position: markerPosition
                 });
 

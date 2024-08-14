@@ -1,11 +1,15 @@
 package org.example.catch_line.user.owner.controller;
 
+import java.math.BigDecimal;
+
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.common.constant.SessionConst;
+import org.example.catch_line.common.kakao.model.dto.KakaoCoordinateResponse;
+import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
@@ -28,6 +32,7 @@ public class OwnerController {
 
     private final RestaurantService restaurantService;
     private final OwnerRepository ownerRepository;
+    private final KakaoAddressService kakaoAddressService;
 
     @GetMapping
     public String viewOwnerPage(
@@ -43,7 +48,7 @@ public class OwnerController {
 
     @GetMapping("/restaurants")
     public String createRestaurantForm(Model model) {
-        model.addAttribute("request", new RestaurantCreateRequest("", "", "", "", FoodType.KOREAN, ServiceType.WAITING,null));
+        model.addAttribute("request", new RestaurantCreateRequest("", "", "", "", FoodType.KOREAN, ServiceType.WAITING,null,null,null));
         return "owner/createRestaurant";
     }
 
@@ -52,6 +57,11 @@ public class OwnerController {
 
         OwnerEntity owner = ownerRepository.findByOwnerId(SessionUtils.getOwnerId(session)).orElseThrow(() -> new IllegalArgumentException("사장님을 찾을 수 없습니다"));
 
+        String address = request.getAddress();
+        KakaoCoordinateResponse kakaoCoordinateResponse = kakaoAddressService.addressToCoordinate(address);
+        //TODO :: Setter 제거하기
+        request.setLatitude(new BigDecimal(kakaoCoordinateResponse.getDocuments().get(0).getRoadAddress().getX()));
+        request.setLongitude(new BigDecimal(kakaoCoordinateResponse.getDocuments().get(0).getRoadAddress().getY()));
         request.setOwner(owner);
 
         if(bindingResult.hasErrors()) {

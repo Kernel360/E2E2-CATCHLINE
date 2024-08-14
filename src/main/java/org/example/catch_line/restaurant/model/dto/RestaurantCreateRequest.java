@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 @Setter
+// TODO :: Setter 제거하기
 public class RestaurantCreateRequest {
 
     @NotBlank(message = "가게 이름은 비어있을 수 없습니다.")
@@ -34,4 +35,10 @@ public class RestaurantCreateRequest {
     
     @NotNull(message = "사장님 아이디는 비어있을 수 없습니다")
     private OwnerEntity owner;
+
+    @NotNull(message = "위도는 비어있을 수 없습니다")
+    private BigDecimal latitude;
+
+    @NotNull(message = "경도는 비어있을 수 없습니다")
+    private BigDecimal longitude;
 }

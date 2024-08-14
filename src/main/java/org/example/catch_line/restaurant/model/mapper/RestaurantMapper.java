@@ -31,8 +31,6 @@ public class RestaurantMapper {
     // TODO: 식당 위치 조회 구현하기
     public static RestaurantEntity requestToEntity(RestaurantCreateRequest request) {
 
-
-
         return RestaurantEntity.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -41,6 +39,8 @@ public class RestaurantMapper {
                 .serviceType(request.getServiceType())
                 .rating(new Rating(BigDecimal.ZERO))
                 .owner(request.getOwner())
+                .latitude(request.getLatitude())
+                .longitude(request.getLongitude())
                 .build();
     }
 }

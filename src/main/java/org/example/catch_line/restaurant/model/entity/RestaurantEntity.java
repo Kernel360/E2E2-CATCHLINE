@@ -87,18 +87,18 @@ public class RestaurantEntity extends BaseTimeEntity {
 
 
     @Builder
-    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType,OwnerEntity owner) {
+    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType,OwnerEntity owner, BigDecimal latitude, BigDecimal longitude) {
         this.name = name;
         this.description = description;
         this.rating = rating;
         this.phoneNumber = phoneNumber;
-        this.latitude = BigDecimal.ZERO;
-        this.longitude = BigDecimal.ZERO;
         this.scrapCount = 0L;
         this.reviewCount = 0L;
         this.foodType = foodType;
         this.serviceType = serviceType;
         this.owner = owner;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public void updateReview(Rating rating, Long reviewCount) {

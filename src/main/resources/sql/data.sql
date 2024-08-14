@@ -7,6 +7,9 @@ values
     ('정지수', '초코', '$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2', 'jisoo@gmail.com', '010-4568-3321', false, '2024-05-23 00:00:00', '2024-08-03 12:00:00'),
     ('최유진', '민트', '$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2', 'yoo@gmail.com', '010-4321-3214', false, '2024-01-05 00:00:00', '2024-07-03 12:00:00');
 
+insert into owner (name,login_id,password,phone_number)
+values
+    ('이선우','qwer@naver.com','$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2','010-1234-1234');
 
 insert into restaurant (name, description, phone_number, rating, longitude, latitude, review_count, scrap_count, food_type, service_type, created_at, modified_at)
 values

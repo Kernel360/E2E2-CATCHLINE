@@ -1,11 +1,15 @@
 package org.example.catch_line.user.owner.model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.user.member.model.mapper.converter.PasswordConverter;
 import org.example.catch_line.user.member.model.mapper.converter.PhoneNumberConverter;
 import org.example.catch_line.user.member.model.vo.Password;
@@ -34,6 +38,9 @@ public class OwnerEntity {
     @Column(nullable = false)
     @Convert(converter = PhoneNumberConverter.class)
     private PhoneNumber phoneNumber;
+
+    @OneToMany(mappedBy = "owner")
+    private List<RestaurantEntity> restaurants = new ArrayList<>();
 
 
     @Builder

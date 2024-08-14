@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
+import org.example.catch_line.user.owner.model.entity.OwnerEntity;
 
 import java.math.BigDecimal;
 
@@ -29,4 +30,5 @@ public class RestaurantCreateRequest {
 
     @NotNull(message = "줄서기, 예약 중에 선택해주세요.")
     private ServiceType serviceType;
+
 }

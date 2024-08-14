@@ -5,6 +5,8 @@ import org.example.catch_line.user.member.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.user.owner.model.entity.OwnerEntity;
+import org.example.catch_line.user.owner.repository.OwnerRepository;
 
 import java.math.BigDecimal;
 
@@ -28,6 +30,9 @@ public class RestaurantMapper {
 
     // TODO: 식당 위치 조회 구현하기
     public static RestaurantEntity requestToEntity(RestaurantCreateRequest request) {
+
+
+
         return RestaurantEntity.builder()
                 .name(request.getName())
                 .description(request.getDescription())
@@ -35,6 +40,7 @@ public class RestaurantMapper {
                 .foodType(request.getFoodType())
                 .serviceType(request.getServiceType())
                 .rating(new Rating(BigDecimal.ZERO))
+                .owner(request.getOwner())
                 .build();
     }
 }

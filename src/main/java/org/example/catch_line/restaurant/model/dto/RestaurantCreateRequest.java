@@ -4,12 +4,14 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
+import org.example.catch_line.user.owner.model.entity.OwnerEntity;
 
 import java.math.BigDecimal;
 
 @Getter
 @AllArgsConstructor
 @Builder
+@Setter
 public class RestaurantCreateRequest {
 
     @NotBlank(message = "가게 이름은 비어있을 수 없습니다.")
@@ -29,4 +31,7 @@ public class RestaurantCreateRequest {
 
     @NotNull(message = "줄서기, 예약 중에 선택해주세요.")
     private ServiceType serviceType;
+    
+    @NotNull(message = "사장님 아이디는 비어있을 수 없습니다")
+    private OwnerEntity owner;
 }

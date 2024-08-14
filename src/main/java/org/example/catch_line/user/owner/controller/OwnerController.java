@@ -13,6 +13,8 @@ import org.example.catch_line.restaurant.model.dto.RestaurantUpdateRequest;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.service.RestaurantService;
+import org.example.catch_line.user.owner.model.entity.OwnerEntity;
+import org.example.catch_line.user.owner.repository.OwnerRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class OwnerController {
 
     private final RestaurantService restaurantService;
+    private final OwnerRepository ownerRepository;
 
     @GetMapping
     public String viewOwnerPage(
@@ -40,12 +43,17 @@ public class OwnerController {
 
     @GetMapping("/restaurants")
     public String createRestaurantForm(Model model) {
-        model.addAttribute("request", new RestaurantCreateRequest("", "", "", "", FoodType.KOREAN, ServiceType.WAITING));
+        model.addAttribute("request", new RestaurantCreateRequest("", "", "", "", FoodType.KOREAN, ServiceType.WAITING,null));
         return "owner/createRestaurant";
     }
 
     @PostMapping("/restaurants")
-    public String createRestaurant(@ModelAttribute("request") RestaurantCreateRequest request, BindingResult bindingResult) {
+    public String createRestaurant(@ModelAttribute("request") RestaurantCreateRequest request, BindingResult bindingResult,HttpSession session) {
+
+        OwnerEntity owner = ownerRepository.findByOwnerId(SessionUtils.getOwnerId(session)).orElseThrow(() -> new IllegalArgumentException("사장님을 찾을 수 없습니다"));
+
+        request.setOwner(owner);
+
         if(bindingResult.hasErrors()) {
             log.info("error = {}", bindingResult);
             return "owner/createRestaurant";

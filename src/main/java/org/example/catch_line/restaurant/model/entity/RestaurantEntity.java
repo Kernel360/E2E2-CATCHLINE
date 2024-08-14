@@ -14,6 +14,7 @@ import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.review.model.entity.ReviewEntity;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
+import org.example.catch_line.user.owner.model.entity.OwnerEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -80,9 +81,13 @@ public class RestaurantEntity extends BaseTimeEntity {
     @ManyToMany(mappedBy = "restaurantScraps")
     private List<MemberEntity> scraps = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private OwnerEntity owner;
+
 
     @Builder
-    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType) {
+    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType,OwnerEntity owner) {
         this.name = name;
         this.description = description;
         this.rating = rating;
@@ -93,6 +98,7 @@ public class RestaurantEntity extends BaseTimeEntity {
         this.reviewCount = 0L;
         this.foodType = foodType;
         this.serviceType = serviceType;
+        this.owner = owner;
     }
 
     public void updateReview(Rating rating, Long reviewCount) {

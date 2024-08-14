@@ -15,6 +15,14 @@ public class SessionUtils {
 		return memberId;
 	}
 
+	public static Long getOwnerId(HttpSession session) {
+		Long ownerId = (Long) session.getAttribute(SessionConst.OWNER_ID);
+		if (ownerId == null) {
+			throw new InvalidSessionException();
+		}
+		return ownerId;
+	}
+
 	public static Role getRole(HttpSession session) {
 		return (Role) session.getAttribute(SessionConst.ROLE);
 	}

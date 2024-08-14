@@ -30,8 +30,5 @@ public class RestaurantCreateRequest {
 
     @NotNull(message = "줄서기, 예약 중에 선택해주세요.")
     private ServiceType serviceType;
-    
-    @NotNull(message = "사장님 아이디는 비어있을 수 없습니다")
-    private OwnerEntity owner;
 
 }

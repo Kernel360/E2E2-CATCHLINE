@@ -38,7 +38,6 @@ public class RestaurantMapper {
                 .foodType(request.getFoodType())
                 .serviceType(request.getServiceType())
                 .rating(new Rating(BigDecimal.ZERO))
-                .owner(request.getOwner())
                 .build();
     }
 
@@ -51,7 +50,6 @@ public class RestaurantMapper {
             .foodType(request.getFoodType())
             .serviceType(request.getServiceType())
             .rating(new Rating(BigDecimal.ZERO))
-            .owner(request.getOwner())
             .longitude(longitude)
             .latitude(latitude)
             .owner(owner)

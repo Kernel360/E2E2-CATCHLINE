@@ -30,13 +30,22 @@ public class RestaurantHourEntity {
     @JoinColumn(name = "restaurant_id")
     private RestaurantEntity restaurant;
 
+    // @Builder
+    // public RestaurantHourEntity(DayOfWeeks dayOfWeek, LocalTime openTime, LocalTime closeTime, OpenStatus openStatus) {
+    //     this.dayOfWeek = dayOfWeek;
+    //     this.openTime = openTime;
+    //     this.closeTime = closeTime;
+    //     this.openStatus = openStatus;
+    // }
     @Builder
-    public RestaurantHourEntity(DayOfWeeks dayOfWeek, LocalTime openTime, LocalTime closeTime, OpenStatus openStatus) {
+    public RestaurantHourEntity(DayOfWeeks dayOfWeek, LocalTime openTime, LocalTime closeTime, OpenStatus openStatus,RestaurantEntity restaurant) {
         this.dayOfWeek = dayOfWeek;
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.openStatus = openStatus;
+        this.restaurant = restaurant;
     }
+
 
     public void closeBusiness() {
         this.openStatus = OpenStatus.CLOSE;

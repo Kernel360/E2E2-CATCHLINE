@@ -1,10 +1,13 @@
 package org.example.catch_line.user.owner.controller;
 
+import java.util.List;
+
 import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
+import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantUpdateRequest;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
@@ -73,9 +76,15 @@ public class OwnerController {
 	}
 
 	@GetMapping("/restaurants/list")
-	public String showRestaurantListPage(HttpSession session) {
-		Long memberId = SessionUtils.getMemberId(session);
-		Role role = SessionUtils.getRole(session);
+	public String showRestaurantListPage(HttpSession session, Model model) {
+		Long ownerId = SessionUtils.getOwnerId(session);
+
+		RestaurantResponse restaurant = ownerService.findRestaurantByOwnerId(ownerId);
+		List<RestaurantHourResponse> restaurantHours = ownerService.findRestaurantHourByRestaurantId(
+			restaurant.getRestaurantId());
+
+		model.addAttribute("restaurant",restaurant);
+		model.addAttribute("restaurantHours",restaurantHours);
 
 		return "owner/restaurantList";
 	}
@@ -98,6 +107,8 @@ public class OwnerController {
 
 		return "redirect:/restaurants/" + restaurantId;
 	}
+
+
 
 	private String invalidPhoneNumberException(Exception e, BindingResult bindingResult) {
 		bindingResult.rejectValue("phoneNumber", null, e.getMessage());

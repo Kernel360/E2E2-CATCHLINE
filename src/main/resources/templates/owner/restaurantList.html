@@ -1,10 +1,253 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <title>Restaurant Details</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .phone-number {
+            margin-top: 20px;
+        }
+
+        .btn-orange {
+            background-color: orange;
+            color: white;
+        }
+
+        .btn-orange:hover {
+            background-color: darkorange;
+            color: white;
+        }
+
+        .top-right-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .card-body {
+            position: relative;
+        }
+
+        .map-container {
+            margin-top: 20px;
+        }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            margin: 10px auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header .left-buttons {
+            margin-right: 20px;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
 
+    <div class="position-relative">
+        <div class="top-right-buttons">
+            <!-- 조건에 따라 버튼 표시 -->
+            <div class="d-flex flex-column align-items-end">
+                <!-- 웨이팅 등록 버튼 -->
+                <button class="btn btn-orange btn-lg mb-2"
+                        th:if="${restaurant.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING}"
+                        th:onclick="|location.href='@{/restaurants/{restaurantId}/waiting(restaurantId=${restaurant.restaurantId})}'|"
+                        type="button">웨이팅 등록
+                </button>
+
+                <!-- 예약 등록 버튼 -->
+                <button class="btn btn-orange btn-lg"
+                        th:if="${restaurant.serviceType != T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING}"
+                        th:onclick="|location.href='@{/restaurants/{restaurantId}/reservation(restaurantId=${restaurant.restaurantId})}'|"
+                        type="button">예약 등록
+                </button>
+            </div>
+        </div>
+        <div class="col text-center">
+            <h2 th:text="#{restaurant.information}">식당 정보</h2>
+        </div>
+    </div>
+
+    <div class="row mb-4 btn-container">
+        <div class="col-auto">
+            <button class="btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/restaurants}'|"
+                    type="button">뒤로
+            </button>
+            <button class="btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/restaurants/{restaurantId}/upload(restaurantId=${restaurant.restaurantId})}'|"
+                    type="button">사진 등록
+            </button>
+        </div>
+    </div>
+
+    <!-- 첫 번째 이미지만 표시 -->
+    <div class="image-container">
+        <div th:if="${imageList != null and !imageList.isEmpty()}">
+            <img th:src="@{'/images/' + ${imageList[0].restaurantImageId}}" th:alt="${imageList[0].fileName}" style="cursor: pointer; max-width: 200px;" data-toggle="modal" data-target="#imageModal"/>
+        </div>
+    </div>
+
+    <!-- 모달 구조 -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Image Gallery</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Carousel -->
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div th:each="image, iterStat : ${imageList}" th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item">
+                                <img class="d-block w-100" th:src="@{'/images/' + ${image.restaurantImageId}}" th:alt="${image.fileName}">
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${restaurant.name}">식당 이름</h5>
+            <p class="card-text" th:text="${restaurant.description}">식당 내용</p>
+            <p class="card-text">
+                <span th:text="'평점 : ' + ${restaurant.averageRating} + ' / '"></span>
+                <span th:text="${restaurant.reviewCount} + '개의 리뷰'"></span>
+            </p>
+            <div class="list-group">
+                <p class="card-text">영업 시간</p>
+                <div class="list-group-item">
+                    <span th:if="${restaurantHours != null}" th:each="restaurantHour : ${restaurantHours}">
+                        <span th:if="${restaurantHour.dayOfWeek != null}" th:text="${restaurantHour.dayOfWeek}">Monday</span>
+                        <span th:if="${restaurantHour.openTime != null}" th:text="${restaurantHour.openTime}">09:00</span>
+                        <span th:if="${restaurantHour.closeTime != null}" th:text="${restaurantHour.closeTime}">21:00</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg" th:if="${true}" disabled type="button">홈</button>
+        </div>
+        <div class="col">
+            <button class="w-100 btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/restaurants/{restaurantId}/menus(restaurantId=${restaurant.restaurantId})}'|"
+                    type="button">메뉴
+            </button>
+        </div>
+        <div class="col">
+            <button class="w-100 btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/restaurants/{restaurantId}/reviews(restaurantId=${restaurant.restaurantId})}'|"
+                    type="button">리뷰
+            </button>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">영업 정보</h5>
+            <div class="list-group">
+                <p class="card-text">영업 시간</p>
+                <div th:if="${restaurantHours != null}">
+                    <div class="list-group-item" th:each="restaurantHour : ${restaurantHours}">
+                        <span th:if="${restaurantHour.dayOfWeek != null}" th:text="${restaurantHour.dayOfWeek}">Monday</span>
+                        <span th:if="${restaurantHour.openTime != null}" th:text="${restaurantHour.openTime}">09:00</span>
+                        <span th:if="${restaurantHour.closeTime != null}" th:text="${restaurantHour.closeTime}">21:00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="list-group phone-number">
+                <p class="card-text" th:text="'전화번호 : ' + ${restaurant.phoneNumber}">전화번호</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 위치 정보 -->
+    <div class="card map-container">
+        <div class="card-body">
+            <h5 class="card-title">위치 정보</h5>
+            <div id="map" style="width:100%; height:400px;"></div>
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                let jsKey = /*[[${jsKey}]]*/ '';
+                let latitude = /*[[${restaurant.latitude}]]*/ '';
+                let longitude = /*[[${restaurant.longitude}]]*/ '';
+
+                document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsKey + '&libraries=services,clusterer,drawing"><\/script>');
+                /*]]>*/
+            </script>
+            <script>
+                let mapContainer = document.getElementById('map'),
+                    mapOption = {
+                        center: new kakao.maps.LatLng(latitude, longitude),
+                        level: 3
+                    };
+
+                let map = new kakao.maps.Map(mapContainer, mapOption);
+
+                let markerPosition  = new kakao.maps.LatLng(latitude, longitude);
+
+                let marker = new kakao.maps.Marker({
+                    position: markerPosition
+                });
+
+                marker.setMap(map);
+            </script>
+            <p th:text="'도로명 주소 : ' + ${document.roadAddress.addressName}"></p>
+            <p th:text="'지번 주소 : ' + ${document.address.addressName}"></p>
+        </div>
+    </div>
+
+</div> <!-- /container -->
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

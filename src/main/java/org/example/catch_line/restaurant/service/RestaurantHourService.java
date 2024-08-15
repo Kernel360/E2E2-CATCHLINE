@@ -4,12 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
+import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.entity.RestaurantHourEntity;
 import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
+import org.example.catch_line.restaurant.model.entity.constant.OpenStatus;
 import org.example.catch_line.restaurant.model.mapper.RestaurantHourMapper;
 import org.example.catch_line.restaurant.repository.RestaurantHourRepository;
+import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +24,7 @@ import java.util.stream.Collectors;
 public class RestaurantHourService {
 
     private final RestaurantHourRepository restaurantHourRepository;
+
 
     // 영업 시간 전체 조회
     public List<RestaurantHourResponse> getAllRestaurantHours(Long restaurantId) {
@@ -46,5 +52,27 @@ public class RestaurantHourService {
         });
 
         entity.closeBusiness();
+    }
+
+    public List<RestaurantHourEntity> createRestaurantHour(RestaurantEntity restaurant) {
+        List<RestaurantHourEntity> list = new ArrayList<>();
+
+        DayOfWeeks [] dayOfWeeks = DayOfWeeks.values();
+
+        for(DayOfWeeks dayOfWeek : dayOfWeeks) {
+            RestaurantHourEntity restaurantHourEntity = RestaurantHourEntity.builder()
+                .dayOfWeek(dayOfWeek)
+                .openTime(LocalTime.MIN)
+                .closeTime(LocalTime.MAX)
+                .openStatus(OpenStatus.OPEN)
+                .restaurant(restaurant)
+                .build();
+            list.add(restaurantHourEntity);
+        }
+
+        restaurantHourRepository.saveAll(list);
+
+        return list;
+
     }
 }

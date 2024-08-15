@@ -10,6 +10,7 @@ import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.restaurant.service.RestaurantHourService;
 import org.example.catch_line.user.owner.model.entity.OwnerEntity;
 import org.example.catch_line.user.owner.repository.OwnerRepository;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class OwnerService {
 	private final OwnerRepository ownerRepository;
 	private final KakaoAddressService kakaoAddressService;
 	private final RestaurantRepository restaurantRepository;
+	private final RestaurantHourService restaurantHourService;
 	
 	public RestaurantResponse createRestaurant(RestaurantCreateRequest request, Long ownerId) {
 
@@ -36,6 +38,7 @@ public class OwnerService {
 
 		RestaurantEntity savedEntity = restaurantRepository.save(restaurant);
 
+		restaurantHourService.createRestaurantHour(savedEntity);
 
 		return RestaurantMapper.entityToResponse(savedEntity);
 

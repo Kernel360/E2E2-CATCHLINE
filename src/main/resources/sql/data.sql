@@ -9,7 +9,7 @@ values
 
 insert into owner (name,login_id,password,phone_number)
 values
-    ('이선우','qwer@naver.com','$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2','010-1234-1234');
+    ('김철수','abc@gmail.com','$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2','010-1234-1234');
 
 insert into restaurant (name, description, phone_number, rating, longitude, latitude, review_count, scrap_count, food_type, service_type, created_at, modified_at)
 values

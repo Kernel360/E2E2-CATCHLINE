@@ -9,6 +9,8 @@ import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.kakao.model.dto.KakaoCoordinateResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.history.model.dto.HistoryResponse;
+import org.example.catch_line.history.service.HistoryService;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
@@ -34,6 +36,7 @@ public class OwnerService {
 	private final RestaurantRepository restaurantRepository;
 	private final RestaurantHourService restaurantHourService;
 	private final RestaurantHourRepository restaurantHourRepository;
+	private final HistoryService historyService;
 	
 	public RestaurantResponse createRestaurant(RestaurantCreateRequest request, Long ownerId) {
 
@@ -69,6 +72,13 @@ public class OwnerService {
 		return restaurantHourEntities.stream()
 			.map(RestaurantHourMapper::entityToResponse)
 			.collect(Collectors.toList());
+	}
+
+	public List<HistoryResponse> findHistoryByRestaurantId(Long restaurantId) {
+		List<HistoryResponse> historyResponses = historyService.findByRestaurantId(restaurantId);
+
+		return historyResponses;
+
 	}
 
 }

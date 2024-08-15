@@ -9,6 +9,7 @@ import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
+import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
@@ -89,6 +90,19 @@ public class OwnerController {
 		return "redirect:/owner";
 	}
 
+	@GetMapping("/restaurants/history")
+	public String showHistory(HttpSession session, Model model) {
+		Long ownerId = SessionUtils.getOwnerId(session);
+
+		RestaurantResponse restaurant = ownerService.findRestaurantByOwnerId(ownerId);
+
+		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantId(restaurant.getRestaurantId());
+		model.addAttribute("history",historyResponses);
+
+		return "owner/history";
+
+	}
+
 	@GetMapping("/restaurants/list")
 	public String showRestaurantListPage(HttpSession session, Model model) {
 		Long ownerId = SessionUtils.getOwnerId(session);
@@ -120,6 +134,8 @@ public class OwnerController {
 		return "owner/restaurantList";
 	}
 
+
+
 	@GetMapping("/restaurants/{restaurantId}")
 	public String updateRestaurantForm(@PathVariable Long restaurantId, Model model) {
 		RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
@@ -139,8 +155,12 @@ public class OwnerController {
 		return "redirect:/restaurants/" + restaurantId;
 	}
 
+
+
 	private String invalidPhoneNumberException(Exception e, BindingResult bindingResult) {
 		bindingResult.rejectValue("phoneNumber", null, e.getMessage());
 		return "owner/createRestaurant";
 	}
+
+
 }

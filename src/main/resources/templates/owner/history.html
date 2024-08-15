@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>History</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-orange {
+            background-color: orange;
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-orange:hover {
+            background-color: darkorange;
+            color: #fff;
+        }
+
+        table th, table td {
+            vertical-align: middle;
+        }
+
+        thead th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        tbody tr:hover {
+            background-color: #ffebcc;
+            cursor: pointer;
+        }
+
+        table th, table td {
+            text-align: center;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-group .col {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row mb-4 btn-container">
+        <div class="col-auto">
+            <button class="btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/restaurants}'|"
+                    type="button">뒤로
+            </button>
+        </div>
+    </div>
+    <h1 class="mb-4">나의 예약</h1>
+    <div class="row mb-4 btn-group">
+        <div class="col">
+            <button type="button" class="btn btn-orange btn-lg" th:onclick="|location.href='@{/history(status=SCHEDULED)}'|">예정</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-orange btn-lg" th:onclick="|location.href='@{/history(status=COMPLETED)}'|">완료</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-orange btn-lg" th:onclick="|location.href='@{/history(status=CANCELED)}'|">취소</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-orange btn-lg" onclick="refreshPage()">새로고침</button>
+        </div>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>식당 이름</th>
+            <th>서비스 타입</th>
+            <th>예약 인원</th>
+            <th>포장 및 매장 / 예약 날짜</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="history : ${history}"
+            th:data-service-type="${history.serviceType}"
+            th:data-waiting-id="${history.waitingId}"
+            th:data-reservation-id="${history.reservationId}"
+            onclick="redirectBasedOnServiceType(this)">
+            <td th:text="${history.restaurantName}"></td>
+            <td th:text="${history.serviceType.description}"></td>
+            <td th:text="${history.memberCount}"></td>
+            <td th:text="${history.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING ? history.waitingType.description : (history.reservationDate != null ? #temporals.format(history.reservationDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function refreshPage() {
+        location.reload();
+    }
+
+    function redirectBasedOnServiceType(row) {
+        const serviceType = row.getAttribute('data-service-type');
+        const waitingId = row.getAttribute('data-waiting-id');
+        const reservationId = row.getAttribute('data-reservation-id');
+
+        if (serviceType === 'WAITING') {
+            location.href = `/history/waiting/${waitingId}`;
+        } else {
+            location.href = `/history/reservation/${reservationId}`;
+        }
+    }
+</script>
+</body>
+</html>

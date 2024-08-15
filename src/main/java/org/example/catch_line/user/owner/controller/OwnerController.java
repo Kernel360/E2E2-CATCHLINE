@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.example.catch_line.common.SessionUtils;
-import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.common.constant.SessionConst;
 import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
@@ -48,7 +47,6 @@ public class OwnerController {
 	private final RestaurantImageService restaurantImageService;
 	private final KakaoAddressService kakaoAddressService;
 	private final RestaurantHourService restaurantHourService;
-
 
 	@Value("${kakao.maps.js-key}")
 	private String jsKey;
@@ -100,8 +98,8 @@ public class OwnerController {
 			restaurant.getRestaurantId());
 		DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
 		DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
-		RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurant.getRestaurantId(), dayOfWeek);
-
+		RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurant.getRestaurantId(),
+			dayOfWeek);
 
 		String x = String.valueOf(restaurant.getLongitude()); // 경도 == x 좌표
 		String y = String.valueOf(restaurant.getLatitude()); // 위도 == y 좌표
@@ -111,15 +109,13 @@ public class OwnerController {
 
 		List<RestaurantImageEntity> imageList = restaurantImageService.getImageList(restaurant.getRestaurantId());
 
-		model.addAttribute("restaurant",restaurant);
-		model.addAttribute("restaurantHours",restaurantHours);
+		model.addAttribute("restaurant", restaurant);
+		model.addAttribute("restaurantHours", restaurantHours);
 		model.addAttribute("imageList", imageList);
 		model.addAttribute("document", document);
 		model.addAttribute("jsKey", jsKey);
 		model.addAttribute("hourResponse", hourResponse);
 		model.addAttribute("dayOfWeek", dayOfWeek.getDescription());
-
-
 
 		return "owner/restaurantList";
 	}
@@ -142,8 +138,6 @@ public class OwnerController {
 
 		return "redirect:/restaurants/" + restaurantId;
 	}
-
-
 
 	private String invalidPhoneNumberException(Exception e, BindingResult bindingResult) {
 		bindingResult.rejectValue("phoneNumber", null, e.getMessage());

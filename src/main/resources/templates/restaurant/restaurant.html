@@ -5,7 +5,7 @@
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin-top: 20px;
         }
 
@@ -42,18 +42,33 @@
             margin-top: 20px;
         }
 
-        .image-container {
-            display: flex;
-            flex-wrap: wrap;
+        .carousel-item {
+            text-align: center; /* 이미지 가운데 정렬 */
         }
-        .image-container img {
-            width: 100%; /* 컨테이너의 너비에 맞춰 이미지를 조정 */
-            height: auto; /* 자동으로 높이를 조정 */
-            margin: 10px auto; /* 중앙 정렬을 위한 자동 여백 */
-            display: block; /* 이미지를 블록 요소로 설정하여 중앙 정렬 */
+
+        .carousel-item img {
+            max-height: 500px; /* 원하는 높이로 설정 */
+            max-width: 100%; /* 부모 컨테이너에 맞게 이미지 크기 조정 */
             object-fit: cover;
         }
-        /* Image Gallery 왼쪽에 버튼 위치시키기 */
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: rgba(0, 0, 0, 0.5); /* 반투명한 검은색 배경 */
+            border-radius: 50%; /* 원형 모양으로 변경 */
+            padding: 10px; /* 아이콘 크기 조정 */
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%; /* 버튼 영역의 너비 조정 */
+        }
+
+        .carousel-control-prev:hover .carousel-control-prev-icon,
+        .carousel-control-next:hover .carousel-control-next-icon {
+            background-color: rgba(0, 0, 0, 0.8); /* 호버 시 더 진한 색상으로 변경 */
+        }
+
         .modal-header {
             display: flex;
             align-items: center;
@@ -61,9 +76,8 @@
         }
 
         .modal-header .left-buttons {
-            margin-right: 20px; /* 여백을 추가 */
+            margin-right: 20px;
         }
-
     </style>
 </head>
 <body>
@@ -71,16 +85,13 @@
 
     <div class="position-relative">
         <div class="top-right-buttons">
-            <!-- 조건에 따라 버튼 표시 -->
             <div class="d-flex flex-column align-items-end">
-                <!-- 웨이팅 등록 버튼 -->
                 <button class="btn btn-orange btn-lg mb-2"
                         th:if="${restaurant.serviceType == T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING}"
                         th:onclick="|location.href='@{/restaurants/{restaurantId}/waiting(restaurantId=${restaurant.restaurantId})}'|"
                         type="button">웨이팅 등록
                 </button>
 
-                <!-- 예약 등록 버튼 -->
                 <button class="btn btn-orange btn-lg"
                         th:if="${restaurant.serviceType != T(org.example.catch_line.restaurant.model.entity.constant.ServiceType).WAITING}"
                         th:onclick="|location.href='@{/restaurants/{restaurantId}/reservation(restaurantId=${restaurant.restaurantId})}'|"
@@ -99,50 +110,24 @@
                     th:onclick="|location.href='@{/restaurants}'|"
                     type="button">뒤로
             </button>
-            <button class="btn btn-orange btn-lg"
-                    th:onclick="|location.href='@{/restaurants/{restaurantId}/upload(restaurantId=${restaurant.restaurantId})}'|"
-                    type="button">사진 등록
-            </button>
         </div>
     </div>
 
-    <!-- 첫 번째 이미지만 표시 -->
-    <div class="image-container">
-        <div th:if="${imageList != null and !imageList.isEmpty()}">
-            <img th:src="@{'/images/' + ${imageList[0].restaurantImageId}}" th:alt="${imageList[0].fileName}" style="cursor: pointer; max-width: 200px;" data-toggle="modal" data-target="#imageModal"/>
-        </div>
-    </div>
-
-    <!-- 모달 구조 -->
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Image Gallery</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span>&times;</span> <!-- 닫기 기호 -->
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Carousel -->
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div th:each="image, iterStat : ${imageList}" th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item">
-                                <img class="d-block w-100" th:src="@{'/images/' + ${image.restaurantImageId}}" th:alt="${image.fileName}">
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
-                </div>
+    <!-- 슬라이드 이미지 -->
+    <div id="imageCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div th:each="image, iterStat : ${imageList}" th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item">
+                <img th:src="@{'/images/' + ${image.restaurantImageId}}" th:alt="${image.fileName}">
             </div>
         </div>
+        <a class="carousel-control-prev" href="#imageCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#imageCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
 
     <div class="card">
@@ -206,7 +191,6 @@
         </div>
     </div>
 
-    <!-- 위치 정보 -->
     <div class="card map-container">
         <div class="card-body">
             <h5 class="card-title">위치 정보</h5>
@@ -214,32 +198,27 @@
             <script th:inline="javascript">
                 /*<![CDATA[*/
                 let jsKey = /*[[${jsKey}]]*/ '';
-                let latitude = /*[[${restaurant.latitude}]]*/ ''; // y 좌표
-                let longitude = /*[[${restaurant.longitude}]]*/ ''; // x 좌표
+                let latitude = /*[[${restaurant.latitude}]]*/ '';
+                let longitude = /*[[${restaurant.longitude}]]*/ '';
 
                 document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsKey + '&libraries=services,clusterer,drawing"><\/script>');
                 /*]]>*/
             </script>
             <script>
-                // 지도가 표시될 div와 지도 옵션을 설정
                 let mapContainer = document.getElementById('map'),
                     mapOption = {
-                        center: new kakao.maps.LatLng(latitude, longitude), // 지도의 중심좌표
-                        level: 3 // 지도의 확대 레벨
+                        center: new kakao.maps.LatLng(latitude, longitude),
+                        level: 3
                     };
 
-                // 지도를 생성합니다
                 let map = new kakao.maps.Map(mapContainer, mapOption);
 
-                // 마커가 표시될 위치입니다
                 let markerPosition  = new kakao.maps.LatLng(latitude, longitude);
 
-                // 마커를 생성합니다
                 let marker = new kakao.maps.Marker({
                     position: markerPosition
                 });
 
-                // 마커가 지도 위에 표시되도록 설정합니다
                 marker.setMap(map);
             </script>
             <p th:text="'도로명 주소 : ' + ${document.roadAddress.addressName}"></p>
@@ -247,8 +226,7 @@
         </div>
     </div>
 
-</div> <!-- /container -->
-<!-- Bootstrap JS -->
+</div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

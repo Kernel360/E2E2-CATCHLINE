@@ -43,16 +43,43 @@
             margin-top: 20px;
         }
 
+        /* 이미지 슬라이드 스타일 */
         .image-container {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            overflow-x: auto;
         }
+
         .image-container img {
-            width: 100%;
+            width: 150px;
             height: auto;
-            margin: 10px auto;
-            display: block;
+            margin: 10px;
             object-fit: cover;
+            cursor: pointer; /* 커서를 손 모양으로 변경 */
+        }
+
+        .carousel-item img {
+            max-height: 500px; /* 원하는 높이로 설정 */
+            max-width: 100%; /* 부모 컨테이너에 맞게 이미지 크기 조정 */
+            object-fit: cover;
+        }
+
+        /* 슬라이드 네비게이션 스타일 */
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: rgba(0, 0, 0, 0.5); /* 반투명한 검은색 배경 */
+            border-radius: 50%; /* 원형 모양으로 변경 */
+            padding: 10px; /* 아이콘 크기 조정 */
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%; /* 버튼 영역의 너비 조정 */
+        }
+
+        .carousel-control-prev:hover .carousel-control-prev-icon,
+        .carousel-control-next:hover .carousel-control-next-icon {
+            background-color: rgba(0, 0, 0, 0.8); /* 호버 시 더 진한 색상으로 변경 */
         }
 
         .modal-header {
@@ -106,43 +133,22 @@
         </div>
     </div>
 
-    <!-- 첫 번째 이미지만 표시 -->
-    <div class="image-container">
-        <div th:if="${imageList != null and !imageList.isEmpty()}">
-            <img th:src="@{'/images/' + ${imageList[0].restaurantImageId}}" th:alt="${imageList[0].fileName}" style="cursor: pointer; max-width: 200px;" data-toggle="modal" data-target="#imageModal"/>
-        </div>
-    </div>
-
-    <!-- 모달 구조 -->
-    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">Image Gallery</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Carousel -->
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div th:each="image, iterStat : ${imageList}" th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item">
-                                <img class="d-block w-100" th:src="@{'/images/' + ${image.restaurantImageId}}" th:alt="${image.fileName}">
-                            </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                    </div>
-                </div>
+    <!-- 가로 슬라이드 이미지 리스트 -->
+    <div id="imageCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            <div th:each="image, iterStat : ${imageList}" th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item">
+                <img th:src="@{'/images/' + ${image.restaurantImageId}}"
+                     th:alt="${image.fileName}">
             </div>
         </div>
+        <a class="carousel-control-prev" href="#imageCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#imageCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
     </div>
 
     <div class="card">
@@ -156,11 +162,10 @@
             <div class="list-group">
                 <p class="card-text">영업 시간</p>
                 <div class="list-group-item">
-                    <span th:if="${restaurantHours != null}" th:each="restaurantHour : ${restaurantHours}">
-                        <span th:if="${restaurantHour.dayOfWeek != null}" th:text="${restaurantHour.dayOfWeek}">Monday</span>
-                        <span th:if="${restaurantHour.openTime != null}" th:text="${restaurantHour.openTime}">09:00</span>
-                        <span th:if="${restaurantHour.closeTime != null}" th:text="${restaurantHour.closeTime}">21:00</span>
-                    </span>
+                    <span th:if="${dayOfWeek != null}" th:text="${dayOfWeek}">Monday</span>
+                    <span th:if="${hourResponse.openTime != null}" th:text="${hourResponse.openTime}">09:00</span>
+                    <span th:if="${hourResponse.closeTime != null}" th:text="${hourResponse.closeTime}">21:00</span>
+                    <span th:if="${hourResponse.openStatus != null}" th:text="${hourResponse.openStatus}">OPEN</span>
                 </div>
             </div>
         </div>
@@ -249,5 +254,20 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // JavaScript to handle image click and carousel positioning
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.image-container img');
+        const carousel = document.querySelector('#imageCarousel');
+        const carouselItems = carousel.querySelectorAll('.carousel-item');
+
+        images.forEach((img, index) => {
+            img.addEventListener('click', function() {
+                $(carousel).carousel(index);
+            });
+        });
+    });
+</script>
 </body>
 </html>

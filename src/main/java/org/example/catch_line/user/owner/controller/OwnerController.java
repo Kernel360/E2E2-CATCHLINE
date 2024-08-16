@@ -1,5 +1,6 @@
 package org.example.catch_line.user.owner.controller;
 
+import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
@@ -12,9 +13,6 @@ import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.menu.model.dto.MenuRequest;
 import org.example.catch_line.menu.model.dto.MenuResponse;
-import org.example.catch_line.menu.model.entity.MenuEntity;
-import org.example.catch_line.menu.model.mapper.MenuMapper;
-import org.example.catch_line.menu.repository.MenuRepository;
 import org.example.catch_line.menu.service.MenuService;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
@@ -24,13 +22,12 @@ import org.example.catch_line.restaurant.model.entity.RestaurantImageEntity;
 import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
-import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
-import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.example.catch_line.restaurant.service.RestaurantHourService;
 import org.example.catch_line.restaurant.service.RestaurantImageService;
 import org.example.catch_line.restaurant.service.RestaurantService;
+import org.example.catch_line.review.model.dto.ReviewResponse;
+import org.example.catch_line.review.service.ReviewService;
 import org.example.catch_line.user.owner.service.OwnerService;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,7 +57,7 @@ public class OwnerController {
 	private final RestaurantImageService restaurantImageService;
 	private final KakaoAddressService kakaoAddressService;
 	private final RestaurantHourService restaurantHourService;
-	private final MenuRepository menuRepository;
+	private final ReviewService reviewService;
 
 	@Value("${kakao.maps.js-key}")
 	private String jsKey;
@@ -112,6 +109,16 @@ public class OwnerController {
 
 		return "owner/history";
 
+	}
+
+	@GetMapping("/restaurants/list/reviews")
+	public String getReviews(HttpSession session, Model model) {
+		RestaurantResponse restaurant = getRestaurantResponse(session);
+		List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurant.getRestaurantId());
+		BigDecimal averageRating = reviewService.getAverageRating(restaurant.getRestaurantId()).getRating();
+		model.addAttribute("averageRating",averageRating);
+		model.addAttribute("reviewList",reviewList);
+		return "owner/reviews";
 	}
 
 	@GetMapping("/restaurants/list")

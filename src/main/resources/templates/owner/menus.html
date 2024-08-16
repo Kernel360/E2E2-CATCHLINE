@@ -30,8 +30,6 @@
                     <button class="btn btn-sm btn-warning" th:onclick="'editMenu(' + ${menu.menuId} + ')'">수정</button>
                     <button class="btn btn-sm btn-danger" th:onclick="'deleteMenu(' + ${menu.menuId} + ')'">삭제</button>
                 </div>
-
-
             </div>
         </div>
     </div>
@@ -39,9 +37,8 @@
     <button class="btn btn-orange" onclick="showAddMenuForm()">메뉴 추가</button>
 
     <form id="add-menu-form" th:action="@{/owner/restaurants/list/menus/menu}" th:method="post" style="display:none;">
-        <!-- 숨겨진 필드로 menuId를 전달 -->
-        <input type="hidden" id="menuId" name="menuId" value="">
-        <input type="hidden" name="_method" value="PUT">
+        <!-- 새 메뉴 추가 시 menuId는 필요하지 않으므로 삭제 또는 비활성화 -->
+        <!--<input type="hidden" id="menuId" name="menuId" value="">-->
         <div class="form-group">
             <label for="menuName">메뉴 이름</label>
             <input type="text" class="form-control" id="menuName" name="name" placeholder="메뉴 이름">
@@ -53,6 +50,11 @@
         <button type="submit" class="btn btn-orange">추가</button>
     </form>
 
+
+    <form id="delete-menu-form" th:action="@{/owner/restaurants/list/menus/menu}" th:method="post" style="display:none;">
+        <input type="hidden" name="menuId" id="deleteMenuId">
+        <input type="hidden" name="_method" value="DELETE">
+    </form>
 
     <div class="row">
         <div class="col">
@@ -66,16 +68,16 @@
 <script>
     function showAddMenuForm() {
         document.getElementById('add-menu-form').style.display = 'block';
-        document.getElementById('menuId').value = ''; // 새 메뉴 추가 시 menuId는 비움
         document.getElementById('menuName').value = '';
         document.getElementById('menuPrice').value = '';
-        document.getElementById('add-menu-form').setAttribute('method', 'post'); // 새 메뉴 추가 시 POST로 설정
+        document.getElementById('add-menu-form').setAttribute('method', 'post');
+        document.getElementById('add-menu-form').setAttribute('action', '/owner/restaurants/list/menus/menu');
     }
 
     function editMenu(menuId) {
-        // 메뉴 수정 폼을 보여주고, 해당 menuId로 값을 설정
         document.getElementById('add-menu-form').style.display = 'block';
-        document.getElementById('menuId').value = menuId;
+        document.getElementById('menuName').value = '';
+        document.getElementById('menuPrice').value = '';
 
         // 해당 메뉴의 이름과 가격을 가져와 폼에 설정
         const menuElement = document.querySelector(`.list-group-item[data-menu-id="${menuId}"]`);
@@ -85,18 +87,21 @@
 
             document.getElementById('menuName').value = menuName;
             document.getElementById('menuPrice').value = menuPrice;
-        } else {
-            console.error("Menu element not found for ID:", menuId);
         }
 
         // 수정 시에는 PUT 메서드를 사용하도록 설정
         document.getElementById('add-menu-form').setAttribute('method', 'post');
-        document.getElementById('add-menu-form').setAttribute('action', '/owner/restaurants/list/menus/menu?_method=PUT');
+        document.getElementById('add-menu-form').setAttribute('action', `/owner/restaurants/list/menus/menu?_method=PUT&menuId=${menuId}`);
     }
 
 
 
-
+    function deleteMenu(menuId) {
+        if (confirm('정말로 이 메뉴를 삭제하시겠습니까?')) {
+            document.getElementById('deleteMenuId').value = menuId;
+            document.getElementById('delete-menu-form').submit();
+        }
+    }
 </script>
 
 </body>

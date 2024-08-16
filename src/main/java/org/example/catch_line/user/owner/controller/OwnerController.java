@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -176,6 +177,13 @@ public class OwnerController {
 
 	}
 
+	@DeleteMapping("/restaurants/list/menus/menu")
+	public String deleteMenu(@RequestParam Long menuId) {
+
+		menuService.deleteRestaurantMenu(menuId);
+		return "redirect:/owner/restaurants/list/menus";
+	}
+
 	@GetMapping("restaurants/list/menus")
 	public String getMenus(Model model, HttpSession session) {
 		RestaurantResponse restaurant = getRestaurantResponse(session);
@@ -194,9 +202,7 @@ public class OwnerController {
 		RestaurantResponse restaurant = getRestaurantResponse(session);
 		menuService.createRestaurantMenu(restaurant.getRestaurantId(),menuRequest);
 
-		List<MenuResponse> menuResponseList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
 		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
-		model.addAttribute("menuList",menuResponseList);
 		model.addAttribute("restaurantMenuList", restaurantMenuList);
 		return "redirect:/owner/restaurants/list/menus";
 	}

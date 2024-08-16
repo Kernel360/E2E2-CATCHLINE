@@ -53,8 +53,8 @@ public class MenuService {
     }
 
     // 메뉴 삭제
-    public void deleteRestaurantMenu(Long restaurantId) {
-        menuRepository.deleteById(restaurantId);
+    public void deleteRestaurantMenu(Long menuId) {
+        menuRepository.deleteById(menuId);
     }
 
 }

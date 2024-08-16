@@ -1,7 +1,7 @@
 package org.example.catch_line.user.member.repository;
 
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.model.vo.Email;
+import org.example.catch_line.common.model.vo.Email;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

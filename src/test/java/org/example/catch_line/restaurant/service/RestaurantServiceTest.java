@@ -1,17 +1,19 @@
 package org.example.catch_line.restaurant.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
-import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
-import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.restaurant.model.dto.RestaurantUpdateRequest;
-import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
-import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
-import org.example.catch_line.restaurant.repository.RestaurantRepository;
-import org.example.catch_line.restaurant.validation.RestaurantValidator;
+import org.example.catch_line.dining.restaurant.service.RestaurantService;
+import org.example.catch_line.scrap.service.ScrapService;
+import org.example.catch_line.common.model.vo.PhoneNumber;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantCreateRequest;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantUpdateRequest;
+import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.mapper.RestaurantMapper;
+import org.example.catch_line.dining.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.example.catch_line.review.service.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,10 +39,12 @@ class RestaurantServiceTest {
     // RestaurantService에서 사용할 가짜 객체 생성
     @Mock RestaurantRepository restaurantRepository;
     @Mock ReviewService reviewService;
+    @Mock ScrapService scrapService;
     @Mock RestaurantValidator restaurantValidator;
 
     // RestaurantService에 위에서 만든 가짜 객체 넣어주기
-    @InjectMocks RestaurantService restaurantService;
+    @InjectMocks
+    RestaurantService restaurantService;
 
     RestaurantEntity restaurantEntity;
 
@@ -98,13 +102,15 @@ class RestaurantServiceTest {
     void restaurant_find() {
         // given
         Long restaurantId = 1L;
+        Long memberId = 1L;
 
         when(restaurantValidator.checkIfRestaurantPresent(restaurantId)).thenReturn(restaurantEntity);
         when(reviewService.getAverageRating(restaurantId)).thenReturn(new Rating(BigDecimal.ZERO));
         when(reviewService.getReviewCount(restaurantId)).thenReturn(0L);
+        when(scrapService.getRestaurantScraps(restaurantId)).thenReturn(0L);
 
         // when
-        RestaurantResponse response = restaurantService.findRestaurant(restaurantId);
+        RestaurantResponse response = restaurantService.findRestaurant(memberId, restaurantId);
 
         // then
         assertThat(response).isNotNull();
@@ -117,6 +123,7 @@ class RestaurantServiceTest {
     void restaurant_find_with_reviews_3() {
         // given
         Long restaurantId = 1L;
+        Long memberId = 1L;
         Long reviewCount = 3L;
         double averageRating = 4.5;
 
@@ -129,7 +136,7 @@ class RestaurantServiceTest {
         // when().thenReturn() 스터빙을 통해,
         // restaurantService.findRestaurant() 에서 필요한 모든 외부 의존성을 미리 정의된 값으로 대체하여 사용함
         // 그렇기 때문에 'RestaurantResponse'에 예상된 값들이 포함되게 된다.
-        RestaurantResponse response = restaurantService.findRestaurant(restaurantId);
+        RestaurantResponse response = restaurantService.findRestaurant(memberId, restaurantId);
 
         // then
         assertThat(response).isNotNull();

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.email.DuplicateEmailException;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.model.vo.Email;
+import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.user.member.repository.MemberRepository;
 import org.springframework.stereotype.Component;
 

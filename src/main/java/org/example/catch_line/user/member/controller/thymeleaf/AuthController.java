@@ -10,7 +10,7 @@ import org.example.catch_line.exception.email.DuplicateEmailException;
 import org.example.catch_line.user.member.model.dto.LoginRequest;
 import org.example.catch_line.user.member.model.dto.MemberResponse;
 import org.example.catch_line.user.member.model.dto.SignUpRequest;
-import org.example.catch_line.user.member.model.vo.Email;
+import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.user.member.service.AuthService;
 import org.example.catch_line.user.member.validation.MemberValidator;
 import org.springframework.stereotype.Controller;
@@ -19,8 +19,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
-import static org.example.catch_line.common.constant.SessionConst.MEMBER_ID;
-import static org.example.catch_line.common.constant.SessionConst.ROLE;
+import static org.example.catch_line.common.session.SessionConst.MEMBER_ID;
+import static org.example.catch_line.common.session.SessionConst.ROLE;
 
 @Slf4j
 @Controller

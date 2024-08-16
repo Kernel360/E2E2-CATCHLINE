@@ -1,10 +1,9 @@
 package org.example.catch_line.member.service;
 
-import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.user.member.model.dto.MemberUpdateRequest;
-import org.example.catch_line.user.member.model.vo.Email;
-import org.example.catch_line.user.member.model.vo.Password;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.vo.Email;
+import org.example.catch_line.common.model.vo.Password;
+import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.user.member.service.MemberService;
 import org.example.catch_line.user.member.validation.MemberValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +55,6 @@ class MemberServiceTest {
                 .phoneNumber(new PhoneNumber("010-1212-3434"))
                 .nickname("test nickname")
                 .name("test name")
-                .role(Role.USER)
                 .build();
 
         given(memberValidator.checkIfMemberPresent(1L))
@@ -82,6 +80,5 @@ class MemberServiceTest {
         assertEquals("update test nickname", defaultMember.getNickname());
         assertEquals(defaultMember.getPassword().getEncodedPassword(), defaultMember.getPassword().getEncodedPassword());
         assertEquals("010-2121-4343", defaultMember.getPhoneNumber().getPhoneNumberValue());
-        assertEquals(Role.USER, defaultMember.getRole());
     }
 }

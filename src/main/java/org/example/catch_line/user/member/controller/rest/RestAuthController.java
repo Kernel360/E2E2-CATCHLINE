@@ -14,8 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-import static org.example.catch_line.common.constant.SessionConst.MEMBER_ID;
-import static org.example.catch_line.common.constant.SessionConst.ROLE;
+import static org.example.catch_line.common.session.SessionConst.MEMBER_ID;
+import static org.example.catch_line.common.session.SessionConst.ROLE;
 
 @Slf4j
 @RestController

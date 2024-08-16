@@ -13,7 +13,7 @@ import org.example.catch_line.booking.reservation.model.entity.ReservationEntity
 import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

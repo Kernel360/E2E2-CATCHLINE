@@ -6,18 +6,19 @@ import org.example.catch_line.scrap.model.entity.ScrapEntity;
 import org.example.catch_line.scrap.model.key.ScrapId;
 import org.example.catch_line.scrap.repository.ScrapRepository;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.repository.MemberRepository;
 import org.example.catch_line.user.member.validation.MemberValidator;
-import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
-import org.example.catch_line.restaurant.validation.RestaurantValidator;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.mapper.RestaurantMapper;
+import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ScrapService {
 
     private final MemberValidator memberValidator;
@@ -29,51 +30,36 @@ public class ScrapService {
         return scrapRepository.countByRestaurant(restaurant);
     }
 
-    public RestaurantResponse saveScrap(Long memberId, Long restaurantId) {
-        // 회원 존재 여부 확인
-        MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
-        // 식당 존재 여부 확인
-        RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+    public boolean hasMemberScrapRestaurant(Long memberId, Long restaurantId) {
+        ScrapId scrapId = new ScrapId(memberId, restaurantId);
+        return scrapRepository.existsById(scrapId);
+    }
 
+    public RestaurantResponse createScrap(Long memberId, Long restaurantId) {
+        MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
+        RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
         ScrapId scrapId = new ScrapId(memberId, restaurantId);
         boolean existScrap = scrapRepository.existsById(scrapId);
 
-        // scrap 중복 확인 -> 만약 존재하면 에러 발생하지 않고 ** 무시 **
         if (existScrap) {
             return RestaurantMapper.entityToResponse(restaurant);
         }
 
-        ScrapEntity scrapEntity = createScrapEntity(scrapId, member, restaurant);
+        ScrapEntity scrapEntity = new ScrapEntity(scrapId, member, restaurant);
         scrapRepository.save(scrapEntity);
-
         restaurant.addScrapCountByUser();
 
-        return RestaurantMapper.entityToResponse(restaurant);
+        return RestaurantMapper.entityToResponse(restaurant, true);
     }
 
     public RestaurantResponse deleteScrap(Long memberId, Long restaurantId) {
         RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
-
         ScrapId scrapId = new ScrapId(memberId, restaurantId);
-        boolean existScrap = scrapRepository.existsById(scrapId);
 
-        if(existScrap) {
-            return RestaurantMapper.entityToResponse(restaurant);
-        }
-
-        // 식당 스크랩 수 1 감소
         scrapRepository.deleteById(scrapId);
         restaurant.reduceScrapCountByUser();
 
         return RestaurantMapper.entityToResponse(restaurant);
-    }
-
-    private ScrapEntity createScrapEntity(ScrapId scrapId, MemberEntity member, RestaurantEntity restaurant) {
-        return ScrapEntity.builder()
-                .scrapId(scrapId)
-                .member(member)
-                .restaurant(restaurant)
-                .build();
     }
 }
 

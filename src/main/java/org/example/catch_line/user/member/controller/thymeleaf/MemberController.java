@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.SessionUtils;
+import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.member.model.dto.MemberResponse;
 import org.example.catch_line.user.member.model.dto.MemberUpdateRequest;

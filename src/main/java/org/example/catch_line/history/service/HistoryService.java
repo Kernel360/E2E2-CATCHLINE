@@ -17,7 +17,6 @@ import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.validation.HistoryValidator;
-import org.example.catch_line.restaurant.model.mapper.RestaurantHourMapper;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;

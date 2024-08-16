@@ -1,17 +1,16 @@
 package org.example.catch_line.review.service;
 
-import org.example.catch_line.common.BaseTimeEntity;
-import org.example.catch_line.common.constant.Role;
+import org.example.catch_line.common.constant.ServiceType;
+import org.example.catch_line.common.model.entity.BaseTimeEntity;
 import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.model.vo.Email;
-import org.example.catch_line.user.member.model.vo.Password;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.vo.Email;
+import org.example.catch_line.common.model.vo.Password;
+import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.user.member.validation.MemberValidator;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
-import org.example.catch_line.restaurant.validation.RestaurantValidator;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
+import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.example.catch_line.review.model.dto.ReviewCreateRequest;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.model.dto.ReviewUpdateRequest;
@@ -172,7 +171,6 @@ class ReviewServiceTest {
                 .nickname("hong")
                 .password(new Password(passwordEncoder.encode("123qwe!@Q")))
                 .phoneNumber(new PhoneNumber("010-1234-1234"))
-                .role(Role.USER)
                 .build();
     }
 

@@ -1,12 +1,12 @@
 package org.example.catch_line.restaurant.service;
 
 
+import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,6 @@
-package org.example.catch_line.common;
+package org.example.catch_line.common.session;
 
 import org.example.catch_line.common.constant.Role;
-import org.example.catch_line.common.constant.SessionConst;
 
 import jakarta.servlet.http.HttpSession;
 import org.example.catch_line.exception.session.InvalidSessionException;

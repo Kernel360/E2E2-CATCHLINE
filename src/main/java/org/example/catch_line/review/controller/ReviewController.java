@@ -2,7 +2,7 @@ package org.example.catch_line.review.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.example.catch_line.common.SessionUtils;
+import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.review.model.dto.ReviewCreateRequest;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.model.dto.ReviewUpdateRequest;

@@ -2,11 +2,9 @@ package org.example.catch_line.booking.waiting.controller;
 
 import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
-import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.example.catch_line.booking.waiting.service.WaitingService;
-import org.example.catch_line.common.SessionUtils;
+import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.booking.WaitingException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

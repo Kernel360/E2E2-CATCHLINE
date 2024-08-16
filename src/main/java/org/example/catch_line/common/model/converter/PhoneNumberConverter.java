@@ -1,8 +1,8 @@
-package org.example.catch_line.user.member.model.mapper.converter;
+package org.example.catch_line.common.model.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.vo.PhoneNumber;
 
 @Converter(autoApply = true)
 public class PhoneNumberConverter implements AttributeConverter<PhoneNumber, String> {

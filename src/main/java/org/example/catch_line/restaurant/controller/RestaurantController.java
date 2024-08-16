@@ -1,16 +1,19 @@
 package org.example.catch_line.restaurant.controller;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantImageEntity;
-import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
+import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.restaurant.service.RestaurantHourService;
 import org.example.catch_line.restaurant.service.RestaurantImageService;
 import org.example.catch_line.restaurant.service.RestaurantService;
+import org.example.catch_line.scrap.service.ScrapService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +35,7 @@ public class RestaurantController {
     private final RestaurantHourService restaurantHourService;
     private final RestaurantImageService restaurantImageService;
     private final KakaoAddressService kakaoAddressService;
+    private final ScrapService scrapService;
 
     @Value("${kakao.maps.js-key}")
     private String jsKey;
@@ -39,12 +43,14 @@ public class RestaurantController {
     @GetMapping("/{restaurantId}")
     public String viewRestaurant(
             @PathVariable Long restaurantId,
-            Model model
+            Model model,
+            HttpSession session
     ) {
         DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
         DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
 
-        RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
+        Long memberId = (Long) session.getAttribute(SessionConst.MEMBER_ID);
+        RestaurantResponse restaurant = restaurantService.findRestaurant(memberId, restaurantId);
         List<RestaurantHourResponse> restaurantHours = restaurantHourService.getAllRestaurantHours(restaurantId);
         RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek);
 

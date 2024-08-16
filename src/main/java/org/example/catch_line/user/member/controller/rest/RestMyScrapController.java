@@ -3,13 +3,11 @@ package org.example.catch_line.user.member.controller.rest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.constant.SessionConst;
+import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.user.member.service.MyScrapService;
-import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

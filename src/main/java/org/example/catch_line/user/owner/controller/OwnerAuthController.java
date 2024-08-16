@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.common.constant.Role;
-import org.example.catch_line.common.constant.SessionConst;
+import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.owner.model.dto.OwnerLoginRequest;
 import org.example.catch_line.user.owner.model.dto.OwnerResponse;
@@ -15,7 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static org.example.catch_line.common.constant.SessionConst.ROLE;
+import static org.example.catch_line.common.session.SessionConst.ROLE;
 
 @Controller
 @RequestMapping("/owner")

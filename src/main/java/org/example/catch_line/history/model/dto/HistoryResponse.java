@@ -2,8 +2,8 @@ package org.example.catch_line.history.model.dto;
 
 import java.time.LocalDateTime;
 
+import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.booking.waiting.model.entity.WaitingType;
 
 import lombok.AllArgsConstructor;

@@ -2,7 +2,7 @@ package org.example.catch_line.restaurant.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
+import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.restaurant.model.entity.constant.OpenStatus;
 
 import java.time.LocalTime;

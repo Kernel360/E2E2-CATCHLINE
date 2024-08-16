@@ -4,8 +4,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.example.catch_line.common.SessionUtils;
-import org.example.catch_line.common.constant.SessionConst;
+import org.example.catch_line.common.constant.ServiceType;
+import org.example.catch_line.common.session.SessionUtils;
+import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
@@ -15,9 +16,8 @@ import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantUpdateRequest;
 import org.example.catch_line.restaurant.model.entity.RestaurantImageEntity;
-import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
+import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.service.RestaurantHourService;
 import org.example.catch_line.restaurant.service.RestaurantImageService;
 import org.example.catch_line.restaurant.service.RestaurantService;
@@ -138,7 +138,7 @@ public class OwnerController {
 
 	@GetMapping("/restaurants/{restaurantId}")
 	public String updateRestaurantForm(@PathVariable Long restaurantId, Model model) {
-		RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
+		RestaurantResponse restaurant = restaurantService.findRestaurant(null, restaurantId);
 		model.addAttribute("restaurant", restaurant);
 		return "owner/updateRestaurant";
 	}

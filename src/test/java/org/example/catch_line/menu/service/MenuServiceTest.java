@@ -1,8 +1,9 @@
 package org.example.catch_line.menu.service;
 
 
+import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.menu.model.dto.MenuRequest;
 import org.example.catch_line.menu.model.dto.MenuResponse;
 import org.example.catch_line.menu.model.entity.MenuEntity;
@@ -11,7 +12,6 @@ import org.example.catch_line.menu.model.validation.MenuValidator;
 import org.example.catch_line.menu.repository.MenuRepository;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.validation.RestaurantValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

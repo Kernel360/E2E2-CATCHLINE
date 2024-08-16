@@ -2,7 +2,7 @@ package org.example.catch_line.review.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.catch_line.common.BaseTimeEntity;
+import org.example.catch_line.common.model.entity.BaseTimeEntity;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 

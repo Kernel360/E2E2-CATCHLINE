@@ -2,10 +2,8 @@ package org.example.catch_line.user.owner.service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.example.catch_line.common.SessionUtils;
 import org.example.catch_line.common.kakao.model.dto.KakaoCoordinateResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.exception.CatchLineException;

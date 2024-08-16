@@ -2,7 +2,8 @@ package org.example.catch_line.scrap.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.common.SessionUtils;
+import org.example.catch_line.common.session.SessionUtils;
+import org.example.catch_line.exception.session.InvalidSessionException;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.scrap.service.ScrapService;
 import org.springframework.http.ResponseEntity;
@@ -12,23 +13,36 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
-@RequestMapping("/restaurants")
+@RequestMapping("/restaurants/{restaurantId}/scraps")
 @RequiredArgsConstructor
 public class ScrapController {
 
     private final ScrapService scrapService;
 
-    @PostMapping("/{restaurantId}/scraps")
-    public ResponseEntity<RestaurantResponse> scrapRestaurantByUser(
+    @PostMapping
+    public ResponseEntity<?> scrapRestaurantByUser(
             @PathVariable Long restaurantId,
             HttpSession httpSession
     ) {
-        RestaurantResponse restaurantResponse = scrapService.saveScrap(SessionUtils.getMemberId(httpSession), restaurantId);
+        Long memberId;
+        try {
+            memberId = SessionUtils.getMemberId(httpSession);
+        } catch (InvalidSessionException e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        RestaurantResponse restaurantResponse = scrapService.saveScrap(memberId, restaurantId);
+
         return ResponseEntity.ok().body(restaurantResponse);
     }
 
-    @DeleteMapping("/{restaurantId}/scraps")
+    @DeleteMapping
     public ResponseEntity<RestaurantResponse> cancelScrapByUser(
             @PathVariable Long restaurantId,
             HttpSession httpSession

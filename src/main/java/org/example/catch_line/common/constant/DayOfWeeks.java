@@ -1,4 +1,4 @@
-package org.example.catch_line.restaurant.model.entity.constant;
+package org.example.catch_line.common.constant;
 
 import java.time.DayOfWeek;
 import java.util.Arrays;

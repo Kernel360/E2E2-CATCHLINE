@@ -1,4 +1,4 @@
-package org.example.catch_line.user.member.model.vo;
+package org.example.catch_line.common.model.vo;
 
 import lombok.Getter;
 import org.example.catch_line.exception.email.InvalidEmailException;

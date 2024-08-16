@@ -1,9 +1,9 @@
 package org.example.catch_line.restaurant.controller;
 
-import org.example.catch_line.common.constant.SessionConst;
+import org.example.catch_line.common.constant.ServiceType;
+import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.service.RestaurantPreviewService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,27 +1,23 @@
 package org.example.catch_line.restaurant.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.common.constant.ServiceType;
+import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
+import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.restaurant.model.entity.constant.OpenStatus;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
-import org.example.catch_line.restaurant.repository.RestaurantHourRepository;
-import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.example.catch_line.restaurant.service.RestaurantHourService;
 import org.example.catch_line.restaurant.service.RestaurantService;
-import org.example.catch_line.restaurant.validation.RestaurantValidator;
-import org.example.catch_line.review.service.ReviewService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -59,9 +55,16 @@ class RestaurantControllerTest {
         DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
         DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
 
-        when(restaurantService.findRestaurant(restaurantId)).thenReturn(restaurant);
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(SessionConst.MEMBER_ID, 1L);
+        Long memberId = (Long) session.getAttribute(SessionConst.MEMBER_ID);
+
+        when(restaurantService.findRestaurant(memberId, restaurantId)).thenReturn(restaurant);
         when(restaurantHourService.getAllRestaurantHours(restaurantId)).thenReturn(restaurantHours);
         when(restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek)).thenReturn(hourResponse);
+
+        String x = String.valueOf(restaurant.getLongitude()); // 경도 == x 좌표
+        String y = String.valueOf(restaurant.getLatitude()); // 위도 == y 좌표
 
         // when
         // then

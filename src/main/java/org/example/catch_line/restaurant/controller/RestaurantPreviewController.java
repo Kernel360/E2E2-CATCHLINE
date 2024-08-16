@@ -2,7 +2,7 @@ package org.example.catch_line.restaurant.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.common.constant.SessionConst;
+import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.restaurant.service.RestaurantPreviewService;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class RestaurantPreviewController {

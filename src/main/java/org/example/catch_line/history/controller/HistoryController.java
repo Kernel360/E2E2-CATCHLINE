@@ -7,9 +7,8 @@ import org.example.catch_line.booking.reservation.model.entity.ReservationEntity
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.service.WaitingService;
-import org.example.catch_line.common.SessionUtils;
+import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.booking.BookingErrorException;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;

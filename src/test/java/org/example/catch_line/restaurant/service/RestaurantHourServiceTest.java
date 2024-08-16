@@ -3,7 +3,7 @@ package org.example.catch_line.restaurant.service;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantHourEntity;
-import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
+import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.restaurant.model.entity.constant.OpenStatus;
 import org.example.catch_line.restaurant.repository.RestaurantHourRepository;
 import org.junit.jupiter.api.DisplayName;

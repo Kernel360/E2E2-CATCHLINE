@@ -13,18 +13,17 @@ import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.model.entity.WaitingType;
 import org.example.catch_line.booking.waiting.model.mapper.WaitingResponseMapper;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
-import org.example.catch_line.common.constant.Role;
+import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.exception.booking.ServiceTypeException;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.model.vo.Email;
-import org.example.catch_line.user.member.model.vo.Password;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.vo.Email;
+import org.example.catch_line.common.model.vo.Password;
+import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.user.member.repository.MemberRepository;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 import org.example.catch_line.restaurant.repository.RestaurantRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -78,7 +77,6 @@ public class WaitingServiceTest {
 			.nickname("hong")
 			.password(new Password(passwordEncoder.encode("123qwe!@Q")))
 			.phoneNumber(new PhoneNumber("010-1234-1234"))
-			.role(Role.USER)
 			.build();
 
 		waitingEntity = WaitingEntity.builder()

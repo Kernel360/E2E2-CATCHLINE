@@ -1,12 +1,11 @@
 package org.example.catch_line.restaurant.model.mapper;
 
 import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.user.owner.model.entity.OwnerEntity;
-import org.example.catch_line.user.owner.repository.OwnerRepository;
 
 import java.math.BigDecimal;
 
@@ -25,6 +24,24 @@ public class RestaurantMapper {
                 .reviewCount(entity.getReviewCount())
                 .foodType(entity.getFoodType())
                 .serviceType(entity.getServiceType())
+                .hasScrapped(false)
+                .build();
+    }
+
+    public static RestaurantResponse entityToResponse(RestaurantEntity entity, boolean hasScrapped) {
+        return RestaurantResponse.builder()
+                .restaurantId(entity.getRestaurantId())
+                .name(entity.getName())
+                .description(entity.getDescription())
+                .averageRating(entity.getRating().getRating())
+                .phoneNumber(entity.getPhoneNumber().getPhoneNumberValue())
+                .latitude(entity.getLatitude())
+                .longitude(entity.getLongitude())
+                .scrapCount(entity.getScrapCount())
+                .reviewCount(entity.getReviewCount())
+                .foodType(entity.getFoodType())
+                .serviceType(entity.getServiceType())
+                .hasScrapped(hasScrapped)
                 .build();
     }
 

@@ -1,4 +1,4 @@
-package org.example.catch_line.common.model.mapper;
+package org.example.catch_line.common.model.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

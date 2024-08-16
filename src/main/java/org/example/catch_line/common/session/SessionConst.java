@@ -1,4 +1,4 @@
-package org.example.catch_line.common.constant;
+package org.example.catch_line.common.session;
 
 public class SessionConst {
     public static final String MEMBER_ID= "memberId";

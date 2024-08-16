@@ -1,11 +1,10 @@
 package org.example.catch_line.restaurant.model.dto;
 
 import lombok.*;
+import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -23,4 +22,5 @@ public class RestaurantResponse {
     private Long reviewCount;
     private FoodType foodType;
     private ServiceType serviceType;
+    private boolean hasScrapped;
 }

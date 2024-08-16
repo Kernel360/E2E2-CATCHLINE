@@ -1,12 +1,11 @@
 package org.example.catch_line.member.service;
 
-import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.user.member.model.dto.LoginRequest;
 import org.example.catch_line.user.member.model.dto.MemberResponse;
 import org.example.catch_line.user.member.model.dto.SignUpRequest;
-import org.example.catch_line.user.member.model.vo.Email;
-import org.example.catch_line.user.member.model.vo.Password;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.vo.Email;
+import org.example.catch_line.common.model.vo.Password;
+import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.user.member.service.AuthService;
 import org.example.catch_line.user.member.validation.MemberValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +61,6 @@ class AuthServiceTest {
                 .phoneNumber(new PhoneNumber("010-1212-3434"))
                 .nickname("test nickname")
                 .name("test name")
-                .role(Role.USER)
                 .build();
     }
 
@@ -83,7 +81,6 @@ class AuthServiceTest {
                 .nickname("test nickname")
                 .password("1234!@#$qwer")
                 .phoneNumber("010-1212-3434")
-                .role(Role.USER)
                 .build();
 
         // when
@@ -99,7 +96,6 @@ class AuthServiceTest {
         assertEquals("test nickname", savedMember.getNickname());
         assertEquals(defaultMember.getPassword().getEncodedPassword(), savedMember.getPassword().getEncodedPassword());
         assertEquals("010-1212-3434", savedMember.getPhoneNumber().getPhoneNumberValue());
-        assertEquals(Role.USER, savedMember.getRole());
     }
 
 
@@ -116,7 +112,6 @@ class AuthServiceTest {
         LoginRequest loginRequest = LoginRequest.builder()
                 .email("test@gmail.com")
                 .password("1234!@#$qwer")
-                .role(Role.USER)
                 .build();
 
 
@@ -127,7 +122,6 @@ class AuthServiceTest {
         assertEquals("test@gmail.com", response.getEmail());
         assertEquals("test name", response.getName());
         assertEquals("test nickname", response.getNickname());
-        assertEquals(Role.USER, response.getRole());
     }
 
 //    @DisplayName("중복 이메일 가입 시 예외 발생 테스트")

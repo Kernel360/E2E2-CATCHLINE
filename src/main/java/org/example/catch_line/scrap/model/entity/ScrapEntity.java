@@ -11,7 +11,6 @@ import org.example.catch_line.user.member.model.entity.MemberEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
 public class ScrapEntity {
 
     @EmbeddedId

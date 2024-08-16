@@ -3,16 +3,17 @@ package org.example.catch_line.restaurant.service;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.model.vo.Rating;
+import org.example.catch_line.dining.restaurant.service.RestaurantService;
 import org.example.catch_line.scrap.service.ScrapService;
 import org.example.catch_line.common.model.vo.PhoneNumber;
-import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
-import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.restaurant.model.dto.RestaurantUpdateRequest;
-import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
-import org.example.catch_line.restaurant.repository.RestaurantRepository;
-import org.example.catch_line.restaurant.validation.RestaurantValidator;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantCreateRequest;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantUpdateRequest;
+import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.mapper.RestaurantMapper;
+import org.example.catch_line.dining.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.example.catch_line.review.service.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +43,8 @@ class RestaurantServiceTest {
     @Mock RestaurantValidator restaurantValidator;
 
     // RestaurantService에 위에서 만든 가짜 객체 넣어주기
-    @InjectMocks RestaurantService restaurantService;
+    @InjectMocks
+    RestaurantService restaurantService;
 
     RestaurantEntity restaurantEntity;
 

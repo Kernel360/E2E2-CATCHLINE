@@ -4,10 +4,11 @@ package org.example.catch_line.restaurant.service;
 import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.common.model.vo.PhoneNumber;
-import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantPreviewResponse;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
+import org.example.catch_line.dining.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.dining.restaurant.service.RestaurantPreviewService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +30,8 @@ import static org.mockito.Mockito.*;
 class RestaurantPreviewServiceTest {
 
     @Mock RestaurantRepository restaurantRepository;
-    @InjectMocks RestaurantPreviewService restaurantPreviewService;
+    @InjectMocks
+    RestaurantPreviewService restaurantPreviewService;
 
     @Test
     @DisplayName("식당 프리뷰 리스트 조회 테스트")

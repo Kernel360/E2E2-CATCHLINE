@@ -4,15 +4,16 @@ package org.example.catch_line.menu.service;
 import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.common.model.vo.PhoneNumber;
-import org.example.catch_line.menu.model.dto.MenuRequest;
-import org.example.catch_line.menu.model.dto.MenuResponse;
-import org.example.catch_line.menu.model.entity.MenuEntity;
-import org.example.catch_line.menu.model.mapper.MenuMapper;
-import org.example.catch_line.menu.model.validation.MenuValidator;
-import org.example.catch_line.menu.repository.MenuRepository;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.validation.RestaurantValidator;
+import org.example.catch_line.dining.menu.model.dto.MenuRequest;
+import org.example.catch_line.dining.menu.model.dto.MenuResponse;
+import org.example.catch_line.dining.menu.model.entity.MenuEntity;
+import org.example.catch_line.dining.menu.model.mapper.MenuMapper;
+import org.example.catch_line.dining.menu.model.validation.MenuValidator;
+import org.example.catch_line.dining.menu.repository.MenuRepository;
+import org.example.catch_line.dining.menu.service.MenuService;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
+import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,8 @@ class MenuServiceTest {
     @Mock MenuRepository menuRepository;
     @Mock RestaurantValidator restaurantValidator;
     @Mock MenuValidator menuValidator;
-    @InjectMocks MenuService menuService;
+    @InjectMocks
+    MenuService menuService;
 
     @Test
     @DisplayName("식당 메뉴 전체 조회 테스트")

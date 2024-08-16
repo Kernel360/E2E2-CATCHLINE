@@ -1,11 +1,12 @@
 package org.example.catch_line.restaurant.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
-import org.example.catch_line.restaurant.model.entity.RestaurantHourEntity;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourResponse;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantHourEntity;
 import org.example.catch_line.common.constant.DayOfWeeks;
-import org.example.catch_line.restaurant.model.entity.constant.OpenStatus;
-import org.example.catch_line.restaurant.repository.RestaurantHourRepository;
+import org.example.catch_line.dining.restaurant.model.entity.constant.OpenStatus;
+import org.example.catch_line.dining.restaurant.repository.RestaurantHourRepository;
+import org.example.catch_line.dining.restaurant.service.RestaurantHourService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +27,8 @@ import static org.mockito.Mockito.*;
 class RestaurantHourServiceTest {
 
     @Mock RestaurantHourRepository restaurantHourRepository;
-    @InjectMocks RestaurantHourService restaurantHourService;
+    @InjectMocks
+    RestaurantHourService restaurantHourService;
 
     @Test
     @DisplayName("식당 영업 시간 전체 조회 테스트")

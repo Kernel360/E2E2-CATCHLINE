@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.exception.session.InvalidSessionException;
-import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.scrap.service.ScrapService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,7 +37,7 @@ public class ScrapController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
-        RestaurantResponse restaurantResponse = scrapService.saveScrap(memberId, restaurantId);
+        RestaurantResponse restaurantResponse = scrapService.createScrap(memberId, restaurantId);
 
         return ResponseEntity.ok().body(restaurantResponse);
     }

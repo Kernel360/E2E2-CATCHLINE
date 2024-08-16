@@ -6,12 +6,11 @@ import org.example.catch_line.scrap.model.entity.ScrapEntity;
 import org.example.catch_line.scrap.model.key.ScrapId;
 import org.example.catch_line.scrap.repository.ScrapRepository;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.repository.MemberRepository;
 import org.example.catch_line.user.member.validation.MemberValidator;
-import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
-import org.example.catch_line.restaurant.validation.RestaurantValidator;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.mapper.RestaurantMapper;
+import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,7 @@ public class ScrapService {
         return scrapRepository.existsById(scrapId);
     }
 
-    public RestaurantResponse saveScrap(Long memberId, Long restaurantId) {
+    public RestaurantResponse createScrap(Long memberId, Long restaurantId) {
         MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
         RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
         ScrapId scrapId = new ScrapId(memberId, restaurantId);

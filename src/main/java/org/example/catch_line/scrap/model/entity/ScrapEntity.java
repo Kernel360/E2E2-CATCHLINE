@@ -2,7 +2,7 @@ package org.example.catch_line.scrap.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.scrap.model.key.ScrapId;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 

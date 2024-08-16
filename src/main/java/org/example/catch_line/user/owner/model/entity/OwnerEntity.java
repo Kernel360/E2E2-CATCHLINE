@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.common.model.converter.PasswordConverter;
 import org.example.catch_line.common.model.converter.PhoneNumberConverter;
 import org.example.catch_line.common.model.vo.Password;

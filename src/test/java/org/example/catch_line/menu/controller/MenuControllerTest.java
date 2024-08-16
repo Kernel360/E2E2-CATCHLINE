@@ -1,7 +1,8 @@
 package org.example.catch_line.menu.controller;
 
-import org.example.catch_line.menu.model.dto.MenuResponse;
-import org.example.catch_line.menu.service.MenuService;
+import org.example.catch_line.dining.menu.controller.MenuController;
+import org.example.catch_line.dining.menu.model.dto.MenuResponse;
+import org.example.catch_line.dining.menu.service.MenuService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

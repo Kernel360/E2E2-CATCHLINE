@@ -1,6 +1,6 @@
 package org.example.catch_line.scrap.repository;
 
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.scrap.model.entity.ScrapEntity;
 import org.example.catch_line.scrap.model.key.ScrapId;
 import org.example.catch_line.user.member.model.entity.MemberEntity;

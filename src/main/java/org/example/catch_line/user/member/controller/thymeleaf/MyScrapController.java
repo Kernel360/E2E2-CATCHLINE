@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.session.SessionUtils;
-import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.user.member.service.MyScrapService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

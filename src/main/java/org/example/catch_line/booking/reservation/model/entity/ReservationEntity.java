@@ -6,7 +6,7 @@ import org.example.catch_line.common.model.entity.BaseTimeEntity;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.booking.reservation.validation.ValidReservationDate;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

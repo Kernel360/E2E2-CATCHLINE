@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
@@ -16,6 +17,7 @@ import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.validation.HistoryValidator;
+import org.example.catch_line.restaurant.model.mapper.RestaurantHourMapper;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -132,6 +134,27 @@ public class HistoryService {
 			.build();
 	}
 
+	public List<HistoryResponse> findByRestaurantId(Long restaurantId) {
+		List<ReservationEntity> reservationEntities = reservationRepository.findAllByRestaurantRestaurantId(
+			restaurantId);
+		List<WaitingEntity> waitingEntities = waitingRepository.findAllByRestaurantRestaurantId(
+			restaurantId);
+
+		List<HistoryResponse> reservationResponses = reservationEntities.stream()
+			.map(this::reservationToHistoryResponse)
+			.collect(Collectors.toList());
+
+		List<HistoryResponse> waitingResponses = waitingEntities.stream()
+			.map(waiting -> this.entityToHistoryResponse(waiting, getStartOfDay(), getEndOfDay()))
+			.collect(Collectors.toList());
+
+		List<HistoryResponse> allHistoryResponses = new ArrayList<>();
+		allHistoryResponses.addAll(reservationResponses);
+		allHistoryResponses.addAll(waitingResponses);
+
+		return allHistoryResponses;
+	}
+
 
 
 	// 예약 상세 정보 조회
@@ -161,6 +184,8 @@ public class HistoryService {
 
 		return reservationToHistoryResponse(savedEntity);
 	}
+
+
 }
 
 

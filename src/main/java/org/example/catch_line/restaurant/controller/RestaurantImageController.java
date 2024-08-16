@@ -45,7 +45,7 @@ public class RestaurantImageController {
         try {
             RestaurantImageEntity savedImage = restaurantImageService.saveImage(restaurantId, image);
             model.addAttribute("imageId", savedImage.getRestaurantImageId());
-            return "redirect:/owner/restaurants/list";
+            return "redirect:/owner/restaurants/list/updateImage";
             // return "redirect:/restaurants/" + savedImage.getRestaurant().getRestaurantId();
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,4 +53,12 @@ public class RestaurantImageController {
             return "restaurant/upload-image";
         }
     }
+    @DeleteMapping("/restaurants/{restaurantId}/images/delete")
+    public String deleteImage(@PathVariable Long restaurantId, @RequestParam Long imageId) {
+        // 이미지 삭제 처리 로직
+
+        return "redirect:/owner/restaurants/{restaurantId}/edit-images";
+    }
+
+
 }

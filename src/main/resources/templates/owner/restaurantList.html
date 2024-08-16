@@ -1,176 +1,94 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
-    <title>Restaurant Details</title>
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
         .container {
             max-width: 800px;
-            margin-top: 20px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
         }
-
         .card {
             margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f1f1f1;
         }
-
-        .phone-number {
-            margin-top: 20px;
+        .card-body {
+            padding: 20px;
         }
-
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .list-group-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            padding: 15px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            cursor: pointer;
+        }
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
         .btn-orange {
             background-color: #c6a9e2;
             color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+            margin-bottom: 5px;
         }
-
+        .btn-orange.active {
+            background-color: white;
+            color: #c6a9e2;
+            border: 1px solid #c6a9e2;
+        }
         .btn-orange:hover {
-            background-color: #c6a9e2;
-            color: white;
+            background-color: #b399d4;
         }
-
-        .top-right-buttons {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-
-        .card-body {
-            position: relative;
-        }
-
-        .map-container {
-            margin-top: 20px;
-        }
-
-        /* 이미지 슬라이드 스타일 */
-        .image-container {
+        .sort-buttons {
             display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
+            justify-content: center;
+            margin-bottom: 20px;
         }
-
-        .image-container img {
-            width: 150px;
-            height: auto;
-            margin: 10px;
-            object-fit: cover;
-            cursor: pointer; /* 커서를 손 모양으로 변경 */
+        .sort-buttons .btn {
+            margin: 0 5px;
         }
-
-        .carousel-item img {
-            max-height: 500px; /* 원하는 높이로 설정 */
-            max-width: 100%; /* 부모 컨테이너에 맞게 이미지 크기 조정 */
-            object-fit: cover;
-        }
-
-        /* 슬라이드 네비게이션 스타일 */
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            background-color: rgba(0, 0, 0, 0.5); /* 반투명한 검은색 배경 */
-            border-radius: 50%; /* 원형 모양으로 변경 */
-            padding: 10px; /* 아이콘 크기 조정 */
-        }
-
-        .carousel-control-prev,
-        .carousel-control-next {
-            width: 5%; /* 버튼 영역의 너비 조정 */
-        }
-
-        .carousel-control-prev:hover .carousel-control-prev-icon,
-        .carousel-control-next:hover .carousel-control-next-icon {
-            background-color: rgba(0, 0, 0, 0.8); /* 호버 시 더 진한 색상으로 변경 */
-        }
-
-        .modal-header {
+        .btn-container {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .modal-header .left-buttons {
-            margin-right: 20px;
+            justify-content: flex-end;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
 <div class="container">
 
-    <div class="position-relative">
-
-        <div class="col text-center">
-            <h2 th:text="#{restaurant.information}">식당 정보</h2>
-        </div>
+    <div class="text-center mb-4">
+        <h2 th:text="'식당 리스트'">식당 리스트</h2>
     </div>
-
     <div class="row mb-4 btn-container">
         <div class="col-auto">
             <button class="btn btn-orange btn-lg"
                     th:onclick="|location.href='@{/owner}'|"
                     type="button">뒤로
             </button>
-            <button class="btn btn-orange btn-lg"
-                    th:onclick="|location.href='@{/restaurants/{restaurantId}/upload(restaurantId=${restaurant.restaurantId})}'|"
-                    type="button">사진 등록
-            </button>
-        </div>
-    </div>
-
-    <!-- 가로 슬라이드 이미지 리스트 -->
-    <div id="imageCarousel" class="carousel slide" data-ride="carousel" th:if="${imageList.size() >0}">
-        <div class="carousel-inner">
-            <div th:each="image, iterStat : ${imageList}" th:classappend="${iterStat.index == 0} ? 'active' : ''" class="carousel-item">
-                <img th:src="@{'/images/' + ${image.restaurantImageId}}"
-                     th:alt="${image.fileName}">
-            </div>
-        </div>
-        <a class="carousel-control-prev" href="#imageCarousel" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#imageCarousel" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title" th:text="${restaurant.name}">식당 이름</h5>
-            <p class="card-text" th:text="${restaurant.description}">식당 내용</p>
-            <p class="card-text">
-                <span th:text="'평점 : ' + ${restaurant.averageRating} + ' / '"></span>
-                <span th:text="${restaurant.reviewCount} + '개의 리뷰'"></span>
-            </p>
-            <div class="list-group">
-                <p class="card-text">영업 시간</p>
-                <div class="list-group-item">
-                    <span th:if="${dayOfWeek != null}" th:text="${dayOfWeek}">Monday</span>
-                    <span th:if="${hourResponse.openTime != null}" th:text="${hourResponse.openTime}">09:00</span>
-                    <span th:if="${hourResponse.closeTime != null}" th:text="${hourResponse.closeTime}">21:00</span>
-                    <span th:if="${hourResponse.openStatus != null}" th:text="${hourResponse.openStatus}">OPEN</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <hr class="my-4">
-
-    <div class="row">
-        <div class="col">
-            <button class="w-100 btn btn-secondary btn-lg" th:if="${true}" disabled type="button">홈</button>
-        </div>
-        <div class="col">
-            <button class="w-100 btn btn-orange btn-lg"
-                    th:onclick="|location.href='@{/owner/restaurants/list/menus}'|"
-                    type="button">메뉴
-            </button>
-        </div>
-        <div class="col">
-            <button class="w-100 btn btn-orange btn-lg"
-                    th:onclick="|location.href='@{/owner/restaurants/list/reviews}'|"
-                    type="button">리뷰
-            </button>
         </div>
     </div>
 
@@ -178,79 +96,23 @@
 
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">영업 정보</h5>
+            <h5 class="card-title">식당 정보</h5>
             <div class="list-group">
-                <p class="card-text">영업 시간</p>
-                <div th:if="${restaurantHours != null}">
-                    <div class="list-group-item" th:each="restaurantHour : ${restaurantHours}">
-                        <span th:if="${restaurantHour.dayOfWeek != null}" th:text="${restaurantHour.dayOfWeek}">Monday</span>
-                        <span th:if="${restaurantHour.openTime != null}" th:text="${restaurantHour.openTime}">09:00</span>
-                        <span th:if="${restaurantHour.closeTime != null}" th:text="${restaurantHour.closeTime}">21:00</span>
+                <!-- 식당 정보 리스트 -->
+                <div class="list-group-item" th:each="restaurant : ${restaurantList}"
+                     th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}(restaurantId=${restaurant.restaurantId})}'|">
+                    <div>
+                        <span th:text="${restaurant.name}">식당 이름</span><br>
+                        <span th:text="'평점: ' + ${restaurant.averageRating}">평점</span><br>
+                        <span th:text="'리뷰 수: ' + ${restaurant.reviewCount}">리뷰 수</span><br>
+                        <span th:text="'음식 종류: ' + ${restaurant.foodType}">음식 종류</span><br>
+                        <span th:text="'서비스 종류: ' + ${restaurant.serviceType}">서비스 종류</span>
                     </div>
                 </div>
             </div>
-            <div class="list-group phone-number">
-                <p class="card-text" th:text="'전화번호 : ' + ${restaurant.phoneNumber}">전화번호</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 위치 정보 -->
-    <div class="card map-container">
-        <div class="card-body">
-            <h5 class="card-title">위치 정보</h5>
-            <div id="map" style="width:100%; height:400px;"></div>
-            <script th:inline="javascript">
-                /*<![CDATA[*/
-                let jsKey = /*[[${jsKey}]]*/ '';
-                let latitude = /*[[${restaurant.latitude}]]*/ '';
-                let longitude = /*[[${restaurant.longitude}]]*/ '';
-
-                document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsKey + '&libraries=services,clusterer,drawing"><\/script>');
-                /*]]>*/
-            </script>
-            <script>
-                let mapContainer = document.getElementById('map'),
-                    mapOption = {
-                        center: new kakao.maps.LatLng(latitude, longitude),
-                        level: 3
-                    };
-
-                let map = new kakao.maps.Map(mapContainer, mapOption);
-
-                let markerPosition  = new kakao.maps.LatLng(latitude, longitude);
-
-                let marker = new kakao.maps.Marker({
-                    position: markerPosition
-                });
-
-                marker.setMap(map);
-            </script>
-            <p th:text="'도로명 주소 : ' + ${document.roadAddress.addressName}"></p>
-            <p th:text="'지번 주소 : ' + ${document.address.addressName}"></p>
         </div>
     </div>
 
 </div> <!-- /container -->
-
-<!-- Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<script>
-    // JavaScript to handle image click and carousel positioning
-    document.addEventListener('DOMContentLoaded', function() {
-        const images = document.querySelectorAll('.image-container img');
-        const carousel = document.querySelector('#imageCarousel');
-        const carouselItems = carousel.querySelectorAll('.carousel-item');
-
-        images.forEach((img, index) => {
-            img.addEventListener('click', function() {
-                $(carousel).carousel(index);
-            });
-        });
-    });
-</script>
 </body>
 </html>

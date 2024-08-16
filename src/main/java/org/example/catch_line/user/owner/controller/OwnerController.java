@@ -100,56 +100,6 @@ public class OwnerController {
 		return "redirect:/owner";
 	}
 
-	@GetMapping("/restaurants/history")
-	public String showHistory(HttpSession session, Model model) {
-		RestaurantResponse restaurant = getRestaurantResponse(session);
-
-		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantId(restaurant.getRestaurantId());
-		model.addAttribute("history",historyResponses);
-
-		return "owner/history";
-
-	}
-
-	@GetMapping("/restaurants/list/reviews")
-	public String getReviews(HttpSession session, Model model) {
-		RestaurantResponse restaurant = getRestaurantResponse(session);
-		List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurant.getRestaurantId());
-		BigDecimal averageRating = reviewService.getAverageRating(restaurant.getRestaurantId()).getRating();
-		model.addAttribute("averageRating",averageRating);
-		model.addAttribute("reviewList",reviewList);
-		return "owner/reviews";
-	}
-
-	@GetMapping("/restaurants/list")
-	public String showRestaurantListPage(HttpSession session, Model model) {
-		RestaurantResponse restaurant = getRestaurantResponse(session);
-		List<RestaurantHourResponse> restaurantHours = ownerService.findRestaurantHourByRestaurantId(
-			restaurant.getRestaurantId());
-		DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
-		DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
-		RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurant.getRestaurantId(),
-			dayOfWeek);
-
-		String x = String.valueOf(restaurant.getLongitude()); // 경도 == x 좌표
-		String y = String.valueOf(restaurant.getLatitude()); // 위도 == y 좌표
-
-		KakaoAddressResponse kakaoAddressResponse = kakaoAddressService.coordinateToAddress(x, y);
-		KakaoAddressResponse.Document document = kakaoAddressResponse.getDocuments().get(0);
-
-		List<RestaurantImageEntity> imageList = restaurantImageService.getImageList(restaurant.getRestaurantId());
-
-		model.addAttribute("restaurant", restaurant);
-		model.addAttribute("restaurantHours", restaurantHours);
-		model.addAttribute("imageList", imageList);
-		model.addAttribute("document", document);
-		model.addAttribute("jsKey", jsKey);
-		model.addAttribute("hourResponse", hourResponse);
-		model.addAttribute("dayOfWeek", dayOfWeek.getDescription());
-
-		return "owner/restaurantList";
-	}
-
 	@GetMapping("/restaurants/{restaurantId}")
 	public String updateRestaurantForm(@PathVariable Long restaurantId, Model model) {
 		RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
@@ -169,58 +119,112 @@ public class OwnerController {
 		return "redirect:/restaurants/" + restaurantId;
 	}
 
-	@PutMapping("/restaurants/list/menus/menu")
-	public String updateMenu(HttpSession session, @RequestParam Long menuId, @ModelAttribute MenuRequest menuRequest, Model model) {
+	// @GetMapping("/restaurants/history")
+	// public String showHistory(HttpSession session, Model model) {
+	// 	RestaurantResponse restaurant = getRestaurantResponse(session);
+	//
+	// 	List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantId(restaurant.getRestaurantId());
+	// 	model.addAttribute("history",historyResponses);
+	//
+	// 	return "owner/history";
+	//
+	// }
 
-		RestaurantResponse restaurant = getRestaurantResponse(session);
+	@GetMapping("/restaurants/list/{restaurantId}/reviews")
+	public String getReviews(@PathVariable Long restaurantId, Model model) {
 
-		menuService.updateRestaurantMenu(restaurant.getRestaurantId(),menuId,menuRequest);
-
-		List<MenuResponse> menuResponseList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
-		model.addAttribute("restaurantMenuList",menuResponseList);
-
-		return "redirect:/owner/restaurants/list/menus";
-
-
+		List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurantId);
+		BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
+		model.addAttribute("averageRating",averageRating);
+		model.addAttribute("reviewList",reviewList);
+		return "owner/reviews";
 	}
 
-	@DeleteMapping("/restaurants/list/menus/menu")
-	public String deleteMenu(@RequestParam Long menuId) {
+	@GetMapping("/restaurants/list")
+	public String showRestaurantListPage(HttpSession session, Model model) {
+		List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
+		model.addAttribute("restaurantList", restaurantResponseList);
 
-		menuService.deleteRestaurantMenu(menuId);
-		return "redirect:/owner/restaurants/list/menus";
+		return "owner/restaurantList";
 	}
 
-	@GetMapping("restaurants/list/menus")
-	public String getMenus(Model model, HttpSession session) {
-		RestaurantResponse restaurant = getRestaurantResponse(session);
+	@GetMapping("/restaurants/list/{restaurantId}")
+	public String showRestaurant(@PathVariable Long restaurantId, Model model) {
+		DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
+		DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
 
-		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
+		RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
+		List<RestaurantHourResponse> restaurantHours = restaurantHourService.getAllRestaurantHours(restaurantId);
+		RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek);
+
+		String x = String.valueOf(restaurant.getLongitude()); // 경도 == x 좌표
+		String y = String.valueOf(restaurant.getLatitude()); // 위도 == y 좌표
+
+		KakaoAddressResponse kakaoAddressResponse = kakaoAddressService.coordinateToAddress(x, y);
+		KakaoAddressResponse.Document document = kakaoAddressResponse.getDocuments().get(0);
+
+		List<RestaurantImageEntity> imageList = restaurantImageService.getImageList(restaurantId);
+
+		model.addAttribute("restaurant", restaurant);
+		model.addAttribute("restaurantHours", restaurantHours);
+		model.addAttribute("hourResponse", hourResponse);
+		model.addAttribute("imageList", imageList);
+		model.addAttribute("document", document);
+		model.addAttribute("jsKey", jsKey);
+		model.addAttribute("dayOfWeek", dayOfWeek.getDescription());
+
+		return "owner/restaurant";
+	}
+
+	@GetMapping("restaurants/list/{restaurantId}/menus")
+	public String getMenus(@PathVariable Long restaurantId,Model model) {
+
+		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
 
 		model.addAttribute("jsKey",jsKey);
 		model.addAttribute("restaurantMenuList",restaurantMenuList);
-		model.addAttribute("restaurantId",restaurant.getRestaurantId());
+
 		return "owner/menus";
 	}
 
-	@PostMapping("/restaurants/list/menus/menu")
-	public String addMenu(HttpSession session, @ModelAttribute MenuRequest menuRequest, Model model) {
+	@PutMapping("/restaurants/list/{restaurantId}/menus/menu")
+	public String updateMenu(@PathVariable Long restaurantId, @RequestParam Long menuId, @ModelAttribute MenuRequest menuRequest, Model model) {
 
-		RestaurantResponse restaurant = getRestaurantResponse(session);
-		menuService.createRestaurantMenu(restaurant.getRestaurantId(),menuRequest);
+		menuService.updateRestaurantMenu(restaurantId,menuId,menuRequest);
 
-		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
+		List<MenuResponse> menuResponseList = menuService.getRestaurantMenuList(restaurantId);
+		model.addAttribute("restaurantMenuList",menuResponseList);
+
+		return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
+	}
+
+	@DeleteMapping("/restaurants/list/{restaurantId}/menus/menu")
+	public String deleteMenu(@PathVariable Long restaurantId,@RequestParam Long menuId) {
+
+		menuService.deleteRestaurantMenu(menuId);
+		return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
+	}
+
+
+
+	@PostMapping("/restaurants/list/{restaurantId}/menus/menu")
+	public String addMenu(@PathVariable Long restaurantId, @ModelAttribute MenuRequest menuRequest, Model model) {
+
+
+		menuService.createRestaurantMenu(restaurantId,menuRequest);
+
+		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
 		model.addAttribute("restaurantMenuList", restaurantMenuList);
 		return "redirect:/owner/restaurants/list/menus";
 	}
 
 
 
-	private RestaurantResponse getRestaurantResponse(HttpSession session) {
+	private List<RestaurantResponse> getRestaurantResponseList(HttpSession session) {
 		Long ownerId = SessionUtils.getOwnerId(session);
 
-		RestaurantResponse restaurant = ownerService.findRestaurantByOwnerId(ownerId);
-		return restaurant;
+		List<RestaurantResponse> restaurantList = ownerService.findAllRestaurantByOwnerId(ownerId);
+		return restaurantList;
 	}
 
 

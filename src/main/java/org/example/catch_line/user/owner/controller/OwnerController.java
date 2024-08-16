@@ -10,6 +10,8 @@ import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
+import org.example.catch_line.menu.model.dto.MenuResponse;
+import org.example.catch_line.menu.service.MenuService;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
@@ -22,6 +24,7 @@ import org.example.catch_line.restaurant.service.RestaurantHourService;
 import org.example.catch_line.restaurant.service.RestaurantImageService;
 import org.example.catch_line.restaurant.service.RestaurantService;
 import org.example.catch_line.user.owner.service.OwnerService;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OwnerController {
 
 	private final RestaurantService restaurantService;
-
+	private final MenuService menuService;
 	private final OwnerService ownerService;
 	private final RestaurantImageService restaurantImageService;
 	private final KakaoAddressService kakaoAddressService;
@@ -134,7 +137,20 @@ public class OwnerController {
 		return "owner/restaurantList";
 	}
 
+	@GetMapping("restaurants/list/menus")
+	public String getMenu(Model model, HttpSession session) {
+		Long ownerId = SessionUtils.getOwnerId(session);
 
+		RestaurantResponse restaurant = ownerService.findRestaurantByOwnerId(ownerId);
+
+		List<MenuResponse> menuResponseList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
+
+		model.addAttribute("jsKey",jsKey);
+		model.addAttribute("menuList",menuResponseList);
+		model.addAttribute("restaurantId",restaurant.getRestaurantId());
+		return "owner/menus";
+
+	}
 
 	@GetMapping("/restaurants/{restaurantId}")
 	public String updateRestaurantForm(@PathVariable Long restaurantId, Model model) {
@@ -161,6 +177,8 @@ public class OwnerController {
 		bindingResult.rejectValue("phoneNumber", null, e.getMessage());
 		return "owner/createRestaurant";
 	}
+
+
 
 
 }

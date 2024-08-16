@@ -109,10 +109,15 @@
                     th:onclick="|location.href='@{/owner}'|"
                     type="button">뒤로
             </button>
-            <button class="btn btn-orange btn-lg"
-                    th:onclick="|location.href='@{/restaurants/{restaurantId}/upload(restaurantId=${restaurant.restaurantId})}'|"
-                    type="button">사진 등록
-            </button>
+            <div class="row mb-4 btn-container">
+                <div class="col-auto">
+                    <button class="btn btn-orange btn-lg"
+                            th:onclick="|location.href='@{/owner/restaurants/{restaurantId}/edit-images(restaurantId=${restaurant.restaurantId})}'|"
+                            type="button">이미지 편집
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -137,6 +142,7 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title" th:text="${restaurant.name}">식당 이름</h5>
+            <i class="fa fa-heart"></i> 스크랩 <span id="scrapCount" th:text="${restaurant.scrapCount}">0</span>
             <p class="card-text" th:text="${restaurant.description}">식당 내용</p>
             <p class="card-text">
                 <span th:text="'평점 : ' + ${restaurant.averageRating} + ' / '"></span>

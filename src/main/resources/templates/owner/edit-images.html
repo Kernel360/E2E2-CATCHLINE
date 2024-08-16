@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>이미지 편집</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .image-container img {
+            width: 150px;
+            height: auto;
+            margin: 10px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .btn-orange {
+            background-color: #c6a9e2;
+            color: white;
+        }
+        .btn-orange:hover {
+            background-color: #c6a9e2;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>이미지 편집</h1>
+
+    <div class="image-container">
+        <div th:each="image : ${imageList}">
+            <img th:src="@{'/images/' + ${image.restaurantImageId}}" th:alt="${image.fileName}">
+            <form th:action="@{/restaurants/{restaurantId}/images/delete(restaurantId=${restaurantId})}" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="delete">
+                <input type="hidden" name="imageId" th:value="${image.restaurantImageId}">
+                <button type="submit" class="btn btn-danger">삭제</button>
+            </form>
+        </div>
+    </div>
+
+    <form th:action="@{/restaurants/{restaurantId}/upload(restaurantId=${restaurantId})}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="image">이미지 추가:</label>
+            <input type="file" name="image" id="image" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-orange">업로드</button>
+    </form>
+
+    <div class="row mt-4">
+        <div class="col">
+            <button class="btn btn-secondary btn-block"
+                    th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}(restaurantId=${restaurantId})}'|"
+                    type="button">뒤로
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

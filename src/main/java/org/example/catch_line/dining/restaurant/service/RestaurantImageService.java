@@ -5,6 +5,7 @@ import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantImageEntity;
 import org.example.catch_line.dining.restaurant.repository.RestaurantImageRepository;
 import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
+import org.example.catch_line.exception.CatchLineException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +38,12 @@ public class RestaurantImageService {
 
     public List<RestaurantImageEntity> getImageList(Long restaurantId) {
         return restaurantImageRepository.findAllByRestaurantRestaurantId(restaurantId);
+    }
+
+    public void deleteImage(Long restaurantImageId) {
+        RestaurantImageEntity image = restaurantImageRepository.findById(restaurantImageId)
+            .orElseThrow(() -> new CatchLineException("이미지를 찾을 수 없음."));
+        restaurantImageRepository.delete(image);
     }
 
 

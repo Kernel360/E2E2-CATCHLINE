@@ -5,15 +5,18 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.example.catch_line.common.SessionUtils;
+
 import org.example.catch_line.common.constant.ServiceType;
-import org.example.catch_line.common.constant.SessionConst;
+
 import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
+import org.example.catch_line.dining.menu.model.dto.MenuRequest;
+import org.example.catch_line.dining.menu.model.dto.MenuResponse;
+import org.example.catch_line.dining.menu.service.MenuService;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
-import org.example.catch_line.history.model.dto.HistoryResponse;
+
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantCreateRequest;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
@@ -24,20 +27,7 @@ import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.dining.restaurant.service.RestaurantHourService;
 import org.example.catch_line.dining.restaurant.service.RestaurantImageService;
 import org.example.catch_line.dining.restaurant.service.RestaurantService;
-import org.example.catch_line.menu.model.dto.MenuRequest;
-import org.example.catch_line.menu.model.dto.MenuResponse;
-import org.example.catch_line.menu.service.MenuService;
-import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
-import org.example.catch_line.restaurant.model.dto.RestaurantHourResponse;
-import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.restaurant.model.dto.RestaurantUpdateRequest;
-import org.example.catch_line.restaurant.model.entity.RestaurantImageEntity;
-import org.example.catch_line.restaurant.model.entity.constant.DayOfWeeks;
-import org.example.catch_line.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.restaurant.model.entity.constant.ServiceType;
-import org.example.catch_line.restaurant.service.RestaurantHourService;
-import org.example.catch_line.restaurant.service.RestaurantImageService;
-import org.example.catch_line.restaurant.service.RestaurantService;
+
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.service.ReviewService;
 import org.example.catch_line.user.owner.service.OwnerService;
@@ -115,7 +105,7 @@ public class OwnerController {
 
 	@GetMapping("/restaurants/{restaurantId}")
 	public String updateRestaurantForm(@PathVariable Long restaurantId, Model model) {
-		RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
+		RestaurantResponse restaurant = restaurantService.findRestaurant(null,restaurantId);
 		model.addAttribute("restaurant", restaurant);
 		return "owner/updateRestaurant";
 	}
@@ -166,7 +156,7 @@ public class OwnerController {
 		DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
 		DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
 
-		RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
+		RestaurantResponse restaurant = restaurantService.findRestaurant(null,restaurantId);
 		List<RestaurantHourResponse> restaurantHours = restaurantHourService.getAllRestaurantHours(restaurantId);
 		RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek);
 
@@ -228,7 +218,7 @@ public class OwnerController {
 
 		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
 		model.addAttribute("restaurantMenuList", restaurantMenuList);
-		return "redirect:/owner/restaurants/list/menus";
+		return "redirect:/owner/restaurants/list/{restaurantId}/menus";
 	}
 
 

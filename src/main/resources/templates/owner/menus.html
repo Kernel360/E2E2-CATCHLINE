@@ -48,7 +48,6 @@
         <button type="submit" class="btn btn-orange">추가</button>
     </form>
 
-
     <form id="delete-menu-form" th:action="@{/owner/restaurants/list/{restaurantId}/menus/menu(restaurantId=${restaurantId})}" th:method="post" style="display:none;">
         <input type="hidden" name="menuId" id="deleteMenuId">
         <input type="hidden" name="_method" value="DELETE">
@@ -63,16 +62,18 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
+    const restaurantId = /*[[${restaurantId}]]*/ '0';
+
     function showAddMenuForm() {
         document.getElementById('add-menu-form').style.display = 'block';
         document.getElementById('menuName').value = '';
         document.getElementById('menuPrice').value = '';
         document.getElementById('add-menu-form').setAttribute('method', 'post');
+        document.getElementById('add-menu-form').setAttribute('action', `/owner/restaurants/list/${restaurantId}/menus/menu`);
     }
 
     function editMenu(menuId) {
-        const restaurantId = /*[[${restaurantId}]]*/ '';
         document.getElementById('add-menu-form').style.display = 'block';
         document.getElementById('menuName').value = '';
         document.getElementById('menuPrice').value = '';
@@ -91,14 +92,12 @@
     }
 
     function deleteMenu(menuId) {
-        const restaurantId = /*[[${restaurantId}]]*/ '';
         if (confirm('정말로 이 메뉴를 삭제하시겠습니까?')) {
             document.getElementById('deleteMenuId').value = menuId;
             document.getElementById('delete-menu-form').setAttribute('action', `/owner/restaurants/list/${restaurantId}/menus/menu`);
             document.getElementById('delete-menu-form').submit();
         }
     }
-
 </script>
 
 </body>

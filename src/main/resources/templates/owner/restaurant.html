@@ -162,13 +162,14 @@
         </div>
         <div class="col">
             <button class="w-100 btn btn-orange btn-lg"
-                    th:onclick="|location.href='@{/owner/restaurants/list/menus}'|"
+                    th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}/menus(restaurantId=${restaurantId})}'|"
                     type="button">메뉴
             </button>
         </div>
+
         <div class="col">
             <button class="w-100 btn btn-orange btn-lg"
-                    th:onclick="|location.href='@{/owner/restaurants/list/reviews}'|"
+                    th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}/reviews(restaurantId=${restaurantId})}'|"
                     type="button">리뷰
             </button>
         </div>

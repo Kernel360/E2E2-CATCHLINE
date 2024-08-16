@@ -49,7 +49,7 @@ public class MenuService {
         RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
         MenuEntity menuEntity = menuValidator.checkIfMenuPresent(menuId);
         menuEntity.updateMenu(menuRequest.getName(), menuRequest.getPrice());
-        // menuRepository.save(menuEntity);
+        menuRepository.save(menuEntity);
     }
 
     // 메뉴 삭제

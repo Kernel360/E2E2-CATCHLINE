@@ -23,19 +23,25 @@
         <div class="card-body">
             <h5 class="card-title">전체 메뉴</h5>
             <div class="list-group" id="menu-list">
-                <div class="list-group-item" th:each="menu : ${restaurantMenuList}">
+                <div class="list-group-item" th:each="menu : ${restaurantMenuList}" th:data-menu-id="${menu.menuId}">
                     <span th:text="${menu.name}">Menu Name</span>
                     <span th:text="${menu.price + '원'}">Price</span>
-                    <button class="btn btn-sm btn-warning" onclick="editMenu()">수정</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteMenu()">삭제</button>
+                    <!-- 수정 및 삭제 버튼에 menuId를 포함 -->
+                    <button class="btn btn-sm btn-warning" th:onclick="'editMenu(' + ${menu.menuId} + ')'">수정</button>
+                    <button class="btn btn-sm btn-danger" th:onclick="'deleteMenu(' + ${menu.menuId} + ')'">삭제</button>
                 </div>
+
+
             </div>
         </div>
     </div>
 
     <button class="btn btn-orange" onclick="showAddMenuForm()">메뉴 추가</button>
 
-    <form id="add-menu-form" action="#" th:action="@{/owner/restaurants/list/menus/menu}" th:method="post" style="display:none;">
+    <form id="add-menu-form" th:action="@{/owner/restaurants/list/menus/menu}" th:method="post" style="display:none;">
+        <!-- 숨겨진 필드로 menuId를 전달 -->
+        <input type="hidden" id="menuId" name="menuId" value="">
+        <input type="hidden" name="_method" value="PUT">
         <div class="form-group">
             <label for="menuName">메뉴 이름</label>
             <input type="text" class="form-control" id="menuName" name="name" placeholder="메뉴 이름">
@@ -46,6 +52,7 @@
         </div>
         <button type="submit" class="btn btn-orange">추가</button>
     </form>
+
 
     <div class="row">
         <div class="col">
@@ -59,17 +66,38 @@
 <script>
     function showAddMenuForm() {
         document.getElementById('add-menu-form').style.display = 'block';
+        document.getElementById('menuId').value = ''; // 새 메뉴 추가 시 menuId는 비움
+        document.getElementById('menuName').value = '';
+        document.getElementById('menuPrice').value = '';
+        document.getElementById('add-menu-form').setAttribute('method', 'post'); // 새 메뉴 추가 시 POST로 설정
     }
 
-    function editMenu() {
-        // 메뉴 수정 로직을 여기에 추가
-        alert('수정 버튼 클릭됨');
+    function editMenu(menuId) {
+        // 메뉴 수정 폼을 보여주고, 해당 menuId로 값을 설정
+        document.getElementById('add-menu-form').style.display = 'block';
+        document.getElementById('menuId').value = menuId;
+
+        // 해당 메뉴의 이름과 가격을 가져와 폼에 설정
+        const menuElement = document.querySelector(`.list-group-item[data-menu-id="${menuId}"]`);
+        if (menuElement) {
+            const menuName = menuElement.querySelector('span:nth-child(1)').textContent.trim();
+            const menuPrice = menuElement.querySelector('span:nth-child(2)').textContent.trim().replace('원', '');
+
+            document.getElementById('menuName').value = menuName;
+            document.getElementById('menuPrice').value = menuPrice;
+        } else {
+            console.error("Menu element not found for ID:", menuId);
+        }
+
+        // 수정 시에는 PUT 메서드를 사용하도록 설정
+        document.getElementById('add-menu-form').setAttribute('method', 'post');
+        document.getElementById('add-menu-form').setAttribute('action', '/owner/restaurants/list/menus/menu?_method=PUT');
     }
 
-    function deleteMenu() {
-        // 메뉴 삭제 로직을 여기에 추가
-        alert('삭제 버튼 클릭됨');
-    }
+
+
+
 </script>
+
 </body>
 </html>

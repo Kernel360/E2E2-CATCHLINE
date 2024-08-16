@@ -1,10 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <title>Update Restaurant</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .btn-orange {
+            background-color: #c6a9e2;
+            color: white;
+        }
+
+        .btn-orange:hover {
+            background-color: #b08bd7;
+            color: white;
+        }
+    </style>
 </head>
 <body>
+<div class="container">
+    <div class="position-relative">
+        <div class="col text-center">
+            <h2>식당 정보 수정</h2>
+        </div>
+    </div>
 
+    <form th:action="@{/owner/restaurants/{restaurantId}(restaurantId=${restaurant.restaurantId})}" method="post">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">식당 이름</h5>
+                <input type="text" class="form-control" name="name" th:value="${restaurant.name}" required>
+
+                <h5 class="card-title mt-3">식당 소개 글</h5>
+                <textarea class="form-control" name="description" rows="3" required
+                          th:text="${restaurant.description}">식당 소개 글</textarea>
+
+                <h5 class="card-title mt-3">전화번호</h5>
+                <input type="text" class="form-control" name="phoneNumber" th:value="${restaurant.phoneNumber}" required>
+
+                <h5 class="card-title mt-3">음식 종류</h5>
+                <select class="form-control" name="foodType" required>
+                    <option value="KOREAN" th:selected="${restaurant.foodType == T(org.example.catch_line.dining.restaurant.model.entity.constant.FoodType).KOREAN}">한식</option>
+                    <option value="CHINESE" th:selected="${restaurant.foodType == T(org.example.catch_line.dining.restaurant.model.entity.constant.FoodType).CHINESE}">중식</option>
+                    <option value="JAPANESE" th:selected="${restaurant.foodType == T(org.example.catch_line.dining.restaurant.model.entity.constant.FoodType).JAPANESE}">일식</option>
+                    <option value="WESTERN" th:selected="${restaurant.foodType == T(org.example.catch_line.dining.restaurant.model.entity.constant.FoodType).WESTERN}">양식</option>
+                </select>
+
+                <h5 class="card-title mt-3">서비스 유형</h5>
+                <select class="form-control" name="serviceType" required>
+                    <option value="WAITING" th:selected="${restaurant.serviceType == T(org.example.catch_line.common.constant.ServiceType).WAITING}">줄서기</option>
+                    <option value="RESERVATION" th:selected="${restaurant.serviceType == T(org.example.catch_line.common.constant.ServiceType).RESERVATION}">예약</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <button type="submit" class="w-100 btn btn-orange btn-lg">저장</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row mt-4">
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg"
+                    th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}(restaurantId=${restaurant.restaurantId})}'|"
+                    type="button">취소
+            </button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

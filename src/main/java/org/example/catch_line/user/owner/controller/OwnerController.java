@@ -119,7 +119,7 @@ public class OwnerController {
 
 		restaurantService.updateRestaurant(restaurantId, request);
 
-		return "redirect:/restaurants/" + restaurantId;
+		return "redirect:/owner/restaurants/list/" + restaurantId;
 	}
 
 	// @GetMapping("/restaurants/history")

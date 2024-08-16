@@ -10,6 +10,7 @@ import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
+import org.example.catch_line.menu.model.dto.MenuRequest;
 import org.example.catch_line.menu.model.dto.MenuResponse;
 import org.example.catch_line.menu.service.MenuService;
 import org.example.catch_line.restaurant.model.dto.RestaurantCreateRequest;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpSession;
@@ -95,9 +97,7 @@ public class OwnerController {
 
 	@GetMapping("/restaurants/history")
 	public String showHistory(HttpSession session, Model model) {
-		Long ownerId = SessionUtils.getOwnerId(session);
-
-		RestaurantResponse restaurant = ownerService.findRestaurantByOwnerId(ownerId);
+		RestaurantResponse restaurant = getRestaurantResponse(session);
 
 		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantId(restaurant.getRestaurantId());
 		model.addAttribute("history",historyResponses);
@@ -108,9 +108,7 @@ public class OwnerController {
 
 	@GetMapping("/restaurants/list")
 	public String showRestaurantListPage(HttpSession session, Model model) {
-		Long ownerId = SessionUtils.getOwnerId(session);
-
-		RestaurantResponse restaurant = ownerService.findRestaurantByOwnerId(ownerId);
+		RestaurantResponse restaurant = getRestaurantResponse(session);
 		List<RestaurantHourResponse> restaurantHours = ownerService.findRestaurantHourByRestaurantId(
 			restaurant.getRestaurantId());
 		DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
@@ -137,21 +135,6 @@ public class OwnerController {
 		return "owner/restaurantList";
 	}
 
-	@GetMapping("restaurants/list/menus")
-	public String getMenu(Model model, HttpSession session) {
-		Long ownerId = SessionUtils.getOwnerId(session);
-
-		RestaurantResponse restaurant = ownerService.findRestaurantByOwnerId(ownerId);
-
-		List<MenuResponse> menuResponseList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
-
-		model.addAttribute("jsKey",jsKey);
-		model.addAttribute("menuList",menuResponseList);
-		model.addAttribute("restaurantId",restaurant.getRestaurantId());
-		return "owner/menus";
-
-	}
-
 	@GetMapping("/restaurants/{restaurantId}")
 	public String updateRestaurantForm(@PathVariable Long restaurantId, Model model) {
 		RestaurantResponse restaurant = restaurantService.findRestaurant(restaurantId);
@@ -169,6 +152,38 @@ public class OwnerController {
 		restaurantService.updateRestaurant(restaurantId, request);
 
 		return "redirect:/restaurants/" + restaurantId;
+	}
+
+	@GetMapping("restaurants/list/menus")
+	public String getMenus(Model model, HttpSession session) {
+		RestaurantResponse restaurant = getRestaurantResponse(session);
+
+		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
+
+		model.addAttribute("jsKey",jsKey);
+		model.addAttribute("restaurantMenuList",restaurantMenuList);
+		model.addAttribute("restaurantId",restaurant.getRestaurantId());
+		return "owner/menus";
+	}
+
+	@PostMapping("/restaurants/list/menus/menu")
+	public String addMenu(HttpSession session, @ModelAttribute MenuRequest menuRequest, Model model) {
+
+		RestaurantResponse restaurant = getRestaurantResponse(session);
+		menuService.createRestaurantMenu(restaurant.getRestaurantId(),menuRequest);
+
+		List<MenuResponse> menuResponseList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
+		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurant.getRestaurantId());
+		model.addAttribute("menuList",menuResponseList);
+		model.addAttribute("restaurantMenuList", restaurantMenuList);
+		return "redirect:/owner/restaurants/list/menus";
+	}
+
+	private RestaurantResponse getRestaurantResponse(HttpSession session) {
+		Long ownerId = SessionUtils.getOwnerId(session);
+
+		RestaurantResponse restaurant = ownerService.findRestaurantByOwnerId(ownerId);
+		return restaurant;
 	}
 
 

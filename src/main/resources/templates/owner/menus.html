@@ -1,9 +1,8 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
             max-width: 800px;
@@ -23,15 +22,31 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">전체 메뉴</h5>
-            <div class="list-group">
-                <p class="card-text">메뉴 정보</p>
-                <div class="list-group-item" th:each="menu : ${menuList}">
-                    <span th:text="${menu.name}">name</span>
-                    <span th:text="${menu.price + '원'}">price</span>
+            <div class="list-group" id="menu-list">
+                <div class="list-group-item" th:each="menu : ${restaurantMenuList}">
+                    <span th:text="${menu.name}">Menu Name</span>
+                    <span th:text="${menu.price + '원'}">Price</span>
+                    <button class="btn btn-sm btn-warning" onclick="editMenu()">수정</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteMenu()">삭제</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <button class="btn btn-orange" onclick="showAddMenuForm()">메뉴 추가</button>
+
+    <form id="add-menu-form" action="#" th:action="@{/owner/restaurants/list/menus/menu}" th:method="post" style="display:none;">
+        <div class="form-group">
+            <label for="menuName">메뉴 이름</label>
+            <input type="text" class="form-control" id="menuName" name="name" placeholder="메뉴 이름">
+        </div>
+        <div class="form-group">
+            <label for="menuPrice">가격</label>
+            <input type="number" class="form-control" id="menuPrice" name="price" placeholder="가격">
+        </div>
+        <button type="submit" class="btn btn-orange">추가</button>
+    </form>
+
     <div class="row">
         <div class="col">
             <button class="w-100 btn btn-orange btn-lg"
@@ -39,62 +54,22 @@
                     type="button">뒤로</button>
         </div>
     </div>
-
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        var jsKey = /*[[${jsKey}]]*/ '';
-
-        document.write('<script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsKey + '&libraries=services"><\/script>');
-        /*]]>*/
-    </script>
-    <script>
-        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-            mapOption = {
-                center: new daum.maps.LatLng(37.537187, 127.005476), // 지도의 중심좌표
-                level: 5 // 지도의 확대 레벨
-            };
-
-        //지도를 미리 생성
-        var map = new daum.maps.Map(mapContainer, mapOption);
-        //주소-좌표 변환 객체를 생성
-        var geocoder = new daum.maps.services.Geocoder();
-        //마커를 미리 생성
-        var marker = new daum.maps.Marker({
-            position: new daum.maps.LatLng(37.537187, 127.005476),
-            map: map
-        });
-
-
-        function sample5_execDaumPostcode() {
-            new daum.Postcode({
-                oncomplete: function(data) {
-                    var addr = data.address; // 최종 주소 변수
-
-                    // 주소 정보를 해당 필드에 넣는다.
-                    document.getElementById("sample5_address").value = addr;
-                    // 주소로 상세 정보를 검색
-                    geocoder.addressSearch(data.address, function(results, status) {
-                        // 정상적으로 검색이 완료됐으면
-                        if (status === daum.maps.services.Status.OK) {
-
-                            var result = results[0]; //첫번째 결과의 값을 활용
-
-                            // 해당 주소에 대한 좌표를 받아서
-                            var coords = new daum.maps.LatLng(result.y, result.x);
-                            // 지도를 보여준다.
-                            mapContainer.style.display = "block";
-                            map.relayout();
-                            // 지도 중심을 변경한다.
-                            map.setCenter(coords);
-                            // 마커를 결과값으로 받은 위치로 옮긴다.
-                            marker.setPosition(coords)
-                        }
-                    });
-                }
-            }).open();
-        }
-    </script>
 </div>
+
+<script>
+    function showAddMenuForm() {
+        document.getElementById('add-menu-form').style.display = 'block';
+    }
+
+    function editMenu() {
+        // 메뉴 수정 로직을 여기에 추가
+        alert('수정 버튼 클릭됨');
+    }
+
+    function deleteMenu() {
+        // 메뉴 삭제 로직을 여기에 추가
+        alert('삭제 버튼 클릭됨');
+    }
+</script>
 </body>
 </html>

@@ -75,7 +75,7 @@
         <div>
             <label for="sample5_address">식당 주소</label>
             <input type="text" id="sample5_address" th:field="*{address}"
-                   th:errorclass="field-error" class="form-control" placeholder="주소를 입력하세요">
+                   th:errorclass="field-error" class="form-control" placeholder="주소를 입력하세요" readonly onclick="sample5_execDaumPostcode()">
             <input type="button" onclick="sample5_execDaumPostcode()" value="주소 검색" class="btn btn-orange">
             <div id="map"></div>
             <div class="field-error" th:errors="*{address}">
@@ -84,8 +84,8 @@
         </div>
 
         <!-- 숨겨진 필드로 좌표값을 서버에 전달 -->
-<!--        <input type="hidden" id="latitude" name="latitude" th:field="*{latitude}">-->
-<!--        <input type="hidden" id="longitude" name="longitude" th:field="*{longitude}">-->
+        <!--        <input type="hidden" id="latitude" name="latitude" th:field="*{latitude}">-->
+        <!--        <input type="hidden" id="longitude" name="longitude" th:field="*{longitude}">-->
 
         <div>
             <label>식당 음식 종류</label>

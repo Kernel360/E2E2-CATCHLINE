@@ -1,14 +1,12 @@
 package org.example.catch_line.user.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.restaurant.model.dto.RestaurantPreviewResponse;
-import org.example.catch_line.restaurant.model.mapper.RestaurantPreviewMapper;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantPreviewResponse;
+import org.example.catch_line.dining.restaurant.model.mapper.RestaurantPreviewMapper;
 import org.example.catch_line.scrap.model.entity.ScrapEntity;
 import org.example.catch_line.scrap.repository.ScrapRepository;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.validation.MemberValidator;
-import org.example.catch_line.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.restaurant.model.mapper.RestaurantMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -2,16 +2,15 @@ package org.example.catch_line.user.member.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.example.catch_line.common.BaseTimeEntity;
+import org.example.catch_line.common.model.entity.BaseTimeEntity;
 import org.example.catch_line.scrap.model.entity.ScrapEntity;
-import org.example.catch_line.user.member.model.mapper.converter.EmailConverter;
-import org.example.catch_line.user.member.model.mapper.converter.PasswordConverter;
-import org.example.catch_line.user.member.model.mapper.converter.PhoneNumberConverter;
-import org.example.catch_line.user.member.model.vo.Email;
-import org.example.catch_line.user.member.model.vo.Password;
-import org.example.catch_line.user.member.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.converter.EmailConverter;
+import org.example.catch_line.common.model.converter.PasswordConverter;
+import org.example.catch_line.common.model.converter.PhoneNumberConverter;
+import org.example.catch_line.common.model.vo.Email;
+import org.example.catch_line.common.model.vo.Password;
+import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
-import org.example.catch_line.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.review.model.entity.ReviewEntity;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 

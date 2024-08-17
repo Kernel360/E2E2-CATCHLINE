@@ -26,6 +26,7 @@ import org.example.catch_line.dining.restaurant.service.RestaurantImageService;
 import org.example.catch_line.dining.restaurant.service.RestaurantService;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
+import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.service.ReviewService;
 import org.example.catch_line.user.owner.service.OwnerService;
@@ -121,16 +122,25 @@ public class OwnerController {
 		return "redirect:/owner/restaurants/list/" + restaurantId;
 	}
 
-	// @GetMapping("/restaurants/history")
-	// public String showHistory(HttpSession session, Model model) {
-	// 	RestaurantResponse restaurant = getRestaurantResponse(session);
-	//
-	// 	List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantId(restaurant.getRestaurantId());
-	// 	model.addAttribute("history",historyResponses);
-	//
-	// 	return "owner/history";
-	//
-	// }
+	@GetMapping("/restaurants/list2")
+	public String showRestaurantListPage2(HttpSession session, Model model) {
+		List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
+		model.addAttribute("restaurantList", restaurantResponseList);
+
+		return "owner/restaurantList2";
+	}
+
+	// @GetMapping("/restaurants/list/{restaurantId}/history")
+
+	@GetMapping("/restaurants/list2/{restaurantId}/history")
+	public String showHistory(@PathVariable Long restaurantId, Model model) {
+
+		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantId(restaurantId);
+		model.addAttribute("history",historyResponses);
+
+		return "owner/history";
+
+	}
 
 	@GetMapping("/restaurants/list/{restaurantId}/reviews")
 	public String getReviews(@PathVariable Long restaurantId, Model model) {
@@ -149,6 +159,8 @@ public class OwnerController {
 
 		return "owner/restaurantList";
 	}
+
+
 
 	@GetMapping("/restaurants/list/{restaurantId}")
 	public String showRestaurant(@PathVariable Long restaurantId, Model model) {
@@ -230,6 +242,8 @@ public class OwnerController {
 		model.addAttribute("restaurantMenuList", restaurantMenuList);
 		return "redirect:/owner/restaurants/list/{restaurantId}/menus";
 	}
+
+
 
 	private List<RestaurantResponse> getRestaurantResponseList(HttpSession session) {
 		Long ownerId = SessionUtils.getOwnerId(session);

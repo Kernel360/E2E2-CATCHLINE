@@ -15,6 +15,7 @@ import org.example.catch_line.review.model.entity.ReviewEntity;
 public class ReviewResponse {
 
     private Long reviewId;
+    private Long memberId;
     private Integer rating;
     private String content;
     private String createdAt;

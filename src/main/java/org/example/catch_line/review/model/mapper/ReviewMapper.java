@@ -16,6 +16,7 @@ public class ReviewMapper {
     public ReviewResponse entityToResponse(ReviewEntity reviewEntity) {
         return ReviewResponse.builder()
                 .reviewId(reviewEntity.getReviewId())
+                .memberId(reviewEntity.getMember().getMemberId())
                 .rating(reviewEntity.getRating())
                 .content(reviewEntity.getContent())
                 .createdAt(reviewEntity.getCreatedAt().format(formatter))

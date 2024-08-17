@@ -5,29 +5,27 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-
+import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.common.constant.ServiceType;
-
-import org.example.catch_line.common.session.SessionUtils;
-import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
+import org.example.catch_line.common.session.SessionConst;
+import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.dining.menu.model.dto.MenuRequest;
 import org.example.catch_line.dining.menu.model.dto.MenuResponse;
 import org.example.catch_line.dining.menu.service.MenuService;
-import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
-
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantCreateRequest;
+import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourRequest;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantUpdateRequest;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantImageEntity;
-import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.dining.restaurant.service.RestaurantHourService;
 import org.example.catch_line.dining.restaurant.service.RestaurantImageService;
 import org.example.catch_line.dining.restaurant.service.RestaurantService;
-
+import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.service.ReviewService;
 import org.example.catch_line.user.owner.service.OwnerService;
@@ -43,6 +41,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -105,7 +104,7 @@ public class OwnerController {
 
 	@GetMapping("/restaurants/{restaurantId}")
 	public String updateRestaurantForm(@PathVariable Long restaurantId, Model model) {
-		RestaurantResponse restaurant = restaurantService.findRestaurant(null,restaurantId);
+		RestaurantResponse restaurant = restaurantService.findRestaurant(null, restaurantId);
 		model.addAttribute("restaurant", restaurant);
 		return "owner/updateRestaurant";
 	}
@@ -138,8 +137,8 @@ public class OwnerController {
 
 		List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurantId);
 		BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
-		model.addAttribute("averageRating",averageRating);
-		model.addAttribute("reviewList",reviewList);
+		model.addAttribute("averageRating", averageRating);
+		model.addAttribute("reviewList", reviewList);
 		return "owner/reviews";
 	}
 
@@ -156,7 +155,7 @@ public class OwnerController {
 		DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
 		DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
 
-		RestaurantResponse restaurant = restaurantService.findRestaurant(null,restaurantId);
+		RestaurantResponse restaurant = restaurantService.findRestaurant(null, restaurantId);
 		List<RestaurantHourResponse> restaurantHours = restaurantHourService.getAllRestaurantHours(restaurantId);
 		RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek);
 
@@ -180,48 +179,57 @@ public class OwnerController {
 	}
 
 	@GetMapping("restaurants/list/{restaurantId}/menus")
-	public String getMenus(@PathVariable Long restaurantId,Model model) {
+	public String getMenus(@PathVariable Long restaurantId, Model model) {
 
 		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
 
-		model.addAttribute("jsKey",jsKey);
-		model.addAttribute("restaurantMenuList",restaurantMenuList);
+		model.addAttribute("jsKey", jsKey);
+		model.addAttribute("restaurantMenuList", restaurantMenuList);
 
 		return "owner/menus";
 	}
 
-	@PutMapping("/restaurants/list/{restaurantId}/menus/menu")
-	public String updateMenu(@PathVariable Long restaurantId, @RequestParam Long menuId, @ModelAttribute MenuRequest menuRequest, Model model) {
+	@PostMapping("/restaurants/list/{restaurantId}/{hourId}")
+	private String updateRestaurantHour(@PathVariable Long restaurantId, @PathVariable Long hourId, @ModelAttribute
+	RestaurantHourRequest request, RedirectAttributes redirectAttributes) {
+		try {
+			restaurantHourService.updateRestaurantHour(hourId, request);
+			redirectAttributes.addFlashAttribute("message", "영업 시간이 성공적으로 업데이트");
+		} catch (CatchLineException e) {
+			redirectAttributes.addFlashAttribute("error", "영업 시간 업데이트 중 오류가 발생했습니다.");
 
-		menuService.updateRestaurantMenu(restaurantId,menuId,menuRequest);
+		}
+		return "redirect:/owner/restaurants/list/" + restaurantId;
+	}
+
+	@PutMapping("/restaurants/list/{restaurantId}/menus/menu")
+	public String updateMenu(@PathVariable Long restaurantId, @RequestParam Long menuId,
+		@ModelAttribute MenuRequest menuRequest, Model model) {
+
+		menuService.updateRestaurantMenu(restaurantId, menuId, menuRequest);
 
 		List<MenuResponse> menuResponseList = menuService.getRestaurantMenuList(restaurantId);
-		model.addAttribute("restaurantMenuList",menuResponseList);
+		model.addAttribute("restaurantMenuList", menuResponseList);
 
 		return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
 	}
 
 	@DeleteMapping("/restaurants/list/{restaurantId}/menus/menu")
-	public String deleteMenu(@PathVariable Long restaurantId,@RequestParam Long menuId) {
+	public String deleteMenu(@PathVariable Long restaurantId, @RequestParam Long menuId) {
 
 		menuService.deleteRestaurantMenu(menuId);
 		return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
 	}
 
-
-
 	@PostMapping("/restaurants/list/{restaurantId}/menus/menu")
 	public String addMenu(@PathVariable Long restaurantId, @ModelAttribute MenuRequest menuRequest, Model model) {
 
-
-		menuService.createRestaurantMenu(restaurantId,menuRequest);
+		menuService.createRestaurantMenu(restaurantId, menuRequest);
 
 		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
 		model.addAttribute("restaurantMenuList", restaurantMenuList);
 		return "redirect:/owner/restaurants/list/{restaurantId}/menus";
 	}
-
-
 
 	private List<RestaurantResponse> getRestaurantResponseList(HttpSession session) {
 		Long ownerId = SessionUtils.getOwnerId(session);
@@ -230,14 +238,9 @@ public class OwnerController {
 		return restaurantList;
 	}
 
-
-
 	private String invalidPhoneNumberException(Exception e, BindingResult bindingResult) {
 		bindingResult.rejectValue("phoneNumber", null, e.getMessage());
 		return "owner/createRestaurant";
 	}
-
-
-
 
 }

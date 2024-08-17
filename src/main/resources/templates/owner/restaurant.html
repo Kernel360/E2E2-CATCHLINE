@@ -175,8 +175,14 @@
 
     <div class="row">
         <div class="col">
-            <button class="w-100 btn btn-secondary btn-lg" th:if="${true}" disabled type="button">홈</button>
+            <button class="w-100 btn btn-secondary btn-lg"
+                    th:if="${true}"
+                    type="button"
+                    th:onclick="|location.href='@{/owner}'|">
+                홈
+            </button>
         </div>
+
         <div class="col">
             <button class="w-100 btn btn-orange btn-lg"
                     th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}/menus(restaurantId=${restaurantId})}'|"
@@ -204,14 +210,45 @@
                         <span th:if="${restaurantHour.dayOfWeek != null}" th:text="${restaurantHour.dayOfWeek}">Monday</span>
                         <span th:if="${restaurantHour.openTime != null}" th:text="${restaurantHour.openTime}">09:00</span>
                         <span th:if="${restaurantHour.closeTime != null}" th:text="${restaurantHour.closeTime}">21:00</span>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">영업 시간 수정</h5>
+                                <form th:action="@{/owner/restaurants/list/{restaurantId}/{hourId}(restaurantId=${restaurant.restaurantId}, hourId=${restaurantHour.restaurantHourId})}" method="post">
+                                    <div class="form-group">
+                                        <label for="dayOfWeek">요일</label>
+                                        <input type="text" class="form-control" id="dayOfWeek" name="dayOfWeek" th:value="${restaurantHour.dayOfWeek}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="openTime">오픈 시간</label>
+                                        <input type="time" class="form-control" id="openTime" name="openTime" th:value="${restaurantHour.openTime}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="closeTime">마감 시간</label>
+                                        <input type="time" class="form-control" id="closeTime" name="closeTime" th:value="${restaurantHour.closeTime}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="openStatus">상태</label>
+                                        <select class="form-control" id="openStatus" name="openStatus">
+                                            <option value="OPEN" th:selected="${restaurantHour.openStatus == 'OPEN'}">Open</option>
+                                            <option value="CLOSE" th:selected="${restaurantHour.openStatus == 'CLOSE'}">Close</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-orange">영업 시간 수정</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
             <div class="list-group phone-number">
                 <p class="card-text" th:text="'전화번호 : ' + ${restaurant.phoneNumber}">전화번호</p>
             </div>
         </div>
     </div>
+
 
     <!-- 위치 정보 -->
     <div class="card map-container">
@@ -269,6 +306,10 @@
             });
         });
     });
+
+
 </script>
+
+
 </body>
 </html>

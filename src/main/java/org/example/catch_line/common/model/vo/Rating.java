@@ -1,11 +1,15 @@
 package org.example.catch_line.common.model.vo;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
+@ToString
+@EqualsAndHashCode
 public class Rating {
 
     private final BigDecimal rating;

@@ -1,6 +1,8 @@
 package org.example.catch_line.common.model.vo;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.example.catch_line.exception.password.InvalidEncodedPasswordException;
 
 import java.util.regex.Pattern;
@@ -8,6 +10,8 @@ import java.util.regex.Pattern;
 // VO 객체의 역할 중 검증 후 객체 생성 부분이 없어지면서 VO의 의미를 잃어버린 것 같았다.
 // TODO: 그래서 암호화가 된 패스워드인지를 확인하는 검증을 추가했습니다.
 @Getter
+@ToString
+@EqualsAndHashCode
 public class Password {
 
     private final String encodedPassword;

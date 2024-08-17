@@ -1,6 +1,8 @@
 package org.example.catch_line.common.model.vo;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.example.catch_line.exception.email.InvalidEmailException;
 
 import java.util.regex.Pattern;
@@ -8,6 +10,8 @@ import java.util.regex.Pattern;
 // VO 클래스는 불변성 보장 -> 왜? 이유를 명확하게 모르겠음.
 // TODO: @Value 어노테이션이 필요하다면?? (private final)
 @Getter
+@ToString
+@EqualsAndHashCode
 public class Email {
 
     private final String emailValue;

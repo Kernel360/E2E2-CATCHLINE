@@ -2,6 +2,7 @@ package org.example.catch_line.review.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.common.session.SessionUtils;
@@ -13,12 +14,8 @@ import org.example.catch_line.review.model.dto.ReviewUpdateRequest;
 import org.example.catch_line.review.service.ReviewService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
@@ -59,28 +56,33 @@ public class ReviewController {
 		try {
 			SessionUtils.getMemberId(session);
 			model.addAttribute("restaurantId", restaurantId);
-			model.addAttribute("reviewCreateRequest", new ReviewCreateRequest());
+			model.addAttribute("reviewCreateRequest", new ReviewCreateRequest(null, null));
 		} catch (InvalidSessionException e) {
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 			return String.format("redirect:/restaurants/%d/reviews", restaurantId);
 		}
 
-		return "review/reviewForm";
+		return "review/reviewCreateForm";
 	}
 
 	@PostMapping("/create")
 	public String addReview(
-		@PathVariable Long restaurantId,
-		@ModelAttribute ReviewCreateRequest reviewCreateRequest,
-		Model model,
-		RedirectAttributes redirectAttributes,
-		HttpSession session
+			@PathVariable Long restaurantId,
+			@Valid @ModelAttribute ReviewCreateRequest reviewCreateRequest,
+			BindingResult bindingResult,
+			Model model,
+			RedirectAttributes redirectAttributes,
+			HttpSession session
 	) {
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("restaurantId", restaurantId);
+			return "review/reviewCreateForm";
+		}
+
 		Long memberId;
 		try {
 			memberId = SessionUtils.getMemberId(session);
-			ReviewResponse reviewResponse = reviewService.createReview(memberId, restaurantId, reviewCreateRequest);
-			model.addAttribute("reviewResponse", reviewResponse);
+			reviewService.createReview(memberId, restaurantId, reviewCreateRequest);
 		} catch (InvalidSessionException e) {
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 		}
@@ -101,6 +103,7 @@ public class ReviewController {
 			memberId = SessionUtils.getMemberId(session);
 			ReviewResponse reviewResponse = reviewService.getReviewById(reviewId, memberId);
 			model.addAttribute("review", reviewResponse);
+			model.addAttribute("reviewId", reviewId);
 			model.addAttribute("restaurantId", restaurantId);
 		} catch (InvalidSessionException | UnauthorizedException e) {
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -110,14 +113,22 @@ public class ReviewController {
 		return "review/reviewUpdateForm";
 	}
 
-	@PostMapping("/{reviewId}/update")
+	@PutMapping("/{reviewId}")
 	public String updateReview(
 		@PathVariable Long restaurantId,
 		@PathVariable Long reviewId,
-		@ModelAttribute ReviewUpdateRequest reviewUpdateRequest,
+		@Valid @ModelAttribute("review") ReviewUpdateRequest reviewUpdateRequest,
+		BindingResult bindingResult,
+		Model model,
 		HttpSession session,
 		RedirectAttributes redirectAttributes
 	) {
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("reviewId", reviewId);
+			model.addAttribute("restaurantId", restaurantId);
+			return "review/reviewUpdateForm";
+		}
+
 		Long memberId;
 		try {
 			memberId = SessionUtils.getMemberId(session);

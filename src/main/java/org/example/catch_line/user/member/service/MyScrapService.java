@@ -22,7 +22,7 @@ public class MyScrapService {
     public List<RestaurantPreviewResponse> findMyRestaurants(Long memberId) {
 
         MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
-        List<ScrapEntity> scrapList = scrapRepository.findAllByMember(member);
+        List<ScrapEntity> scrapList = scrapRepository.findAllByMemberOrderByCreatedAtDesc(member);
 
         return scrapList.stream()
                 .map(scrap -> RestaurantPreviewMapper.entityToResponse(scrap.getRestaurant()))

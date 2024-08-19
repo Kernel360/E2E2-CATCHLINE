@@ -8,10 +8,10 @@ public class MemberResponseMapper {
     public static MemberResponse entityToResponse(MemberEntity member) {
         return MemberResponse.builder()
                 .memberId(member.getMemberId())
-                .email(member.getEmail().getEmailValue())
-                .name(member.getName())
-                .nickname(member.getNickname())
-                .phoneNumber(member.getPhoneNumber().getPhoneNumberValue())
+                .email(member.getEmail() != null ? member.getEmail().getEmailValue() : "")
+                .name(member.getName() != null ? member.getName() : "")
+                .nickname(member.getNickname() != null ? member.getNickname() : "")
+                .phoneNumber(member.getPhoneNumber() != null ? member.getPhoneNumber().getPhoneNumberValue() : "")
                 .isMemberDeleted(member.isMemberDeleted())
                 .build();
     }

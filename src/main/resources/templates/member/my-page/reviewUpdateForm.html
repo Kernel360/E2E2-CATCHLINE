@@ -58,13 +58,13 @@
     <div class="row mb-4 btn-container">
         <div class="col-auto">
             <button class="btn btn-orange btn-lg"
-                    th:onclick="|location.href='@{/restaurants/{restaurantId}/reviews(restaurantId=${restaurantId})}'|"
+                    th:onclick="|location.href='@{/my-page/reviews}'|"
                     type="button">뒤로
             </button>
         </div>
     </div>
     <h1>리뷰 수정</h1>
-    <form th:action="@{/restaurants/{restaurantId}/reviews/{reviewId}(restaurantId=${restaurantId}, reviewId=${reviewId})}" th:object="${review}" method="post">
+    <form th:action="@{/my-page/reviews/{reviewId}(reviewId=${reviewId})}" th:object="${review}" method="post">
         <input type="hidden" name="_method" value="put"/>
         <div class="form-group">
             <label for="rating">평점</label>

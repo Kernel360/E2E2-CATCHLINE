@@ -32,11 +32,7 @@
             margin-bottom: 20px;
             color: #333;
         }
-        .card-text {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #555;
-        }
+
         .list-group-item {
             background-color: #fff;
             border: 1px solid #ddd;
@@ -47,6 +43,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            cursor: pointer;
         }
         .list-group-item:hover {
             background-color: #f8f9fa;
@@ -77,6 +74,15 @@
             align-items: flex-end;
             margin-left: 10px;
         }
+
+        .restaurant-name {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: #000000;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
         .btn-orange {
             background-color: orange; /* 부드러운 주황색 */
             color: white;
@@ -87,28 +93,18 @@
         .btn-orange:hover {
             background-color: orange; /* 어두운 주황색 */
         }
-        .btn-small {
-            padding: 5px 10px;
-            font-size: 12px;
-            border-radius: 5px; /* 둥근 버튼 */
-        }
-        .btn-danger {
-            padding: 5px 10px;
-            font-size: 12px;
-            border-radius: 5px; /* 둥근 버튼 */
-        }
+
         .btn-lg {
             font-size: 18px;
             padding: 10px 20px;
             border-radius: 10px;
         }
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #842029;
-            border-radius: 10px;
+
+        .modal-footer .btn {
+            width: 100px; /* 버튼의 고정 너비 설정 */
+            padding: 10px 20px;
             font-size: 16px;
-            padding: 15px;
-            margin-bottom: 20px;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -126,16 +122,81 @@
                 </div>
             </div>
             <div class="list-group">
-                <div class="list-group-item" th:each="review : ${reviewList}">
-                    <div>
+                <div class="list-group-item" th:each="review : ${reviewList}" >
+                    <div th:onclick="|location.href='@{/restaurants/{restaurantId}(restaurantId=${review.restaurantId})}'|">
+                        <div class="restaurant-name" th:text="${review.restaurantName}" >식당 이름</div>
                         <div class="review-rating" th:text="'평점: ' + ${review.rating}">rating</div>
                         <div class="review-content" th:text="${review.content}">content</div>
                         <small th:text="${review.createdAt}">createdAt</small>
+                    </div>
+                    <div class="review-actions" th:if="${memberId} == ${review.memberId}">
+                        <button class="btn btn-orange"
+                                th:onclick="|location.href='@{/my-page/reviews/{reviewId}/update(reviewId=${review.reviewId})}'|"
+                                type="button">수정</button>
+                        <button class="btn btn-danger" type="button"
+                                th:onclick="|openDeleteModal('/my-page/reviews/${review.reviewId}')|">삭제</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true" style="display: none; background-color: rgba(0,0,0,0.5);">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">리뷰 삭제 확인</h5>
+            </div>
+            <div class="modal-body">
+                <p>정말로 이 리뷰를 삭제하시겠습니까?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').style.display='none'">아니요</button>
+                <button type="button" class="btn btn-danger" onclick="confirmDelete()">예</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let deleteUrl = '';
+
+    function openDeleteModal(url) {
+        deleteUrl = url;
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.style.display = 'block';
+    }
+
+    function confirmDelete() {
+        // 동적으로 폼 생성
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = deleteUrl;
+
+        // Thymeleaf에서는 DELETE 메서드를 사용하기 위해 hidden input으로 _method를 설정합니다.
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'delete';
+
+        form.appendChild(methodInput);
+
+        // CSRF 토큰이 필요할 경우 추가 (Spring Security를 사용하고 있다면 필요)
+        // const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        // if (csrfToken) {
+        //     const csrfInput = document.createElement('input');
+        //     csrfInput.type = 'hidden';
+        //     csrfInput.name = '_csrf';
+        //     csrfInput.value = csrfToken;
+        //     form.appendChild(csrfInput);
+        // }
+
+        document.body.appendChild(form);
+        form.submit(); // 폼 제출 (DELETE 요청)
+    }
+</script>
+
 </body>
 </html>

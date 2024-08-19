@@ -33,13 +33,10 @@ public class RestaurantPreviewController {
             ) {
 
         boolean isLoggedIn = httpSession.getAttribute(SessionConst.ROLE) == Role.USER; // "user" 세션 속성으로 로그인 상태 확인
-        Page<RestaurantPreviewResponse> restaurantPreviewPage;
+        Page<RestaurantPreviewResponse> restaurantPreviewPage = restaurantPreviewService.restaurantPreviewPaging(pageable, criteria);
 
         if (type != null && keyword != null) {
             restaurantPreviewPage = restaurantPreviewService.restaurantPreviewSearchAndPaging(pageable, criteria, type, keyword);
-        }
-        else {
-            restaurantPreviewPage = restaurantPreviewService.restaurantPreviewPaging(pageable, criteria);
         }
 
         int blockLimit = 5;

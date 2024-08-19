@@ -3,13 +3,11 @@ package org.example.catch_line.user.member.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.constant.Role;
-import org.example.catch_line.user.member.model.dto.MemberResponse;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.repository.MemberRepository;
 import org.example.catch_line.user.member.validation.MemberValidator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -26,7 +24,6 @@ import java.util.Map;
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
-    private final MemberValidator memberValidator;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {

@@ -54,12 +54,12 @@ public class OwnerService {
 
 	}
 
-	public RestaurantResponse findRestaurantByOwnerId(Long ownerId) {
+	public List<RestaurantResponse> findAllRestaurantByOwnerId(Long ownerId) {
 
-		RestaurantEntity restaurantEntity = restaurantRepository.findByOwnerOwnerId(ownerId)
-			.orElseThrow(() -> new CatchLineException("등록한 식당이 없습니다"));
+		List<RestaurantEntity> restaurantEntityList = restaurantRepository.findAllByOwnerOwnerId(ownerId);
 
-		return RestaurantMapper.entityToResponse(restaurantEntity);
+
+		return restaurantEntityList.stream().map(RestaurantMapper::entityToResponse).collect(Collectors.toList());
 
 	}
 

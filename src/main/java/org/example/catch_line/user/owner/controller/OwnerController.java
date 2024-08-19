@@ -183,6 +183,18 @@ public class OwnerController {
 
 		return "redirect:/owner";
 	}
+
+	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}/completed")
+	public String completedReservation(@PathVariable Long restaurantId,@PathVariable Long reservationId, Model model) {
+		try {
+			reservationService.completedReservation(reservationId);
+		} catch (BookingErrorException e) {
+			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
+			return "error"; // 오류 페이지로 리다이렉트
+		}
+
+		return "redirect:/owner";
+	}
 	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
 	public String deleteWaiting(@PathVariable Long restaurantId,@PathVariable Long waitingId, Model model) {
 		try {
@@ -194,6 +206,20 @@ public class OwnerController {
 
 		return "redirect:/owner";
 	}
+
+	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}/completed")
+	public String completeWaiting(@PathVariable Long restaurantId,@PathVariable Long waitingId, Model model) {
+		try {
+			waitingService.completedWaiting(waitingId);
+		} catch (BookingErrorException e) {
+			model.addAttribute("errorMessage", "웨이팅 완료 중 오류가 발생했습니다.");
+			return "error"; // 오류 페이지로 리다이렉트
+		}
+
+		return "redirect:/owner";
+	}
+
+
 
 
 	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")

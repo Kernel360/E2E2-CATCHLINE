@@ -50,6 +50,13 @@ public class WaitingService {
 		entity.changeWaitingStatus(Status.CANCELED);
 		waitingRepository.save(entity);
 	}
+	public void completedWaiting(Long waitingId) {
+		WaitingEntity entity = historyValidator.checkIfWaitingPresent(waitingId);
+
+		entity.changeWaitingStatus(Status.COMPLETED);
+		waitingRepository.save(entity);
+	}
+
 
 	public boolean isExistingWaiting(Long memberId, Status status) {
 		return waitingRepository.existsByMemberMemberIdAndStatus(memberId, status);

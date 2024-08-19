@@ -79,7 +79,9 @@
             </div>
             <div class="row">
                 <div class="col text-right">
+                    <button type="button" class="btn btn-danger" th:onclick="'completedWaiting(' + ${restaurantId} + ')'">완료하기</button>
                     <button type="button" class="btn btn-danger" th:onclick="'cancelWaiting(' + ${restaurantId} + ')'">취소하기</button>
+
                 </div>
             </div>
         </div>
@@ -105,6 +107,27 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('대기 취소에 실패했습니다.');
+            });
+    }
+
+    function completedWaiting(restaurantId) {
+        const waitingId = document.getElementById('waitingId').innerText;
+        const url = `/owner/restaurants/${restaurantId}/history/waiting/${waitingId}/completed`;
+
+        fetch(url, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('대기가 완료되었습니다.');
+                    window.location.href = '/owner'; // 취소 후 history 페이지로 리디렉션
+                } else {
+                    alert('대기 완료에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('대기 완료에 실패했습니다.');
             });
     }
 </script>

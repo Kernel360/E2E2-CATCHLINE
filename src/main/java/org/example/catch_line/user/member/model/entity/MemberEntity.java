@@ -27,21 +27,23 @@ public class MemberEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(nullable = false) // 이메일 unique 제약 조건 삭제
+    private Long kakaoMemberId;
+
+//    @Column(nullable = false) // 이메일 unique 제약 조건 삭제
     @Convert(converter = EmailConverter.class)
     private Email email;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     @Convert(converter = PasswordConverter.class)
     private Password password;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     @Convert(converter = PhoneNumberConverter.class)
     private PhoneNumber phoneNumber;
 
@@ -62,14 +64,16 @@ public class MemberEntity extends BaseTimeEntity {
     private List<ScrapEntity> scraps = new ArrayList<>();
 
     @Builder
-    public MemberEntity(Email email, String name, String nickname, Password password, PhoneNumber phoneNumber) {
+    public MemberEntity(Email email, String name, String nickname, Password password, PhoneNumber phoneNumber, Long kakaoMemberId) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.phoneNumber = phoneNumber;
+        this.kakaoMemberId = kakaoMemberId;
 //        this.isMemberDeleted = false;
     }
+
 
 
     // 회원 정보 수정 -> @Setter 사용 대신 메서드를 따로 추가

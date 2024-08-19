@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Waiting Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-danger {
+            background-color: #c6a9e2;
+            border-color: #ff6347;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #c6a9e2;
+            border-color: white;
+        }
+
+        .card-header {
+            background-color: #c6a9e2;
+            color: #fff;
+        }
+
+        .card-body {
+            background-color: #fff8f0;
+        }
+
+        .card-body h5 {
+            color: #c6a9e2;
+            font-weight: bold;
+        }
+
+        .card {
+            border-color: #c6a9e2;
+        }
+
+        .card-body p {
+            font-size: 16px;
+        }
+
+        .card-body p strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row mb-4 btn-container">
+        <div class="col-auto">
+            <button class="btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/owner}'|"
+                    type="button">뒤로
+            </button>
+        </div>
+    </div>
+    <h1 class="mb-4">웨이팅 상세정보</h1>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 th:text="${historyResponse.restaurantName}">Restaurant Name</h3>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h5>대기정보</h5>
+                    <p><strong>접수 일시:</strong> <span th:text="${#temporals.format(historyResponse.createdAt, 'yyyy-MM-dd HH:mm:ss')}">2023-08-09 12:34:56</span></p>
+                    <p><strong>인원수:</strong> <span th:text="${historyResponse.memberCount}">4</span></p>
+                    <p><strong>이용상태:</strong> <span th:text="${historyResponse.status.description}">대기중</span></p>
+                </div>
+                <div class="col-md-6">
+                    <h5>추가 정보</h5>
+                    <p><strong>대기 순서:</strong> <span th:text="${historyResponse.myWaitingPosition}">3</span></p>
+                    <p><strong>대기 번호:</strong> <span id="waitingRegistrationId" th:text="${historyResponse.waitingRegistrationId}">123456</span></p>
+                    <p><strong>대기 ID:</strong> <span id="waitingId" th:text="${historyResponse.waitingId}">123456</span></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-right">
+                    <button type="button" class="btn btn-danger" th:onclick="'cancelWaiting(' + ${restaurantId} + ')'">취소하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function cancelWaiting(restaurantId) {
+        const waitingId = document.getElementById('waitingId').innerText;
+        const url = `/owner/restaurants/${restaurantId}/history/waiting/${waitingId}`;
+
+        fetch(url, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('대기가 취소되었습니다.');
+                    window.location.href = '/owner'; // 취소 후 history 페이지로 리디렉션
+                } else {
+                    alert('대기 취소에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('대기 취소에 실패했습니다.');
+            });
+    }
+</script>
+</body>
+</html>

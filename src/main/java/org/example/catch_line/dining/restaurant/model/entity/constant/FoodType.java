@@ -16,4 +16,13 @@ public enum FoodType {
     public String getDescription() {
         return description;
     }
+
+    public static FoodType fromKoreanName(String description) {
+        for (FoodType type : values()) {
+            if (type.getDescription().equals(description)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("FoodType에 없는 값입니다 : " + description);
+    }
 }

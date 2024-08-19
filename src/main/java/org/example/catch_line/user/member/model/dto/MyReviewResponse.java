@@ -1,24 +1,19 @@
-package org.example.catch_line.review.model.dto;
+package org.example.catch_line.user.member.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
-import org.example.catch_line.review.model.entity.ReviewEntity;
-
 @Getter
 @AllArgsConstructor
 @Builder
-public class ReviewResponse {
+public class MyReviewResponse {
 
     private Long reviewId;
     private Long memberId;
     private Long restaurantId;
+    private String restaurantName;
     private Integer rating;
     private String content;
     private String createdAt;
-
 }

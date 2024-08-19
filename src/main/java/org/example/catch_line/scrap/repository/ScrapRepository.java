@@ -13,7 +13,7 @@ public interface ScrapRepository extends JpaRepository<ScrapEntity, ScrapId> {
     boolean existsById(ScrapId scrapId);
 
     // 특정 유저가 한 스크랩 목록 조회
-    List<ScrapEntity> findAllByMember(MemberEntity member);
+    List<ScrapEntity> findAllByMemberOrderByCreatedAtDesc(MemberEntity member);
 
     // 특정 식당에 대한 스크랩 수를 카운트
     Long countByRestaurant(RestaurantEntity restaurant);

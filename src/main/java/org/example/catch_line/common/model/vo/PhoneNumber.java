@@ -1,11 +1,15 @@
 package org.example.catch_line.common.model.vo;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 
 import java.util.regex.Pattern;
 
 @Getter
+@ToString
+@EqualsAndHashCode
 public class PhoneNumber {
 
     private final String phoneNumberValue;

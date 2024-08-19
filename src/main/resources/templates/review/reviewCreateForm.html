@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>리뷰 수정</title>
+    <title>리뷰 작성</title>
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -63,9 +63,8 @@
             </button>
         </div>
     </div>
-    <h1>리뷰 수정</h1>
-    <form th:action="@{/restaurants/{restaurantId}/reviews/{reviewId}(restaurantId=${restaurantId}, reviewId=${reviewId})}" th:object="${review}" method="post">
-        <input type="hidden" name="_method" value="put"/>
+    <h1>리뷰 작성</h1>
+    <form th:action="@{/restaurants/{restaurantId}/reviews/create(restaurantId=${restaurantId})}" th:object="${reviewCreateRequest}" method="post">
         <div class="form-group">
             <label for="rating">평점</label>
             <input type="number" id="rating" th:field="*{rating}" class="form-control" min="1" max="5" placeholder="1에서 5 사이의 점수를 입력하세요" required>
@@ -78,7 +77,7 @@
             </div>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-orange btn-block">리뷰 수정</button>
+            <button type="submit" class="btn btn-orange btn-block">리뷰 제출</button>
         </div>
     </form>
 </div>

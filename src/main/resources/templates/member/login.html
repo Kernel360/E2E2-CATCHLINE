@@ -37,15 +37,44 @@
             font-weight: bold;
         }
 
+        .btn-back {
+            background-color: orange;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .btn-back:hover {
+            background-color: #E64A19;
+        }
+
+        .btn-back:focus {
+            box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
         .btn-orange {
             background-color: orange;
             color: white;
             border: none;
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
         }
 
         .btn-orange:hover {
@@ -54,6 +83,30 @@
 
         .btn-orange:focus {
             box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+        }
+
+        .btn-kakao {
+            background-color: #FEE500;
+            color: #3C1E1E;
+            border: none;
+        }
+
+        .btn-kakao:hover {
+            background-color: #ECD500;
+        }
+
+        .kakao-icon {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><path fill="%233C1E1E" d="M9 0C4.03 0 0 3.467 0 7.738c0 2.444 1.474 4.594 3.75 5.898-.154.551-.99 3.55-1.04 3.773 0 0-.02.165.087.23.107.065.243.015.243.015.32-.045 3.675-2.495 4.246-2.937.86.122 1.75.188 2.673.188 4.97 0 9-3.467 9-7.738C18 3.467 13.97 0 9 0z"/></svg>');
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            display: inline-block;
+        }
+
+        .btn-kakao:focus {
+            outline: none;
         }
 
         .text-danger {
@@ -115,26 +168,13 @@
             color: white;
         }
 
-        /* 통일된 버튼 스타일 */
-        .btn-secondary, .btn-primary {
-            background-color: orange;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-secondary:hover, .btn-primary:hover {
-            background-color: #E64A19;
-        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="row mb-4 btn-container">
         <div class="col-auto">
-            <button class="btn btn-orange btn-lg"
+            <button class="btn-back"
                     th:onclick="|location.href='@{/restaurants}'|"
                     type="button">뒤로
             </button>
@@ -148,26 +188,39 @@
         </div>
         <div class="form-group">
             <label for="password">비밀번호:</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요" required/>
+            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요"
+                   required/>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-orange">로그인</button>
         </div>
     </form>
 
+    <!-- 카카오 로그인 버튼 -->
+    <div class="form-group">
+        <button class="btn btn-kakao" onclick="location.href='/login/kakao'">
+            <span class="kakao-icon"></span>카카오톡으로 로그인
+        </button>
+    </div>
+
     <!-- 모달 -->
-    <div th:if="${exception}" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true" style="display: block; background-color: rgba(0,0,0,0.5);">
+    <div th:if="${exception}" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+         aria-hidden="true" style="display: block; background-color: rgba(0,0,0,0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="errorModalLabel">로그인 실패</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="this.closest('.modal').style.display='none'">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            onclick="this.closest('.modal').style.display='none'">&times;
+                    </button>
                 </div>
                 <div class="modal-body">
                     <span>사용자를 찾을 수 없거나, 잘못된 비밀번호를 입력하셨습니다.</span>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').style.display='none'">닫기</button>
+                    <button type="button" class="btn btn-secondary"
+                            onclick="this.closest('.modal').style.display='none'">닫기
+                    </button>
                 </div>
             </div>
         </div>

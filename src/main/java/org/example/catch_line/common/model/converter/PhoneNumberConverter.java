@@ -10,11 +10,15 @@ public class PhoneNumberConverter implements AttributeConverter<PhoneNumber, Str
 
     @Override
     public String convertToDatabaseColumn(PhoneNumber phoneNumber) {
+
+        if(phoneNumber == null) {return null;}
+
         return phoneNumber.getPhoneNumberValue();
     }
 
     @Override
     public PhoneNumber convertToEntityAttribute(String phoneNumber) {
+        if(phoneNumber == null) {return null;}
         return new PhoneNumber(phoneNumber);
     }
 }

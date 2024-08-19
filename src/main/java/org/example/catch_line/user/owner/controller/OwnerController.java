@@ -127,7 +127,7 @@ public class OwnerController {
 		List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
 		model.addAttribute("restaurantList", restaurantResponseList);
 
-		return "owner/restaurantList2";
+		return "restaurantListhistory";
 	}
 
 	// @GetMapping("/restaurants/list/{restaurantId}/history")

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.transaction.Transactional;
 import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourRequest;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourResponse;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RestaurantHourService {
 
 	private final RestaurantHourRepository restaurantHourRepository;
@@ -40,8 +42,16 @@ public class RestaurantHourService {
 
 	// 오늘 영업 시간 조회
 	public RestaurantHourResponse getRestaurantHour(Long restaurantId, DayOfWeeks dayOfWeek) {
+
 		RestaurantHourEntity entity = restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(restaurantId,
 			dayOfWeek);
+
+		if (LocalTime.now().isBefore(entity.getCloseTime()) && LocalTime.now().isAfter(entity.getOpenTime())) {
+			entity.updateOpenStatus(OpenStatus.OPEN);
+		} else {
+			entity.updateOpenStatus(OpenStatus.CLOSE);
+		}
+
 		return RestaurantHourMapper.entityToResponse(entity);
 	}
 

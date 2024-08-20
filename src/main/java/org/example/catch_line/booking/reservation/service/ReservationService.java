@@ -1,5 +1,6 @@
 package org.example.catch_line.booking.reservation.service;
 
+import jakarta.transaction.Transactional;
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
@@ -11,9 +12,13 @@ import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.validation.MemberValidator;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +51,19 @@ public class ReservationService {
 		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);
 		reservationEntity.changeReservationStatus(Status.COMPLETED);
 		reservationRepository.save(reservationEntity);
+	}
+
+	@Transactional
+	@Scheduled(cron = "0 0 0 * * ?")
+	public void updateScheduledReservation() {
+		List<ReservationEntity> reservationEntities = reservationRepository.findAllByStatus(Status.SCHEDULED);
+
+		for (ReservationEntity reservationEntity : reservationEntities) {
+			if(LocalDateTime.now().isAfter(reservationEntity.getReservationDate())){
+				reservationEntity.changeReservationStatus(Status.CANCELED);
+			}
+		}
+		reservationRepository.saveAll(reservationEntities);
 	}
 
 	public void cancelReservation(Long reservationId) {

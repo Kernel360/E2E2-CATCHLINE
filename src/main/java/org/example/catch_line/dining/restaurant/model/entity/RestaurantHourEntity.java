@@ -75,4 +75,8 @@ public class RestaurantHourEntity {
 	public void closeBusiness() {
 		this.openStatus = OpenStatus.CLOSE;
 	}
+
+	public void updateOpenStatus(OpenStatus openStatus) {
+		this.openStatus = openStatus;
+	}
 }

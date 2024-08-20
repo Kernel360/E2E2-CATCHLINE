@@ -113,7 +113,7 @@ public class HistoryService {
 	}
 
 	private void sortHistoryResponsesByCreatedAt(List<HistoryResponse> historyResponseList) {
-		Collections.sort(historyResponseList, Comparator.comparing(HistoryResponse::getCreatedAt).reversed());
+		historyResponseList.sort(Comparator.comparing(HistoryResponse::getCreatedAt).reversed());
 	}
 
 	//ReservationEntity -> HistoryResponse
@@ -141,11 +141,11 @@ public class HistoryService {
 
 		List<HistoryResponse> reservationResponses = reservationEntities.stream()
 			.map(this::reservationToHistoryResponse)
-			.collect(Collectors.toList());
+			.toList();
 
 		List<HistoryResponse> waitingResponses = waitingEntities.stream()
 			.map(waiting -> this.entityToHistoryResponse(waiting, getStartOfDay(), getEndOfDay()))
-			.collect(Collectors.toList());
+			.toList();
 
 		List<HistoryResponse> allHistoryResponses = new ArrayList<>();
 		allHistoryResponses.addAll(reservationResponses);
@@ -161,7 +161,7 @@ public class HistoryService {
 		return historyList.stream()
 			.filter(h -> h.getReservationId() != null && reservationId.equals(h.getReservationId()))  // null 체크 추가
 			.findFirst()
-			.orElseThrow(() -> new HistoryException());
+			.orElseThrow(HistoryException::new);
 	}
 
 	// 웨이팅 상세 정보 조회
@@ -169,7 +169,7 @@ public class HistoryService {
 		return historyList.stream()
 			.filter(h -> h.getWaitingId() != null && waitingId.equals(h.getWaitingId()))  // null 체크 추가
 			.findFirst()
-			.orElseThrow(() -> new HistoryException());
+			.orElseThrow(HistoryException::new);
 	}
 
 	public HistoryResponse updateReservation(Long reservationId, int memberCount, LocalDateTime reservationDate) {

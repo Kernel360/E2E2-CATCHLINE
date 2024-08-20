@@ -1,5 +1,6 @@
 package org.example.catch_line.booking.waiting.service;
 
+import jakarta.transaction.Transactional;
 import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
@@ -11,10 +12,13 @@ import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.validation.MemberValidator;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -50,6 +54,19 @@ public class WaitingService {
 		entity.changeWaitingStatus(Status.CANCELED);
 		waitingRepository.save(entity);
 	}
+
+	@Transactional
+	@Scheduled(cron = "0 0 0 * * ?")
+	public void updateScheduledWaiting() {
+		List<WaitingEntity> waitingEntities = waitingRepository.findAllByStatus(Status.SCHEDULED);
+
+		for (WaitingEntity waitingEntity : waitingEntities) {
+			waitingEntity.changeWaitingStatus(Status.CANCELED);
+		}
+
+		waitingRepository.saveAll(waitingEntities);
+	}
+
 	public void completedWaiting(Long waitingId) {
 		WaitingEntity entity = historyValidator.checkIfWaitingPresent(waitingId);
 

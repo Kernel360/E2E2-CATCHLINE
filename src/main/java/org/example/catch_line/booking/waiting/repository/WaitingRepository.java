@@ -36,4 +36,6 @@ public interface WaitingRepository extends JpaRepository<WaitingEntity, Long> {
 
 	List<WaitingEntity> findAllByRestaurantRestaurantIdAndStatus(Long restaurantId,Status status);
 
+	List<WaitingEntity> findAllByStatus(Status status);
+
 }

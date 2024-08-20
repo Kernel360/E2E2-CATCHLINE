@@ -15,6 +15,7 @@ public class RestaurantPreviewResponse {
     private String name;
     private BigDecimal averageRating;
     private Long reviewCount;
+    private Long scrapCount;
     private String foodType;
     private String serviceType;
 

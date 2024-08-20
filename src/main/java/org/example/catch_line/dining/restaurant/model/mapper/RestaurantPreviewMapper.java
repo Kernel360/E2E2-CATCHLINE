@@ -7,12 +7,13 @@ import java.math.BigDecimal;
 
 public class RestaurantPreviewMapper {
 
-    public static RestaurantPreviewResponse entityToResponse(RestaurantEntity restaurantEntity, BigDecimal averageRating, Long reviewCount) {
+    public static RestaurantPreviewResponse entityToResponse(RestaurantEntity restaurantEntity, BigDecimal averageRating, Long reviewCount, Long scrapCount) {
         return RestaurantPreviewResponse.builder()
                 .restaurantId(restaurantEntity.getRestaurantId())
                 .name(restaurantEntity.getName())
                 .averageRating(averageRating)
                 .reviewCount(reviewCount)
+                .scrapCount(scrapCount)
                 .serviceType(restaurantEntity.getServiceType().getDescription())
                 .foodType(restaurantEntity.getFoodType().getDescription())
                 .build();
@@ -24,6 +25,7 @@ public class RestaurantPreviewMapper {
                 .name(restaurantEntity.getName())
                 .averageRating(restaurantEntity.getRating().getRating())
                 .reviewCount(restaurantEntity.getReviewCount())
+                .scrapCount(restaurantEntity.getScrapCount())
                 .serviceType(restaurantEntity.getServiceType().getDescription())
                 .foodType(restaurantEntity.getFoodType().getDescription())
                 .build();

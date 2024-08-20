@@ -25,28 +25,31 @@ public class RestaurantPreviewController {
     @GetMapping("/restaurants")
     public String getRestaurantPreviewList(
             @RequestParam(required = false, defaultValue = "reviewCount") String criteria,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String keyword,
             @PageableDefault(page=0, size = 2)Pageable pageable,
             Model model,
             HttpSession httpSession
             ) {
 
         boolean isLoggedIn = httpSession.getAttribute(SessionConst.ROLE) == Role.USER; // "user" 세션 속성으로 로그인 상태 확인
-        model.addAttribute("isLoggedIn", isLoggedIn);
-
         Page<RestaurantPreviewResponse> restaurantPreviewPage = restaurantPreviewService.restaurantPreviewPaging(pageable, criteria);
+
+        if (type != null && keyword != null) {
+            restaurantPreviewPage = restaurantPreviewService.restaurantPreviewSearchAndPaging(pageable, criteria, type, keyword);
+        }
 
         int blockLimit = 5;
         int startPage = (((int) Math.ceil(((double) (pageable.getPageNumber() +1) / blockLimit))) -1) * blockLimit + 1;
         int endPage = Math.min((startPage + blockLimit - 1), restaurantPreviewPage.getTotalPages());
 
-
+        model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("restaurantPreviewPage",restaurantPreviewPage);
         model.addAttribute("startPage",startPage);
         model.addAttribute("endPage",endPage);
         model.addAttribute("criteria",criteria);
-
-        // List<RestaurantPreviewResponse> restaurantPreviewList = restaurantPreviewService.getRestaurantPreviewList();
-        // model.addAttribute("restaurantPreviewList", restaurantPreviewList);
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
 
         return "restaurant/restaurantPreview";
     }

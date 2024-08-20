@@ -1,4 +1,4 @@
-package org.example.catch_line.user.member.validation;
+package org.example.catch_line.user.member.model.provider.validation;
 
 import org.example.catch_line.exception.password.InvalidPasswordException;
 

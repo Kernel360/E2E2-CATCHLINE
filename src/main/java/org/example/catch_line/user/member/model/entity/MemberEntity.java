@@ -71,7 +71,7 @@ public class MemberEntity extends BaseTimeEntity {
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.kakaoMemberId = kakaoMemberId;
-//        this.isMemberDeleted = false;
+        this.isMemberDeleted = false;
     }
 
 

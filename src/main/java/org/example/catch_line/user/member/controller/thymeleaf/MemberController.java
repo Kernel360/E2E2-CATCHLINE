@@ -30,9 +30,7 @@ public class MemberController {
     }
 
     @GetMapping("/update")
-    public String showUpdateMemberForm(
-            HttpSession httpSession,
-            Model model) {
+    public String showUpdateMemberForm(HttpSession httpSession, Model model) {
         model.addAttribute("memberUpdateRequest", new MemberUpdateRequest(null, null, null,  null));
         MemberResponse memberResponse = memberService.findMember(SessionUtils.getMemberId(httpSession));
         model.addAttribute("member", memberResponse);
@@ -42,10 +40,7 @@ public class MemberController {
     @PostMapping("/update")
     public String updateMember(
             @Valid @ModelAttribute MemberUpdateRequest memberUpdateRequest,
-            BindingResult bindingResult, // @Valid 어노테이션 바로 뒤에 위치해야 함.
-            HttpSession httpSession,
-            Model model
-    ) {
+            BindingResult bindingResult, HttpSession httpSession, Model model) {
 
         if(bindingResult.hasErrors()) {
             log.info("error : {}", bindingResult);

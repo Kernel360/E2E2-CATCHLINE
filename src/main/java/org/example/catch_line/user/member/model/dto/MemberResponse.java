@@ -1,7 +1,6 @@
 package org.example.catch_line.user.member.model.dto;
 
 import lombok.*;
-import org.example.catch_line.common.constant.Role;
 
 @AllArgsConstructor
 @Getter

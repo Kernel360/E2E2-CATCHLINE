@@ -8,11 +8,11 @@ import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.email.DuplicateEmailException;
 import org.example.catch_line.user.member.model.dto.LoginRequest;
-import org.example.catch_line.user.member.model.dto.MemberResponse;
+import org.example.catch_line.user.member.model.dto.LoginResponse;
 import org.example.catch_line.user.member.model.dto.SignUpRequest;
 import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.user.member.service.AuthService;
-import org.example.catch_line.user.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -93,16 +93,16 @@ public class AuthController {
             return "member/login";
         }
 
-        MemberResponse memberResponse;
+        LoginResponse loginResponse;
         try {
-            memberResponse =
+            loginResponse =
                     authService.login(loginRequest);
         } catch (CatchLineException e) {
             model.addAttribute("exception", e.getMessage());
             return "member/login";
         }
 
-        httpSession.setAttribute(MEMBER_ID, memberResponse.getMemberId());
+        httpSession.setAttribute(MEMBER_ID, loginResponse.getMemberId());
         httpSession.setAttribute(ROLE, Role.USER);
 
         return "redirect:/";

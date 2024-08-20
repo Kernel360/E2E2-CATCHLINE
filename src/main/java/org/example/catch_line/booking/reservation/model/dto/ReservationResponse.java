@@ -16,18 +16,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ReservationResponse {
 
-	@NotBlank
 	private Long reservationId;
 
-	@NotBlank
-	@Min(value = 1, message = "최소 인원 수는 1명입니다")
 	private int memberCount;
 
-	@ValidReservationDate
-	@NotBlank(message = "날짜를 선택해야 합니다")
 	private LocalDateTime reservationDate;
 
-	@NotBlank(message = "현재 상태가 존재해야 합니다")
 	private Status status;
 
 	private LocalDateTime createdAt;

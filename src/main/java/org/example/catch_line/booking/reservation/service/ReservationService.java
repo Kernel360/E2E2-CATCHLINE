@@ -7,6 +7,7 @@ import org.example.catch_line.booking.reservation.model.entity.ReservationEntity
 import org.example.catch_line.booking.reservation.model.mapper.ReservationResponseMapper;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.history.validation.HistoryValidator;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.validation.MemberValidator;
@@ -30,7 +31,16 @@ public class ReservationService {
 	private final MemberValidator memberValidator;
 	private final RestaurantValidator restaurantValidator;
 
+	public boolean isReservationTimeConflict(Long restaurantId, LocalDateTime reservationDate) {
+		List<ReservationEntity> existingReservations = reservationRepository.findByRestaurantRestaurantIdAndReservationDate(restaurantId, reservationDate);
+
+		return !existingReservations.isEmpty();
+	}
+
 	public ReservationResponse addReserve(Long restaurantId, ReservationRequest reservationRequest, Long memberId) {
+		if (isReservationTimeConflict(restaurantId, reservationRequest.getReservationDate())) {
+			throw new CatchLineException("이미 해당 시간에 예약이 존재합니다");
+		}
 
 		MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 		RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
@@ -46,6 +56,7 @@ public class ReservationService {
 
 		return reservationResponseMapper.convertToResponse(savedEntity);
 	}
+
 
 	public void completedReservation(Long reservationId) {
 		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);

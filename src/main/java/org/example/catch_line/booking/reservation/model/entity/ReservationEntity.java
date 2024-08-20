@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import org.example.catch_line.common.model.entity.BaseTimeEntity;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.booking.reservation.validation.ValidReservationDate;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 
 import jakarta.persistence.Column;
@@ -20,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;  // Import for @NotNull
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,8 +43,8 @@ public class ReservationEntity extends BaseTimeEntity {
 	@Column(nullable = false)
 	private Status status;
 
-	@ValidReservationDate
 	@Column(nullable = false)
+	@NotNull(message = "예약 날짜는 필수입니다")  // Add @NotNull for LocalDateTime
 	private LocalDateTime reservationDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -73,5 +73,4 @@ public class ReservationEntity extends BaseTimeEntity {
 	public void changeReservationStatus(Status newStatus) {
 		this.status = newStatus;
 	}
-
 }

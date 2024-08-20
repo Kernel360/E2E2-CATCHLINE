@@ -74,9 +74,8 @@ public class OwnerService {
 	}
 
 	public List<HistoryResponse> findHistoryByRestaurantIdAndStatus(Long restaurantId, Status status) {
-		List<HistoryResponse> historyResponses = historyService.findByRestaurantId(restaurantId,status);
 
-		return historyResponses;
+        return historyService.findByRestaurantId(restaurantId,status);
 
 	}
 

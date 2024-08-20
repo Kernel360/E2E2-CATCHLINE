@@ -61,13 +61,13 @@
     <h1 class="mb-4">나의 예약</h1>
     <div class="row mb-4 btn-group">
         <div class="col">
-            <button type="button" class="btn btn-orange btn-lg" th:onclick="|location.href='@{/history(status=SCHEDULED)}'|">예정</button>
+            <button type="button" class="btn btn-orange btn-lg" th:onclick="'location.href=\'' + @{/owner/restaurants/{restaurantId}/history(status=SCHEDULED,restaurantId=${restaurantId})} + '\''">예정</button>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-orange btn-lg" th:onclick="|location.href='@{/history(status=COMPLETED)}'|">완료</button>
+            <button type="button" class="btn btn-orange btn-lg" th:onclick="'location.href=\'' + @{/owner/restaurants/{restaurantId}/history(status=COMPLETED, restaurantId=${restaurantId})} + '\''">완료</button>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-orange btn-lg" th:onclick="|location.href='@{/history(status=CANCELED)}'|">취소</button>
+            <button type="button" class="btn btn-orange btn-lg" th:onclick="'location.href=\'' + @{/owner/restaurants/{restaurantId}/history(status=CANCELED, restaurantId=${restaurantId})} + '\''">취소</button>
         </div>
         <div class="col">
             <button type="button" class="btn btn-orange btn-lg" onclick="refreshPage()">새로고침</button>
@@ -87,8 +87,9 @@
             th:data-service-type="${history.serviceType}"
             th:data-waiting-id="${history.waitingId}"
             th:data-reservation-id="${history.reservationId}"
-            onclick="redirectBasedOnServiceType(this)">
-            <td th:text="${history.restaurantName}"></td>
+            th:onclick="'redirectBasedOnServiceType(this, ' + ${restaurantId} + ')'">
+
+        <td th:text="${history.restaurantName}"></td>
             <td th:text="${history.serviceType.description}"></td>
             <td th:text="${history.memberCount}"></td>
             <td th:text="${history.serviceType == T(org.example.catch_line.common.constant.ServiceType).WAITING ? history.waitingType.description : (history.reservationDate != null ? #temporals.format(history.reservationDate, 'yyyy-MM-dd HH:mm:ss') : 'N/A')}"></td>
@@ -105,15 +106,15 @@
         location.reload();
     }
 
-    function redirectBasedOnServiceType(row) {
+    function redirectBasedOnServiceType(row, restaurantId) {
         const serviceType = row.getAttribute('data-service-type');
         const waitingId = row.getAttribute('data-waiting-id');
         const reservationId = row.getAttribute('data-reservation-id');
 
         if (serviceType === 'WAITING') {
-            location.href = `/history/waiting/${waitingId}`;
+            location.href = '/owner/restaurants/' + restaurantId + '/history/waiting/' + waitingId;
         } else {
-            location.href = `/history/reservation/${reservationId}`;
+            location.href = '/owner/restaurants/' + restaurantId + '/history/reservation/' + reservationId;
         }
     }
 </script>

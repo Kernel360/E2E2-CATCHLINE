@@ -133,11 +133,11 @@ public class HistoryService {
 			.build();
 	}
 
-	public List<HistoryResponse> findByRestaurantId(Long restaurantId) {
-		List<ReservationEntity> reservationEntities = reservationRepository.findAllByRestaurantRestaurantId(
-			restaurantId);
-		List<WaitingEntity> waitingEntities = waitingRepository.findAllByRestaurantRestaurantId(
-			restaurantId);
+	public List<HistoryResponse> findByRestaurantId(Long restaurantId,Status status) {
+		List<ReservationEntity> reservationEntities = reservationRepository.findAllByRestaurantRestaurantIdAndStatus(
+			restaurantId,status);
+		List<WaitingEntity> waitingEntities = waitingRepository.findAllByRestaurantRestaurantIdAndStatus(
+			restaurantId,status);
 
 		List<HistoryResponse> reservationResponses = reservationEntities.stream()
 			.map(this::reservationToHistoryResponse)

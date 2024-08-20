@@ -42,6 +42,12 @@ public class ReservationService {
 		return reservationResponseMapper.convertToResponse(savedEntity);
 	}
 
+	public void completedReservation(Long reservationId) {
+		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);
+		reservationEntity.changeReservationStatus(Status.COMPLETED);
+		reservationRepository.save(reservationEntity);
+	}
+
 	public void cancelReservation(Long reservationId) {
 		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);
 		reservationEntity.changeReservationStatus(Status.CANCELED);

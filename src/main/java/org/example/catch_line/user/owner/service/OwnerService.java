@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.common.kakao.model.dto.KakaoCoordinateResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.exception.CatchLineException;
@@ -72,8 +73,8 @@ public class OwnerService {
 			.collect(Collectors.toList());
 	}
 
-	public List<HistoryResponse> findHistoryByRestaurantId(Long restaurantId) {
-		List<HistoryResponse> historyResponses = historyService.findByRestaurantId(restaurantId);
+	public List<HistoryResponse> findHistoryByRestaurantIdAndStatus(Long restaurantId, Status status) {
+		List<HistoryResponse> historyResponses = historyService.findByRestaurantId(restaurantId,status);
 
 		return historyResponses;
 

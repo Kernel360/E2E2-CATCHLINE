@@ -5,8 +5,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.example.catch_line.booking.reservation.service.ReservationService;
+import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.common.constant.ServiceType;
+import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.common.session.SessionConst;
@@ -25,8 +28,11 @@ import org.example.catch_line.dining.restaurant.service.RestaurantHourService;
 import org.example.catch_line.dining.restaurant.service.RestaurantImageService;
 import org.example.catch_line.dining.restaurant.service.RestaurantService;
 import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.booking.BookingErrorException;
+import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
+import org.example.catch_line.history.service.HistoryService;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.service.ReviewService;
 import org.example.catch_line.user.owner.service.OwnerService;
@@ -61,6 +67,9 @@ public class OwnerController {
 	private final KakaoAddressService kakaoAddressService;
 	private final RestaurantHourService restaurantHourService;
 	private final ReviewService reviewService;
+	private final HistoryService historyService;
+	private final WaitingService waitingService;
+	private final ReservationService reservationService;
 
 	@Value("${kakao.maps.js-key}")
 	private String jsKey;
@@ -122,24 +131,120 @@ public class OwnerController {
 		return "redirect:/owner/restaurants/list/" + restaurantId;
 	}
 
-	@GetMapping("/restaurants/list2")
+	@GetMapping("/restaurants/listHistory")
 	public String showRestaurantListPage2(HttpSession session, Model model) {
 		List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
 		model.addAttribute("restaurantList", restaurantResponseList);
 
-		return "restaurantListhistory";
+		return "owner/restaurantListHistory";
 	}
 
 	// @GetMapping("/restaurants/list/{restaurantId}/history")
 
-	@GetMapping("/restaurants/list2/{restaurantId}/history")
-	public String showHistory(@PathVariable Long restaurantId, Model model) {
+	@GetMapping("/restaurants/{restaurantId}/history")
+	public String showHistory(@PathVariable Long restaurantId,@RequestParam(defaultValue = "SCHEDULED") Status status ,Model model,HttpSession session) {
 
-		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantId(restaurantId);
+		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,status);
+		session.setAttribute("historyList",historyResponses);
 		model.addAttribute("history",historyResponses);
+		model.addAttribute("restaurantId",restaurantId);
 
 		return "owner/history";
 
+	}
+	@GetMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
+	public String getWaitingDetails(@PathVariable Long restaurantId ,@PathVariable Long waitingId, HttpSession session, Model model) {
+
+		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
+		model.addAttribute("restaurantId", restaurantId);
+
+		if (historyList != null) {
+			try {
+				HistoryResponse historyResponse = historyService.findWaitingDetailById(historyList, waitingId);
+				model.addAttribute("historyResponse", historyResponse);
+				model.addAttribute("restaurantId",restaurantId);
+				return "owner/waitingDetail";
+			} catch (HistoryException e) {
+				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
+				return "error";
+			}
+		}
+
+		return "redirect:/owner";
+	}
+	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
+	public String deleteReservation(@PathVariable Long restaurantId,@PathVariable Long reservationId, Model model) {
+		try {
+			reservationService.cancelReservation(reservationId);
+		} catch (BookingErrorException e) {
+			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
+			return "error"; // 오류 페이지로 리다이렉트
+		}
+
+		return "redirect:/owner";
+	}
+
+	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}/completed")
+	public String completedReservation(@PathVariable Long restaurantId,@PathVariable Long reservationId, Model model) {
+		try {
+			reservationService.completedReservation(reservationId);
+		} catch (BookingErrorException e) {
+			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
+			return "error"; // 오류 페이지로 리다이렉트
+		}
+
+		return "redirect:/owner";
+	}
+	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
+	public String deleteWaiting(@PathVariable Long restaurantId,@PathVariable Long waitingId, Model model) {
+		try {
+			waitingService.cancelWaiting(waitingId);
+		} catch (BookingErrorException e) {
+			model.addAttribute("errorMessage", "웨이팅 삭제 중 오류가 발생했습니다.");
+			return "error"; // 오류 페이지로 리다이렉트
+		}
+
+		return "redirect:/owner";
+	}
+
+	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}/completed")
+	public String completeWaiting(@PathVariable Long restaurantId,@PathVariable Long waitingId, Model model) {
+		try {
+			waitingService.completedWaiting(waitingId);
+		} catch (BookingErrorException e) {
+			model.addAttribute("errorMessage", "웨이팅 완료 중 오류가 발생했습니다.");
+			return "error"; // 오류 페이지로 리다이렉트
+		}
+
+		return "redirect:/owner";
+	}
+
+
+
+
+	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
+	public String getReservationDetails(
+		@PathVariable Long restaurantId,
+		@PathVariable Long reservationId,
+		Model model,
+		HttpSession session
+	) {
+		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
+
+
+		if (historyList != null) {
+			try {
+				HistoryResponse historyResponse = historyService.findReservationDetailById(historyList, reservationId);
+				model.addAttribute("historyResponse", historyResponse);
+				model.addAttribute("restaurantId", restaurantId);
+
+				return "owner/reservationDetail";
+			} catch (HistoryException e) {
+				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
+				return "error";
+			}
+		}
+		return "redirect:/owner";
 	}
 
 	@GetMapping("/restaurants/list/{restaurantId}/reviews")
@@ -256,5 +361,9 @@ public class OwnerController {
 		bindingResult.rejectValue("phoneNumber", null, e.getMessage());
 		return "owner/createRestaurant";
 	}
+
+
+
+
 
 }

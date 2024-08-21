@@ -3,7 +3,7 @@ package org.example.catch_line.history.controller;
 import java.util.List;
 
 import jakarta.validation.Valid;
-import org.example.catch_line.booking.reservation.model.dto.ReservationUpdateRequest;
+import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.booking.reservation.service.ReservationService;
@@ -12,6 +12,7 @@ import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.booking.BookingErrorException;
+import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
@@ -86,7 +87,7 @@ public class HistoryController {
 				model.addAttribute("historyResponse", historyResponse);
 				return "history/reservationDetail";
 			} catch (HistoryException e) {
-				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
+				model.addAttribute("errorMessage", e.getMessage());
 				return "error";
 			}
 		}
@@ -99,14 +100,9 @@ public class HistoryController {
 		try {
 			historyValidator.validateReservationOwnership(memberId, reservationId);
 			reservationService.cancelReservation(reservationId);
-		} catch (BookingErrorException e) {
-			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
-			return "redirect:/history";
-		} catch (HistoryException e) {
+		} catch (BookingErrorException | HistoryException e) {
 			model.addAttribute( "errorMessage",e.getMessage());
-			return "redirect:/history";
 		}
-
 		return "redirect:/history";
 	}
 	@PostMapping("/history/waiting/{waitingId}")
@@ -115,12 +111,8 @@ public class HistoryController {
 		try {
 			historyValidator.validateWaitingOwnership(memberId, waitingId);
 			waitingService.cancelWaiting(waitingId);
-		} catch (BookingErrorException e) {
-			model.addAttribute("errorMessage", "웨이팅 삭제 중 오류가 발생했습니다.");
-			return "redirect:/history";
-		} catch (HistoryException e) {
+		} catch (BookingErrorException | HistoryException e) {
 			model.addAttribute( "errorMessage",e.getMessage());
-			return "redirect:/history";
 		}
 
 		return "redirect:/history";
@@ -130,26 +122,26 @@ public class HistoryController {
 	public String updateForm(@PathVariable Long reservationId, Model model) {
 		ReservationEntity reservationEntity = reservationService.findReservationById(reservationId);
 
-		ReservationUpdateRequest reservationUpdateRequest = ReservationUpdateRequest.builder()
+		ReservationRequest reservationRequest = ReservationRequest.builder()
 			.memberCount(reservationEntity.getMemberCount())
 			.reservationDate(reservationEntity.getReservationDate())
 			.build();
 
-		model.addAttribute("reservationRequest", reservationUpdateRequest);
+		model.addAttribute("reservationRequest", reservationRequest);
 		model.addAttribute("reservationId", reservationId);
 
 		return "reservation/updateReservation";
 	}
 
 	@PutMapping("/history/reservation/{reservationId}")
-	public String updateReservation(@PathVariable Long reservationId, @Valid @ModelAttribute ReservationUpdateRequest updateRequest,
+	public String updateReservation(@PathVariable Long reservationId, @Valid @ModelAttribute ReservationRequest updateRequest,
 									RedirectAttributes redirectAttributes,HttpSession session) {
 		Long memberId = SessionUtils.getMemberId(session);
 		try {
 			historyValidator.validateReservationOwnership(memberId, reservationId);
 			historyService.updateReservation(reservationId, updateRequest.getMemberCount(), updateRequest.getReservationDate());
 			redirectAttributes.addFlashAttribute("message", "예약이 업데이트 되었습니다");
-		} catch (CatchLineException e) {
+		} catch (DuplicateReservationTimeException e) {
 			redirectAttributes.addFlashAttribute("error", "해당 날짜는 예약이 존재합니다");
 			return "redirect:/history/reservation/" + reservationId + "/edit";
 		}

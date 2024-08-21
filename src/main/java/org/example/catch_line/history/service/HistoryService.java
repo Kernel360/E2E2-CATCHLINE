@@ -14,6 +14,7 @@ import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.validation.HistoryValidator;
@@ -181,7 +182,7 @@ public class HistoryService {
                 .getRestaurantId();
 
         if (reservationService.isReservationTimeConflict(restaurantId, reservationDate)) {
-			throw new CatchLineException("이미 해당 시간에 예약이 존재합니다");
+			throw new DuplicateReservationTimeException();
 		}
 
 		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);

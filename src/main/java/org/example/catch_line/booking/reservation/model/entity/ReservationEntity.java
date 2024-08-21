@@ -44,7 +44,6 @@ public class ReservationEntity extends BaseTimeEntity {
 	private Status status;
 
 	@Column(nullable = false)
-	@NotNull(message = "예약 날짜는 필수입니다")  // Add @NotNull for LocalDateTime
 	private LocalDateTime reservationDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)

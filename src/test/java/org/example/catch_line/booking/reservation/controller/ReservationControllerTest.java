@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 
-import org.example.catch_line.booking.reservation.model.dto.ReservationUpdateRequest;
+import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.service.ReservationService;
@@ -65,7 +65,7 @@ class ReservationControllerTest {
 	@Test
 	@DisplayName("POST /restaurants/{restaurantId}/reservation - 예약 추가 성공")
 	void testAddReservationSuccess() throws Exception {
-		ReservationUpdateRequest reservationUpdateRequest = ReservationUpdateRequest.builder()
+		ReservationRequest reservationRequest = ReservationRequest.builder()
 			.memberCount(3)
 			.reservationDate(reservationDate)
 			.build();
@@ -76,11 +76,11 @@ class ReservationControllerTest {
 			.reservationDate(reservationDate)
 			.build();
 
-		when(reservationService.addReserve(anyLong(), any(ReservationUpdateRequest.class), anyLong()))
+		when(reservationService.addReserve(anyLong(), any(ReservationRequest.class), anyLong()))
 			.thenReturn(reservationResponse);
 
 		mockMvc.perform(post("/restaurants/1/reservation")
-				.flashAttr("reservationRequest", reservationUpdateRequest)
+				.flashAttr("reservationRequest", reservationRequest)
 				.sessionAttr("memberId", 1L)
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED))
 			.andExpect(status().is3xxRedirection())
@@ -90,16 +90,16 @@ class ReservationControllerTest {
 	@Test
 	@DisplayName("POST /restaurants/{restaurantId}/reservation - 예약 추가 실패")
 	void testAddReservationFailure() throws Exception {
-		ReservationUpdateRequest reservationUpdateRequest = ReservationUpdateRequest.builder()
+		ReservationRequest reservationRequest = ReservationRequest.builder()
 			.memberCount(3)
 			.reservationDate(reservationDate)
 			.build();
 
-		when(reservationService.addReserve(anyLong(), any(ReservationUpdateRequest.class), anyLong()))
+		when(reservationService.addReserve(anyLong(), any(ReservationRequest.class), anyLong()))
 			.thenThrow(new IllegalArgumentException("Reservation failed"));
 
 		mockMvc.perform(post("/restaurants/1/reservation")
-				.flashAttr("reservationRequest", reservationUpdateRequest)
+				.flashAttr("reservationRequest", reservationRequest)
 				.sessionAttr("memberId", 1L)
 				.contentType(MediaType.APPLICATION_FORM_URLENCODED))
 			.andExpect(status().is3xxRedirection())

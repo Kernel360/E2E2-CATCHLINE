@@ -40,8 +40,16 @@ public class RestaurantHourService {
 
 	// 오늘 영업 시간 조회
 	public RestaurantHourResponse getRestaurantHour(Long restaurantId, DayOfWeeks dayOfWeek) {
+
 		RestaurantHourEntity entity = restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(restaurantId,
 			dayOfWeek);
+
+		if (LocalTime.now().isBefore(entity.getCloseTime()) && LocalTime.now().isAfter(entity.getOpenTime())) {
+			entity.updateOpenStatus(OpenStatus.OPEN);
+		} else {
+			entity.updateOpenStatus(OpenStatus.CLOSE);
+		}
+
 		return RestaurantHourMapper.entityToResponse(entity);
 	}
 

@@ -1,19 +1,20 @@
 package org.example.catch_line.history.service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
+import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.validation.HistoryValidator;
@@ -28,6 +29,7 @@ public class HistoryService {
 	private final WaitingRepository waitingRepository;
 	private final ReservationRepository reservationRepository;
 	private final HistoryValidator historyValidator;
+	private final ReservationService reservationService;
 
 	public List<HistoryResponse> getAllHistory(Long memberId, Status status) {
 		List<HistoryResponse> historyResponseList = new ArrayList<>();
@@ -113,7 +115,7 @@ public class HistoryService {
 	}
 
 	private void sortHistoryResponsesByCreatedAt(List<HistoryResponse> historyResponseList) {
-		Collections.sort(historyResponseList, Comparator.comparing(HistoryResponse::getCreatedAt).reversed());
+		historyResponseList.sort(Comparator.comparing(HistoryResponse::getCreatedAt).reversed());
 	}
 
 	//ReservationEntity -> HistoryResponse
@@ -141,11 +143,11 @@ public class HistoryService {
 
 		List<HistoryResponse> reservationResponses = reservationEntities.stream()
 			.map(this::reservationToHistoryResponse)
-			.collect(Collectors.toList());
+			.toList();
 
 		List<HistoryResponse> waitingResponses = waitingEntities.stream()
 			.map(waiting -> this.entityToHistoryResponse(waiting, getStartOfDay(), getEndOfDay()))
-			.collect(Collectors.toList());
+			.toList();
 
 		List<HistoryResponse> allHistoryResponses = new ArrayList<>();
 		allHistoryResponses.addAll(reservationResponses);
@@ -161,7 +163,7 @@ public class HistoryService {
 		return historyList.stream()
 			.filter(h -> h.getReservationId() != null && reservationId.equals(h.getReservationId()))  // null 체크 추가
 			.findFirst()
-			.orElseThrow(() -> new HistoryException());
+			.orElseThrow(HistoryException::new);
 	}
 
 	// 웨이팅 상세 정보 조회
@@ -169,20 +171,31 @@ public class HistoryService {
 		return historyList.stream()
 			.filter(h -> h.getWaitingId() != null && waitingId.equals(h.getWaitingId()))  // null 체크 추가
 			.findFirst()
-			.orElseThrow(() -> new HistoryException());
+			.orElseThrow(HistoryException::new);
 	}
 
 	public HistoryResponse updateReservation(Long reservationId, int memberCount, LocalDateTime reservationDate) {
 
+        Long restaurantId = reservationRepository.findByReservationId(reservationId)
+                .get()
+                .getRestaurant()
+                .getRestaurantId();
+
+        if (reservationService.isReservationTimeConflict(restaurantId, reservationDate)) {
+			throw new DuplicateReservationTimeException();
+		}
+
 		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);
 
-		// 상태를 업데이트하지 않도록 수정
+
 		reservationEntity.updateReservation(memberCount, reservationDate);
 
 		ReservationEntity savedEntity = reservationRepository.save(reservationEntity);
 
 		return reservationToHistoryResponse(savedEntity);
 	}
+
+
 
 
 }

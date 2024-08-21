@@ -1,5 +1,6 @@
 package org.example.catch_line.booking.reservation.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,4 +20,9 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
 	List<ReservationEntity> findAllByRestaurantRestaurantIdAndStatus(Long restaurantId,Status status);
 
-	List<ReservationEntity> findAllByStatus(Status status);}
+	List<ReservationEntity> findAllByStatus(Status status);
+
+	List<ReservationEntity> findByRestaurantRestaurantIdAndReservationDate(Long restaurantId, LocalDateTime reservationDate);
+}
+
+

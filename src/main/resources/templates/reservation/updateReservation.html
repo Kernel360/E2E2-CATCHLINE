@@ -145,15 +145,15 @@
     </div>
 
     <!-- 예약 수정 폼 -->
-    <form th:action="@{/history/reservation/{reservationId}(reservationId=${reservationId})}" method="post" th:object="${reservationRequest}">
+    <form th:action="@{/history/reservation/{reservationId}(reservationId=${reservationId})}" method="post" th:object="${reservationUpdateRequest}">
         <!-- Thymeleaf를 사용하여 기존 예약 정보를 폼에 채우기 -->
         <div class="form-group">
             <label for="memberCount" class="form-label">인원 수:</label>
-            <input type="number" id="memberCount" name="memberCount" class="form-control" th:value="${reservationRequest.memberCount}" min="1" required>
+            <input type="number" id="memberCount" name="memberCount" class="form-control" th:value="${reservationUpdateRequest.memberCount}" min="1" required>
         </div>
         <div class="form-group">
             <label for="reservationDate" class="form-label">예약 날짜 및 시간:</label>
-            <input type="datetime-local" id="reservationDate" name="reservationDate" class="form-control" th:value="${reservationRequest.reservationDate}" required>
+            <input type="datetime-local" id="reservationDate" name="reservationDate" class="form-control" th:value="${reservationUpdateRequest.reservationDate}" required>
         </div>
         <!-- CSRF 토큰 추가 (Spring Security가 활성화된 경우) -->
         <input type="hidden" name="_method" value="put"/>

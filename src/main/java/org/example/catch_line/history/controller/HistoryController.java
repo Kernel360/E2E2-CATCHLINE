@@ -3,7 +3,7 @@ package org.example.catch_line.history.controller;
 import java.util.List;
 
 import jakarta.validation.Valid;
-import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
+import org.example.catch_line.booking.reservation.model.dto.ReservationUpdateRequest;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.booking.reservation.service.ReservationService;
@@ -130,19 +130,19 @@ public class HistoryController {
 	public String updateForm(@PathVariable Long reservationId, Model model) {
 		ReservationEntity reservationEntity = reservationService.findReservationById(reservationId);
 
-		ReservationRequest reservationRequest = ReservationRequest.builder()
+		ReservationUpdateRequest reservationUpdateRequest = ReservationUpdateRequest.builder()
 			.memberCount(reservationEntity.getMemberCount())
 			.reservationDate(reservationEntity.getReservationDate())
 			.build();
 
-		model.addAttribute("reservationRequest", reservationRequest);
+		model.addAttribute("reservationRequest", reservationUpdateRequest);
 		model.addAttribute("reservationId", reservationId);
 
 		return "reservation/updateReservation";
 	}
 
 	@PutMapping("/history/reservation/{reservationId}")
-	public String updateReservation(@PathVariable Long reservationId, @Valid @ModelAttribute ReservationRequest updateRequest,
+	public String updateReservation(@PathVariable Long reservationId, @Valid @ModelAttribute ReservationUpdateRequest updateRequest,
 									RedirectAttributes redirectAttributes,HttpSession session) {
 		Long memberId = SessionUtils.getMemberId(session);
 		try {

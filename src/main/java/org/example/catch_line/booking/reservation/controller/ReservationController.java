@@ -1,7 +1,6 @@
 package org.example.catch_line.booking.reservation.controller;
 
-import jakarta.validation.Valid;
-import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
+import org.example.catch_line.booking.reservation.model.dto.ReservationUpdateRequest;
 import org.example.catch_line.booking.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.booking.reservation.service.ReservationService;
@@ -13,8 +12,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
@@ -33,7 +30,7 @@ public class ReservationController {
 	//@RequestParam으로 변경
 	@PostMapping("/restaurants/{restaurantId}/reservation")
 	public String addReservation(
-		@ModelAttribute ReservationRequest reservationRequest,
+		@ModelAttribute ReservationUpdateRequest reservationUpdateRequest,
 		@PathVariable Long restaurantId,
 		Model model,
 		HttpSession session,
@@ -43,7 +40,7 @@ public class ReservationController {
 			Long memberId = SessionUtils.getMemberId(session);
 
 			ReservationResponse reservationResponse = reservationService.addReserve(restaurantId,
-				reservationRequest, memberId);
+                    reservationUpdateRequest, memberId);
 
 			model.addAttribute("reservationResponse", reservationResponse);
 

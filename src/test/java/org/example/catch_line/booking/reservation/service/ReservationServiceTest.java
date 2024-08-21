@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
+import org.example.catch_line.booking.reservation.model.dto.ReservationUpdateRequest;
 import org.example.catch_line.booking.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.model.mapper.ReservationResponseMapper;
@@ -94,7 +94,7 @@ public class ReservationServiceTest {
 	void add_reserve_test() {
 		Long restaurantId = 1L;
 		Long memberId = 1L;
-		ReservationRequest reservationRequest = ReservationRequest.builder()
+		ReservationUpdateRequest reservationUpdateRequest = ReservationUpdateRequest.builder()
 			.memberCount(3)
 			.reservationDate(reservationDate)
 			.build();
@@ -120,7 +120,7 @@ public class ReservationServiceTest {
 			.build();
 		when(reservationResponseMapper.convertToResponse(any(ReservationEntity.class))).thenReturn(expectedResponse);
 
-		ReservationResponse reservationResponse = reservationService.addReserve(restaurantId, reservationRequest,
+		ReservationResponse reservationResponse = reservationService.addReserve(restaurantId, reservationUpdateRequest,
 			memberId);
 
 		assertNotNull(reservationResponse);
@@ -139,7 +139,7 @@ public class ReservationServiceTest {
 	void add_reserve_failure_invalid_service_type() {
 		Long restaurantId = 1L;
 		Long memberId = 1L;
-		ReservationRequest reservationRequest = ReservationRequest.builder()
+		ReservationUpdateRequest reservationUpdateRequest = ReservationUpdateRequest.builder()
 			.memberCount(3)
 			.reservationDate(reservationDate)
 			.build();
@@ -152,7 +152,7 @@ public class ReservationServiceTest {
 		when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(invalidRestaurant));
 
 		assertThrows(ServiceTypeException.class, () -> {
-			reservationService.addReserve(restaurantId, reservationRequest, memberId);
+			reservationService.addReserve(restaurantId, reservationUpdateRequest, memberId);
 		});
 		verify(memberRepository, times(1)).findById(memberId);
 		verify(restaurantRepository, times(1)).findById(restaurantId);

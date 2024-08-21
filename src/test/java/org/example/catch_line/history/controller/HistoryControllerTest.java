@@ -152,7 +152,7 @@ class HistoryControllerTest {
 	@Test
 	@DisplayName("POST /history/reservation/{reservationId} - 예약 삭제")
 	void testDeleteReservation() throws Exception {
-		doNothing().when(reservationService).cancelReservation(anyLong());
+		doNothing().when(reservationService).cancelReservation(anyLong(), anyLong());
 
 		mockMvc.perform(post("/history/reservation/1"))
 			.andExpect(status().is3xxRedirection())
@@ -162,7 +162,7 @@ class HistoryControllerTest {
 	@Test
 	@DisplayName("POST /history/waiting/{waitingId} - 웨이팅 삭제")
 	void testDeleteWaiting() throws Exception {
-		doNothing().when(waitingService).cancelWaiting(anyLong());
+		doNothing().when(waitingService).cancelWaiting(anyLong(), anyLong());
 
 		mockMvc.perform(post("/history/waiting/1"))
 			.andExpect(status().is3xxRedirection())
@@ -172,7 +172,7 @@ class HistoryControllerTest {
 	@Test
 	@DisplayName("POST /history/reservation/{reservationId} - 예약 삭제 실패")
 	void testDeleteReservation_Failure() throws Exception {
-		doThrow(new RuntimeException("Deletion failed")).when(reservationService).cancelReservation(anyLong());
+		doThrow(new RuntimeException("Deletion failed")).when(reservationService).cancelReservation(anyLong(), anyLong());
 
 		mockMvc.perform(post("/history/reservation/1"))
 			.andExpect(status().isOk())
@@ -183,7 +183,7 @@ class HistoryControllerTest {
 	@Test
 	@DisplayName("POST /history/waiting/{waitingId} - 웨이팅 삭제 실패")
 	void testDeleteWaiting_Failure() throws Exception {
-		doThrow(new RuntimeException("Deletion failed")).when(waitingService).cancelWaiting(anyLong());
+		doThrow(new RuntimeException("Deletion failed")).when(waitingService).cancelWaiting(anyLong(), anyLong());
 
 		mockMvc.perform(post("/history/waiting/1"))
 			.andExpect(status().isOk())

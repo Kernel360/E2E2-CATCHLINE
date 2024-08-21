@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class RestaurantPreviewService {
 
 	private final RestaurantRepository restaurantRepository;
+	private final RestaurantPreviewMapper restaurantPreviewMapper;
 
 	// 식당 프리뷰 리스트 조회
 	// 변경 사항 : 프리뷰 조회 시 리뷰 수, 평점을 항상 DB에서 조회했음 -> 식당 상세 정보 조회시에만 리뷰 수, 평점 DB에서 조회
@@ -28,7 +29,7 @@ public class RestaurantPreviewService {
 		List<RestaurantEntity> restaurantList = restaurantRepository.findAll();
 
 		return restaurantList.stream()
-			.map(RestaurantPreviewMapper::entityToResponse)
+			.map(restaurantPreviewMapper::entityToResponse)
 			.collect(Collectors.toList());
 	}
 
@@ -41,7 +42,7 @@ public class RestaurantPreviewService {
 		Page<RestaurantEntity> restaurants = restaurantRepository.findAll(pageRequest);
 
 		// restaurants 를 매핑해 restaurantResponse 로 변환했다
-		return restaurants.map(RestaurantPreviewMapper::entityToResponse);
+		return restaurants.map(restaurantPreviewMapper::entityToResponse);
 
 	}
 
@@ -58,7 +59,7 @@ public class RestaurantPreviewService {
         };
 
         // restaurants 를 매핑해 restaurantResponse 로 변환했다
-		return restaurants.map(RestaurantPreviewMapper::entityToResponse);
+		return restaurants.map(restaurantPreviewMapper::entityToResponse);
 	}
 
 }

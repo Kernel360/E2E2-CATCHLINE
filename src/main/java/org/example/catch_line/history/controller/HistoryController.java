@@ -37,7 +37,6 @@ public class HistoryController {
 	private final ReservationService reservationService;
 	private final WaitingService waitingService;
 	private final HistoryService historyService;
-	private final ReservationRepository reservationRepository;
 	private final HistoryValidator historyValidator;
 
 	@GetMapping("/history")
@@ -99,20 +98,21 @@ public class HistoryController {
 		Long memberId = SessionUtils.getMemberId(session);
 		try {
 			historyValidator.validateReservationOwnership(memberId, reservationId);
-			reservationService.cancelReservation(reservationId);
+			reservationService.cancelReservation(memberId, reservationId);
 		} catch (BookingErrorException | HistoryException e) {
-			model.addAttribute( "errorMessage",e.getMessage());
+			model.addAttribute( "errorMessage", e.getMessage());
 		}
 		return "redirect:/history";
 	}
+
 	@PostMapping("/history/waiting/{waitingId}")
 	public String deleteWaiting(@PathVariable Long waitingId, Model model, HttpSession session) {
 		Long memberId = SessionUtils.getMemberId(session);
 		try {
 			historyValidator.validateWaitingOwnership(memberId, waitingId);
-			waitingService.cancelWaiting(waitingId);
+			waitingService.cancelWaiting(memberId, waitingId);
 		} catch (BookingErrorException | HistoryException e) {
-			model.addAttribute( "errorMessage",e.getMessage());
+			model.addAttribute( "errorMessage", e.getMessage());
 		}
 
 		return "redirect:/history";
@@ -135,20 +135,18 @@ public class HistoryController {
 
 	@PutMapping("/history/reservation/{reservationId}")
 	public String updateReservation(@PathVariable Long reservationId, @Valid @ModelAttribute ReservationRequest updateRequest,
-									RedirectAttributes redirectAttributes,HttpSession session) {
+									RedirectAttributes redirectAttributes, HttpSession session) {
 		Long memberId = SessionUtils.getMemberId(session);
 		try {
 			historyValidator.validateReservationOwnership(memberId, reservationId);
-			historyService.updateReservation(reservationId, updateRequest.getMemberCount(), updateRequest.getReservationDate());
+			reservationService.updateReservation(memberId, reservationId, updateRequest.getMemberCount(), updateRequest.getReservationDate());
 			redirectAttributes.addFlashAttribute("message", "예약이 업데이트 되었습니다");
 		} catch (DuplicateReservationTimeException e) {
-			redirectAttributes.addFlashAttribute("error", "해당 날짜는 예약이 존재합니다");
+			redirectAttributes.addFlashAttribute("error", e.getMessage());
 			return "redirect:/history/reservation/" + reservationId + "/edit";
 		}
 
 		return "redirect:/history";
 	}
-
-
 
 }

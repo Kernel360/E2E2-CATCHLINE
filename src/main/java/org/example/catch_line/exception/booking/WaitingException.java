@@ -7,4 +7,8 @@ public class WaitingException extends CatchLineException {
 	public WaitingException() {
 		super("웨이팅 등록이 되어있습니다");
 	}
+
+	public WaitingException(String message) {
+		super(message);
+	}
 }

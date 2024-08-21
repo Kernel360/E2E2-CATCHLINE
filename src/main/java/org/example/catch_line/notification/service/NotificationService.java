@@ -1,6 +1,8 @@
 package org.example.catch_line.notification.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.notification.model.dto.NotificationResponse;
@@ -9,11 +11,14 @@ import org.example.catch_line.notification.repository.EmitterRepository;
 import org.example.catch_line.notification.repository.NotificationRepository;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.async.WebAsyncManager;
+import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
@@ -30,8 +35,20 @@ public class NotificationService {
         // 유효 시간만큼 유지되고, 시간이 지나면 자동으로 클라이언트에서 재연결 요청
         SseEmitter emitter = emitterRepository.save(id, new SseEmitter(DEFAULT_TIMEOUT));
 
-        emitter.onCompletion(() -> emitterRepository.deleteById(id));
-        emitter.onTimeout(() -> emitterRepository.deleteById(id));
+        emitter.onCompletion(() -> {
+            log.info("연결이 완료되었습니다. ID: {}", id);
+            emitterRepository.deleteById(id);
+        });
+
+        emitter.onTimeout(() -> {
+            log.info("연결이 타임아웃되었습니다. ID: {}", id);
+            emitterRepository.deleteById(id);
+        });
+
+        emitter.onError((Throwable e) -> {
+            log.info("연결 중 오류가 발생했습니다. ID: {}, 오류: {}", id, e.getMessage());
+            emitterRepository.deleteById(id);
+        });
 
         // 503 에러를 방지하기 위해 더미 데이터 전송
         sendToClient(emitter, id, "EventStream Created. [memberId=" + memberId + "]");
@@ -62,7 +79,7 @@ public class NotificationService {
     }
 
     public void sendWaiting(MemberEntity member, WaitingEntity waiting, String content) {
-        NotificationEntity notification = createReservationNotification(member, waiting, content);
+        NotificationEntity notification = createWaitingNotification(member, waiting, content);
         String id = String.valueOf(member.getMemberId());
         notificationRepository.save(notification);
 
@@ -75,24 +92,16 @@ public class NotificationService {
         );
     }
 
+    // TODO: 예약 생성, 수정, 삭제에 같은 url 넣는 중, 현재 url을 쓰진 않지만 추후에 쓰게 된다면 url 올바른 값 넣어야 함. 모두 같은 url 넣는 중
     private NotificationEntity createReservationNotification(MemberEntity member, ReservationEntity reservation, String content) {
-        return NotificationEntity.builder()
-                .member(member)
-                .reservation(reservation)
-                .content(content)
-                .url("/restaurants/" + reservation.getRestaurant().getRestaurantId() + "/reservation")
-                .isRead(false)
-                .build();
+        String url = String.format("/restaurants/%d/reservation", reservation.getRestaurant().getRestaurantId());
+        return new NotificationEntity(member, reservation, content, url, false);
     }
 
+    // TODO: 웨이팅 생성, 삭제에 같은 url 넣는 중, 현재 url을 쓰진 않지만 추후에 쓰게 된다면 url 올바른 값 넣어야 함. 모두 같은 url 넣는 중
     private NotificationEntity createWaitingNotification(MemberEntity member, WaitingEntity waiting, String content) {
-        return NotificationEntity.builder()
-                .member(member)
-                .reservation(reservation)
-                .content(content)
-                .url("/restaurants/" + reservation.getRestaurant().getRestaurantId() + "/reservation")
-                .isRead(false)
-                .build();
+        String url = String.format("/restaurants/%d/waiting", waiting.getRestaurant().getRestaurantId());
+        return new NotificationEntity(member, waiting, content, url, false);
     }
 
     private void sendToClient(SseEmitter emitter, String id, Object data) {
@@ -103,7 +112,7 @@ public class NotificationService {
                     .data(data));
         } catch (IOException e) {
             emitterRepository.deleteById(id);
-            throw new RuntimeException("연결 오류");
+            log.info("연결이 끊어졌습니다 : " + id);
         }
     }
 }

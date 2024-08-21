@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SSE 연결 테스트</title>
+    <title>SSE 연결</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <style>
         body {
@@ -91,7 +91,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>SSE 연결 테스트</h1>
+    <h1>SSE 연결</h1>
     <div class="form-group">
         <label for="id">ID:</label>
         <input type="text" id="id" class="form-control" placeholder="ID를 입력하세요" required/>
@@ -135,7 +135,7 @@
 
             (async () => {
                 const showNotification = () => {
-                    const notification = new Notification('요청', {
+                    const notification = new Notification('알림', {
                         body: data.content
                     });
 

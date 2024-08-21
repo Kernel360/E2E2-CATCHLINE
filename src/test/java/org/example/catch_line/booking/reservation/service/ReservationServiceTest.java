@@ -120,8 +120,7 @@ public class ReservationServiceTest {
 			.build();
 		when(reservationResponseMapper.convertToResponse(any(ReservationEntity.class))).thenReturn(expectedResponse);
 
-		ReservationResponse reservationResponse = reservationService.addReserve(restaurantId, reservationRequest,
-			memberId);
+		ReservationResponse reservationResponse = reservationService.addReservation(memberId, restaurantId, reservationRequest);
 
 		assertNotNull(reservationResponse);
 		assertEquals(expectedResponse.getReservationId(), reservationResponse.getReservationId());
@@ -152,7 +151,7 @@ public class ReservationServiceTest {
 		when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(invalidRestaurant));
 
 		assertThrows(ServiceTypeException.class, () -> {
-			reservationService.addReserve(restaurantId, reservationRequest, memberId);
+			reservationService.addReservation(memberId, restaurantId, reservationRequest);
 		});
 		verify(memberRepository, times(1)).findById(memberId);
 		verify(restaurantRepository, times(1)).findById(restaurantId);
@@ -170,7 +169,7 @@ public class ReservationServiceTest {
 
 		when(reservationRepository.findById(id)).thenReturn(Optional.of(reservationEntity));
 
-		reservationService.cancelReservation(id);
+		reservationService.cancelReservation(id, id); // memberId, reservationId 넣어야함.
 
 		assertEquals(Status.CANCELED, reservationEntity.getStatus());
 		verify(reservationRepository, times(1)).save(reservationEntity);
@@ -184,7 +183,7 @@ public class ReservationServiceTest {
 		when(reservationRepository.findById(id)).thenReturn(Optional.empty());
 
 		assertThrows(IllegalArgumentException.class, () -> {
-			reservationService.cancelReservation(id);
+			reservationService.cancelReservation(id, id); // memberId, reservationId 넣어야함.
 		});
 		verify(reservationRepository, never()).save(any(ReservationEntity.class));
 	}

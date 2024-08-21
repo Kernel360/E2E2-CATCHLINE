@@ -22,9 +22,8 @@ public class ReservationController {
 	private final ReservationService reservationService;
 
 	@GetMapping("/restaurants/{restaurantId}/reservation")
-	public String addReservationForm(
-		@PathVariable Long restaurantId
-	) {
+	public String addReservationForm(@PathVariable Long restaurantId, Model model) {
+		model.addAttribute("restaurantId", restaurantId);
 		return "reservation/reservation";
 	}
 
@@ -41,6 +40,7 @@ public class ReservationController {
 			Long memberId = SessionUtils.getMemberId(session);
 			ReservationResponse reservationResponse = reservationService.addReservation(memberId, restaurantId, reservationRequest);
 
+			model.addAttribute("restaurantId", restaurantId);
 			model.addAttribute("reservationResponse", reservationResponse);
 			return "redirect:/history";
 		} catch (DuplicateReservationTimeException e) {

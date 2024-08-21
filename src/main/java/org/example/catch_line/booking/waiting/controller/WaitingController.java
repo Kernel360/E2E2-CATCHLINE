@@ -25,9 +25,8 @@ public class WaitingController {
 	private final WaitingService waitingService;
 
 	@GetMapping("/restaurants/{restaurantId}/waiting")
-	public String addWaitingForm(
-		@PathVariable("restaurantId") Long restaurantId
-	) {
+	public String addWaitingForm(@PathVariable Long restaurantId, Model model) {
+		model.addAttribute("restaurantId", restaurantId);
 		return "waiting/waiting";
 	}
 
@@ -51,8 +50,8 @@ public class WaitingController {
 
 			WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, memberId);
 
+			model.addAttribute("restaurantId", restaurantId);
 			model.addAttribute("waitingResponse", waitingResponse);
-
 			return "redirect:/history";
 		} catch (InvalidSessionException | WaitingException e) {
 			// 오류 메시지를 추가하고 현재 페이지로 리디렉션

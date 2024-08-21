@@ -7,6 +7,7 @@ import org.example.catch_line.booking.reservation.model.mapper.ReservationRespon
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.history.validation.HistoryValidator;
+import org.example.catch_line.notification.service.NotificationService;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.validation.MemberValidator;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReservationService {
 
+	private final NotificationService notificationService;
 	private final ReservationRepository reservationRepository;
 	private final ReservationResponseMapper reservationResponseMapper;
 	private final HistoryValidator historyValidator;
@@ -39,6 +41,7 @@ public class ReservationService {
 			.build();
 		ReservationEntity savedEntity = reservationRepository.save(reservation);
 
+		notificationService.sendReservation(member, reservation, "예약이 완료되었습니다!");
 		return reservationResponseMapper.convertToResponse(savedEntity);
 	}
 

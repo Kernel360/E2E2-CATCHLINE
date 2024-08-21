@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE 연결 테스트</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            color: #555;
+            font-weight: bold;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px 0;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
+        .btn-orange {
+            background-color: orange;
+            color: white;
+            border: none;
+        }
+
+        .btn-orange:hover {
+            background-color: #E64A19;
+        }
+
+        .btn-orange:focus {
+            box-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-secondary:focus {
+            box-shadow: 0 0 5px rgba(108, 117, 125, 0.5);
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 1.1em;
+            text-align: center;
+            color: #FF5722;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>SSE 연결 테스트</h1>
+    <div class="form-group">
+        <label for="id">ID:</label>
+        <input type="text" id="id" class="form-control" placeholder="ID를 입력하세요" required/>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-orange" onclick="login()">연결</button>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-secondary" onclick="disconnect()">연결 끊기</button>
+    </div>
+    <p id="status"></p> <!-- 연결 상태를 표시할 요소 -->
+</div>
+
+<script type="text/javascript">
+    let eventSource = null;
+
+    function login() {
+        const id = document.getElementById('id').value;
+
+        if (eventSource) {
+            eventSource.close(); // 기존 연결이 있다면 끊기
+        }
+
+        eventSource = new EventSource(`/sse/` + id);
+
+        eventSource.onopen = function () {
+            document.getElementById('status').innerText = "연결되었습니다.";
+            document.getElementById('status').style.color = "green";
+        };
+
+        eventSource.onerror = function () {
+            document.getElementById('status').innerText = "연결 실패";
+            document.getElementById('status').style.color = "red";
+            eventSource.close();
+            eventSource = null;
+        };
+
+        eventSource.addEventListener("sse", function (event) {
+            console.log(event.data);
+            const data = JSON.parse(event.data);
+
+            (async () => {
+                const showNotification = () => {
+                    const notification = new Notification('요청', {
+                        body: data.content
+                    });
+
+                    setTimeout(() => {
+                        notification.close();
+                    }, 10 * 1000);
+
+                    notification.addEventListener('click', () => {
+                        window.open(data.url, '_blank');
+                    });
+                }
+
+                let granted = false;
+
+                if (Notification.permission === 'granted') {
+                    granted = true;
+                } else if (Notification.permission !== 'denied') {
+                    let permission = await Notification.requestPermission();
+                    granted = permission === 'granted';
+                }
+
+                if (granted) {
+                    showNotification();
+                }
+            })();
+        });
+    }
+
+    function disconnect() {
+        if (eventSource) {
+            eventSource.close(); // SSE 연결 끊기
+            eventSource = null;
+            document.getElementById('status').innerText = "연결이 종료되었습니다.";
+            document.getElementById('status').style.color = "#FF5722";
+        } else {
+            document.getElementById('status').innerText = "현재 연결된 SSE가 없습니다.";
+            document.getElementById('status').style.color = "red";
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,6 +1,5 @@
 package org.example.catch_line.booking.reservation.service;
 
-import jakarta.transaction.Transactional;
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
@@ -20,12 +19,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+//@Transactional
 public class ReservationService {
 
 	private final NotificationService notificationService;
@@ -36,6 +38,7 @@ public class ReservationService {
 	private final RestaurantValidator restaurantValidator;
 	private final HistoryMapper historyMapper;
 
+	@Transactional(isolation = Isolation.READ_COMMITTED)
 	public ReservationResponse addReservation(Long memberId, Long restaurantId, ReservationRequest reservationRequest) {
 		if (isReservationTimeConflict(restaurantId, reservationRequest.getReservationDate())) {
 			throw new DuplicateReservationTimeException();

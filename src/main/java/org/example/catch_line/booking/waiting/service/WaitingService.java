@@ -1,6 +1,5 @@
 package org.example.catch_line.booking.waiting.service;
 
-import jakarta.transaction.Transactional;
 import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
@@ -19,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class WaitingService {
 				.orElseThrow(() -> new WaitingException("웨이팅이 존재하지 않습니다."));
 	}
 
+	@Transactional(isolation = Isolation.SERIALIZABLE)
 	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest, Long memberId) {
 		MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 		RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
@@ -66,7 +68,6 @@ public class WaitingService {
 		waitingRepository.save(entity);
 	}
 
-	@Transactional
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void updateScheduledWaiting() {
 		List<WaitingEntity> waitingEntities = waitingRepository.findAllByStatus(Status.SCHEDULED);

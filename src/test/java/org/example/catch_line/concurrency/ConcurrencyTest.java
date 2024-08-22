@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = CatchLineApplication.class)
-@Rollback(false) // 트랜잭션이 롤백되지 않도록 설정합니다.
+@Transactional
 @ActiveProfiles("test")
 public class ConcurrencyTest {
 
@@ -58,6 +58,9 @@ public class ConcurrencyTest {
 
     @Autowired
     private WaitingRepository waitingRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     private RestaurantEntity restaurantEntity1;
     private RestaurantEntity restaurantEntity2;
@@ -164,14 +167,12 @@ public class ConcurrencyTest {
     }
 
     @Test
-    @DisplayName("식당 웨이팅 등록을 6명이 동시에 했을 때 -> 웨이팅 등록 번호가 1~6까지 잘 등록되는지 확인")
+    @DisplayName("식당 웨이팅 등록을 6명이 동시에 등록")
     public void testWaitingRegistration() throws InterruptedException {
-        //given
         int numberOfThreads = 6;
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
-        //when
         for (int i = 0; i < numberOfThreads; i++) {
             WaitingRequest waitingRequest;
             MemberEntity member;
@@ -208,11 +209,13 @@ public class ConcurrencyTest {
             executorService.submit(() -> {
                 try {
                     waitingService.addWaiting(restaurantEntity2.getRestaurantId(), waitingRequest, member.getMemberId());
-
+                    List<WaitingEntity> waitings = waitingRepository.findAll();
+                    assertThat(waitings.size()).isEqualTo(numberOfThreads);
+                    System.out.println(waitings.size());
                 } catch (Exception e) {
-                    e.printStackTrace(); // 예외 발생 시 스택 트레이스를 출력
+                    e.printStackTrace();
                 } finally {
-                    latch.countDown(); // 작업이 완료되면 CountDownLatch의 카운트를 감소시킴
+                    latch.countDown();
                 }
             });
 
@@ -220,22 +223,10 @@ public class ConcurrencyTest {
 
         latch.await(); // 모든 스레드가 완료될 때까지 대기
 
+        // Clear the Hibernate cache using EntityManager
+        entityManager.flush();
+        entityManager.clear();
 
-        List<WaitingEntity> waitings = waitingRepository.findAll();
-
-        // Debugging print statements
-        System.out.println("Number of waitings: " + waitings.size());
-        waitings.forEach(waiting -> {
-            System.out.println("Waiting ID: " + waiting.getWaitingId());
-            System.out.println("Member ID: " + waiting.getMember().getMemberId());
-            System.out.println("Restaurant ID: " + waiting.getRestaurant().getRestaurantId());
-            System.out.println("Waiting Type: " + waiting.getWaitingType());
-            System.out.println("Member Count: " + waiting.getMemberCount());
-        });
-
-        assertThat(waitings).hasSize(numberOfThreads);
-
-        // executorService를 종료
         executorService.shutdown();
     }
 

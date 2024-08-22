@@ -309,6 +309,7 @@ public class ConcurrencyTest {
             executorService.submit(() -> {
                 try {
                     waitingService.addWaiting(restaurantEntity2.getRestaurantId(), waitingRequest, member.getMemberId());
+                    assertThat(1).isEqualTo(10);
 
                 } catch (Exception e) {
                     e.printStackTrace(); // 예외 발생 시 스택 트레이스를 출력
@@ -321,19 +322,7 @@ public class ConcurrencyTest {
 
         latch.await(); // 모든 스레드가 완료될 때까지 대기
 
-
         List<WaitingEntity> waitings = waitingRepository.findAll();
-
-        // Debugging print statements
-        System.out.println("Number of waitings: " + waitings.size());
-        waitings.forEach(waiting -> {
-            System.out.println("Waiting ID: " + waiting.getWaitingId());
-            System.out.println("Member ID: " + waiting.getMember().getMemberId());
-            System.out.println("Restaurant ID: " + waiting.getRestaurant().getRestaurantId());
-            System.out.println("Waiting Type: " + waiting.getWaitingType());
-            System.out.println("Member Count: " + waiting.getMemberCount());
-        });
-
 
         assertThat(waitings).hasSize(size + numberOfThreads);
 
@@ -341,7 +330,5 @@ public class ConcurrencyTest {
         executorService.shutdown();
 
     }
-
-
 
 }

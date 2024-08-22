@@ -2,12 +2,14 @@ package org.example.catch_line.dining.restaurant.model.mapper;
 
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+@Component
 public class RestaurantPreviewMapper {
 
-    public static RestaurantPreviewResponse entityToResponse(RestaurantEntity restaurantEntity, BigDecimal averageRating, Long reviewCount, Long scrapCount) {
+    public RestaurantPreviewResponse entityToResponse(RestaurantEntity restaurantEntity, BigDecimal averageRating, Long reviewCount, Long scrapCount) {
         return RestaurantPreviewResponse.builder()
                 .restaurantId(restaurantEntity.getRestaurantId())
                 .name(restaurantEntity.getName())
@@ -19,7 +21,7 @@ public class RestaurantPreviewMapper {
                 .build();
     }
 
-    public static RestaurantPreviewResponse entityToResponse(RestaurantEntity restaurantEntity) {
+    public RestaurantPreviewResponse entityToResponse(RestaurantEntity restaurantEntity) {
         return RestaurantPreviewResponse.builder()
                 .restaurantId(restaurantEntity.getRestaurantId())
                 .name(restaurantEntity.getName())

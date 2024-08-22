@@ -132,7 +132,7 @@
         <div class="row mb-4 btn-container">
             <div class="col-auto">
                 <button class="btn btn-orange btn-lg"
-                        th:onclick="|location.href='@{/restaurants}'|"
+                        th:onclick="|location.href='@{/restaurants/{restaurantId}(restaurantId=${restaurantId})}'|"
                         type="button">뒤로
                 </button>
             </div>

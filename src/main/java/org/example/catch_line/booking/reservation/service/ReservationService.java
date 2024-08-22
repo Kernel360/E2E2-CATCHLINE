@@ -7,9 +7,11 @@ import org.example.catch_line.booking.reservation.model.entity.ReservationEntity
 import org.example.catch_line.booking.reservation.model.mapper.ReservationResponseMapper;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
+import org.example.catch_line.history.model.dto.HistoryResponse;
+import org.example.catch_line.history.model.mapper.HistoryMapper;
 import org.example.catch_line.history.validation.HistoryValidator;
+import org.example.catch_line.notification.service.NotificationService;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.validation.MemberValidator;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
@@ -26,19 +28,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationService {
 
+	private final NotificationService notificationService;
 	private final ReservationRepository reservationRepository;
 	private final ReservationResponseMapper reservationResponseMapper;
 	private final HistoryValidator historyValidator;
 	private final MemberValidator memberValidator;
 	private final RestaurantValidator restaurantValidator;
+	private final HistoryMapper historyMapper;
 
-	public boolean isReservationTimeConflict(Long restaurantId, LocalDateTime reservationDate) {
-		List<ReservationEntity> existingReservations = reservationRepository.findByRestaurantRestaurantIdAndReservationDate(restaurantId, reservationDate);
-
-		return !existingReservations.isEmpty();
-	}
-
-	public ReservationResponse addReserve(Long restaurantId, ReservationRequest reservationRequest, Long memberId) {
+	public ReservationResponse addReservation(Long memberId, Long restaurantId, ReservationRequest reservationRequest) {
 		if (isReservationTimeConflict(restaurantId, reservationRequest.getReservationDate())) {
 			throw new DuplicateReservationTimeException();
 		}
@@ -55,14 +53,27 @@ public class ReservationService {
 			.build();
 		ReservationEntity savedEntity = reservationRepository.save(reservation);
 
+		notificationService.sendReservation(member, reservation, "예약에 성공하였습니다.");
 		return reservationResponseMapper.convertToResponse(savedEntity);
 	}
 
+	public HistoryResponse updateReservation(Long memberId, Long reservationId, int memberCount, LocalDateTime reservationDate) {
+		Long restaurantId = reservationRepository.findByReservationId(reservationId)
+				.get()
+				.getRestaurant()
+				.getRestaurantId();
+		MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 
-	public void completedReservation(Long reservationId) {
+		if (isReservationTimeConflict(restaurantId, reservationDate)) {
+			throw new DuplicateReservationTimeException();
+		}
+
 		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);
-		reservationEntity.changeReservationStatus(Status.COMPLETED);
-		reservationRepository.save(reservationEntity);
+		reservationEntity.updateReservation(memberCount, reservationDate);
+		ReservationEntity savedEntity = reservationRepository.save(reservationEntity);
+
+		notificationService.sendReservation(member, savedEntity, "예약이 수정되었습니다!");
+		return historyMapper.reservationToHistoryResponse(savedEntity);
 	}
 
 	@Transactional
@@ -78,16 +89,28 @@ public class ReservationService {
 		reservationRepository.saveAll(reservationEntities);
 	}
 
-	public void cancelReservation(Long reservationId) {
+	public void completedReservation(Long reservationId) {
 		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);
-		reservationEntity.changeReservationStatus(Status.CANCELED);
+		reservationEntity.changeReservationStatus(Status.COMPLETED);
 		reservationRepository.save(reservationEntity);
 	}
 
-	public ReservationEntity findReservationById(Long reservationId) {
-		ReservationEntity reservation = historyValidator.checkIfReservationPresent(reservationId);
+	public void cancelReservation(Long memberId, Long reservationId) {
+		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);
+		reservationEntity.changeReservationStatus(Status.CANCELED);
+		MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 
-		return reservation;
+		reservationRepository.save(reservationEntity);
+		notificationService.sendReservation(member, reservationEntity, "예약이 취소되었습니다!");
+	}
+
+	public ReservationEntity findReservationById(Long reservationId) {
+        return historyValidator.checkIfReservationPresent(reservationId);
+	}
+
+	private boolean isReservationTimeConflict(Long restaurantId, LocalDateTime reservationDate) {
+		List<ReservationEntity> existingReservations = reservationRepository.findByRestaurantRestaurantIdAndReservationDate(restaurantId, reservationDate);
+		return !existingReservations.isEmpty();
 	}
 
 }

@@ -5,7 +5,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.validation.Valid;
+import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.service.ReservationService;
+import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.common.constant.ServiceType;
@@ -94,9 +97,8 @@ public class OwnerController {
 	}
 
 	@PostMapping("/restaurants")
-	public String createRestaurant(@ModelAttribute("request") RestaurantCreateRequest request,
-		BindingResult bindingResult, HttpSession session) {
-
+	public String createRestaurant(@Valid @ModelAttribute("request") RestaurantCreateRequest request,
+								   BindingResult bindingResult, HttpSession session) {
 		Long ownerId = SessionUtils.getOwnerId(session);
 		if (bindingResult.hasErrors()) {
 			log.info("error = {}", bindingResult);
@@ -121,7 +123,7 @@ public class OwnerController {
 
 	@PostMapping("/restaurants/{restaurantId}")
 	public String updateRestaurant(@PathVariable Long restaurantId,
-		@ModelAttribute("restaurant") RestaurantUpdateRequest request, BindingResult bindingResult) {
+								   @Valid @ModelAttribute("restaurant") RestaurantUpdateRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return "owner/updateRestaurant";
 		}
@@ -139,11 +141,8 @@ public class OwnerController {
 		return "owner/restaurantListHistory";
 	}
 
-	// @GetMapping("/restaurants/list/{restaurantId}/history")
-
 	@GetMapping("/restaurants/{restaurantId}/history")
-	public String showHistory(@PathVariable Long restaurantId,@RequestParam(defaultValue = "SCHEDULED") Status status ,Model model,HttpSession session) {
-
+	public String showHistory(@PathVariable Long restaurantId, @RequestParam(defaultValue = "SCHEDULED") Status status ,Model model, HttpSession session) {
 		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,status);
 		session.setAttribute("historyList",historyResponses);
 		model.addAttribute("history",historyResponses);
@@ -153,8 +152,7 @@ public class OwnerController {
 
 	}
 	@GetMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
-	public String getWaitingDetails(@PathVariable Long restaurantId ,@PathVariable Long waitingId, HttpSession session, Model model) {
-
+	public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId, HttpSession session, Model model) {
 		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
 		model.addAttribute("restaurantId", restaurantId);
 
@@ -173,9 +171,11 @@ public class OwnerController {
 		return "redirect:/owner";
 	}
 	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
-	public String deleteReservation(@PathVariable Long restaurantId,@PathVariable Long reservationId, Model model) {
+	public String deleteReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model) {
 		try {
-			reservationService.cancelReservation(reservationId);
+			ReservationEntity reservation = reservationService.findReservationById(reservationId);
+			Long memberId = reservation.getMember().getMemberId();
+			reservationService.cancelReservation(memberId, reservationId);
 		} catch (BookingErrorException e) {
 			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
 			return "error"; // 오류 페이지로 리다이렉트
@@ -185,7 +185,7 @@ public class OwnerController {
 	}
 
 	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}/completed")
-	public String completedReservation(@PathVariable Long restaurantId,@PathVariable Long reservationId, Model model) {
+	public String completedReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model) {
 		try {
 			reservationService.completedReservation(reservationId);
 		} catch (BookingErrorException e) {
@@ -195,10 +195,13 @@ public class OwnerController {
 
 		return "redirect:/owner";
 	}
+
 	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
-	public String deleteWaiting(@PathVariable Long restaurantId,@PathVariable Long waitingId, Model model) {
+	public String deleteWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model) {
 		try {
-			waitingService.cancelWaiting(waitingId);
+			WaitingEntity waiting = waitingService.getWaitingEntity(waitingId);
+			Long memberId = waiting.getMember().getMemberId();
+			waitingService.cancelWaiting(memberId, waitingId);
 		} catch (BookingErrorException e) {
 			model.addAttribute("errorMessage", "웨이팅 삭제 중 오류가 발생했습니다.");
 			return "error"; // 오류 페이지로 리다이렉트
@@ -208,7 +211,7 @@ public class OwnerController {
 	}
 
 	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}/completed")
-	public String completeWaiting(@PathVariable Long restaurantId,@PathVariable Long waitingId, Model model) {
+	public String completeWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model) {
 		try {
 			waitingService.completedWaiting(waitingId);
 		} catch (BookingErrorException e) {
@@ -218,9 +221,6 @@ public class OwnerController {
 
 		return "redirect:/owner";
 	}
-
-
-
 
 	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
 	public String getReservationDetails(
@@ -264,8 +264,6 @@ public class OwnerController {
 
 		return "owner/restaurantList";
 	}
-
-
 
 	@GetMapping("/restaurants/list/{restaurantId}")
 	public String showRestaurant(@PathVariable Long restaurantId, Model model) {
@@ -348,8 +346,6 @@ public class OwnerController {
 		return "redirect:/owner/restaurants/list/{restaurantId}/menus";
 	}
 
-
-
 	private List<RestaurantResponse> getRestaurantResponseList(HttpSession session) {
 		Long ownerId = SessionUtils.getOwnerId(session);
 
@@ -361,9 +357,5 @@ public class OwnerController {
 		bindingResult.rejectValue("phoneNumber", null, e.getMessage());
 		return "owner/createRestaurant";
 	}
-
-
-
-
 
 }

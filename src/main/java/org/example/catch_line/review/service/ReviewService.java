@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.exception.authorizaion.UnauthorizedException;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.example.catch_line.review.model.dto.ReviewCreateRequest;

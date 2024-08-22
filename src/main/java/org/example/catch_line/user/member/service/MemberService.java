@@ -53,7 +53,7 @@ public class MemberService {
         Password password = new Password(encodedPassword);
 
         member.updateMember(updateMemberRequest.getName(), updateMemberRequest.getNickname(), password, phoneNumber);
-        return MemberUpdateResponse.entityToResponse(member);
+        return memberResponseMapper.entityToMemberUpdateResponse(member);
     }
 
     // 회원 탈퇴 (`status`만 변경)
@@ -61,7 +61,7 @@ public class MemberService {
 
         MemberEntity member = memberDataProvider.provideMemberByMemberId(memberId);
         member.doWithdrawal();
-        return MemberDeleteResponse.entityToResponse(member);
+        return memberResponseMapper.entityToMemberDeleteResponse(member);
     }
 
 

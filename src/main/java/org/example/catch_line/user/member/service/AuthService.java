@@ -7,6 +7,8 @@ import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.password.InvalidPasswordException;
 import org.example.catch_line.user.member.model.dto.*;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
+import org.example.catch_line.user.member.model.mapper.AuthResponseMapper;
+import org.example.catch_line.user.member.model.mapper.MemberEntityMapper;
 import org.example.catch_line.user.member.model.mapper.MemberResponseMapper;
 import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.common.model.vo.Password;
@@ -26,21 +28,21 @@ public class AuthService {
 
     private final MemberDataProvider memberDataProvider;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final MemberEntityMapper memberEntityMapper;
+    private final AuthResponseMapper authResponseMapper;
 
     // 회원가입
     public SignUpResponse signUp(SignUpRequest signUpRequest) {
-
-        // TODO: 컨트롤러에서 한 번 체크하고 있습니다. -> 서비스에는 해당 검증 빼려고 합니다.
-
         // 회원 수정 dto에 담긴 password 검증
         String validatedPassword = PasswordValidator.validatePassword(signUpRequest.getPassword());
         // 검증된 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(validatedPassword);
-
-        MemberEntity member = memberDataProvider.provideMemberWhenSignup(signUpRequest, encodedPassword);
+        // 중복 이메일 체크(중복 시 예외 발생)
+        memberDataProvider.provideIfNotDuplicateEmail(new Email(signUpRequest.getEmail()));
+        MemberEntity member = memberEntityMapper.toMemberEntity(signUpRequest, encodedPassword);
         memberDataProvider.saveMember(member);
 
-        return SignUpResponse.entityToResponse(member);
+        return authResponseMapper.entityToSignUpResponse(member);
     }
 
     // 로그인
@@ -50,11 +52,7 @@ public class AuthService {
         if (!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword().getEncodedPassword())) {
             throw new InvalidPasswordException("비밀번호가 일치하지 않습니다.");
         }
-        return LoginResponse.entityToResponse(member);
+        return authResponseMapper.entityToLoginResponse(member);
     }
-
-
-
-
 
 }

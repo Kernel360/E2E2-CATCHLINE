@@ -74,8 +74,6 @@ public class MemberEntity extends BaseTimeEntity {
         this.isMemberDeleted = false;
     }
 
-
-
     // 회원 정보 수정 -> @Setter 사용 대신 메서드를 따로 추가
     public void updateMember(String name, String nickname, Password password, PhoneNumber phoneNumber) {
         this.name = name;

@@ -22,7 +22,7 @@ public class MemberValidator {
 
     // TODO: 탈퇴한 회원은 제외하고 회원 존재 여부 검사
     public MemberEntity checkIfMemberPresent(Long memberId) {
-        return memberRepository.findByKakaoMemberIdAndIsMemberDeletedFalse(memberId)
+        return memberRepository.findByMemberIdAndIsMemberDeletedFalse(memberId)
                 .orElseThrow(() -> new CatchLineException("해당하는 사용자가 없습니다."));
     }
 

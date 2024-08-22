@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.common.model.vo.Password;
 import org.example.catch_line.common.model.vo.PhoneNumber;
-import org.example.catch_line.user.member.validation.PasswordValidator;
+import org.example.catch_line.user.member.model.provider.validation.PasswordValidator;
 import org.example.catch_line.user.owner.model.dto.OwnerLoginRequest;
 import org.example.catch_line.user.owner.model.dto.OwnerResponse;
 import org.example.catch_line.user.owner.model.dto.OwnerSignUpRequest;

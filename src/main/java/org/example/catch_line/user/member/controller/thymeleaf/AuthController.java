@@ -4,11 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.email.DuplicateEmailException;
-import org.example.catch_line.user.member.model.dto.LoginRequest;
-import org.example.catch_line.user.member.model.dto.LoginResponse;
 import org.example.catch_line.user.member.model.dto.SignUpRequest;
 import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.user.member.service.AuthService;
@@ -17,10 +14,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-
-import static org.example.catch_line.common.session.SessionConst.MEMBER_ID;
-import static org.example.catch_line.common.session.SessionConst.ROLE;
 
 @Slf4j
 @Controller
@@ -32,7 +25,6 @@ public class AuthController {
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
-        model.addAttribute("loginRequest", new LoginRequest(null, null));
         return "member/login";
     }
 
@@ -78,32 +70,6 @@ public class AuthController {
             return "member/signup";
 
         }
-
-        return "redirect:/";
-    }
-
-    @PostMapping("/login")
-    public String login(
-            @Valid @ModelAttribute LoginRequest loginRequest,
-            BindingResult bindingResult,
-            HttpSession httpSession,
-            Model model
-    ) {
-        if (bindingResult.hasErrors()) {
-            return "member/login";
-        }
-
-        LoginResponse loginResponse;
-        try {
-            loginResponse =
-                    authService.login(loginRequest);
-        } catch (CatchLineException e) {
-            model.addAttribute("exception", e.getMessage());
-            return "member/login";
-        }
-
-        httpSession.setAttribute(MEMBER_ID, loginResponse.getMemberId());
-        httpSession.setAttribute(ROLE, Role.USER);
 
         return "redirect:/";
     }

@@ -8,7 +8,7 @@ import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.history.validation.HistoryValidator;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.springframework.stereotype.Service;

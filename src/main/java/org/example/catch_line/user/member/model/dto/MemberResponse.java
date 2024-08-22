@@ -12,6 +12,5 @@ public class MemberResponse {
     private String name;
     private String nickname;
     private String phoneNumber;
-//    private Role role;
     private boolean isMemberDeleted;
 }

@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 @SpringBootTest(classes = CatchLineApplication.class)
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS) // 클래스당 하나의 인스턴스만 생성
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS) // 클래스당 하나의 인스턴스만 생성
 public class ConcurrencyTest {
 
     @Autowired
@@ -80,8 +80,14 @@ public class ConcurrencyTest {
     @Autowired private PasswordEncoder passwordEncoder;
 
 
-    @BeforeAll
+    @BeforeEach
     void setup() {
+
+
+        memberSave();
+    }
+
+    private void memberSave() {
         this.restaurantEntity1 = restaurantRepository.findById(1L).orElseThrow();
         this.restaurantEntity2 = restaurantRepository.findById(2L).orElseThrow();
         this.memberEntity1 = memberRepository.findById(1L).orElseThrow();
@@ -91,12 +97,7 @@ public class ConcurrencyTest {
         this.memberEntity5 = memberRepository.findById(5L).orElseThrow();
         this.memberEntity6 = memberRepository.findById(6L).orElseThrow();
 
-        memberSave();
-    }
-
-    private void memberSave() {
-
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 200; i++) {
             MemberEntity member = MemberEntity.builder()
                     .email(new Email("abc" + i + "@gmail.com"))
                     .name("홍길동")
@@ -144,10 +145,62 @@ public class ConcurrencyTest {
             .reservationDate(LocalDateTime.of(2024, 9, 22, 15, 0)) // 2024년 8월 22일 오후 3시 00분
             .build();
 
+    ReservationRequest reservationRequest3 = ReservationRequest.builder()
+            .memberCount(3)
+            .reservationDate(LocalDateTime.of(2024, 9, 23, 15, 0)) // 2024년 8월 22일 오후 3시 00분
+            .build();
+
     @Test
     @DisplayName("식당 동시 예약 100명")
     void testRestaurantConcurrency100() throws InterruptedException {
-        int numberOfThreads = 100; // 두 명이 동시에 예약을 시도
+        int numberOfThreads = 200; // 두 명이 동시에 예약을 시도
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        AtomicInteger successfulReservations = new AtomicInteger(); // 성공한 예약의 수를 카운트
+        AtomicInteger failedReservations = new AtomicInteger(); // 실패한 예약의 수를 카운트
+
+        List<Runnable> runnables = new ArrayList<>();
+        for (int i = 1; i <= numberOfThreads; i++) {
+            int finalI = i;
+            MemberEntity member = memberRepository.findById(Long.valueOf(finalI)).orElseThrow(() -> new IllegalArgumentException("id : " + finalI));
+            log.info("final : {}", finalI);
+
+            Runnable reservationTask = () -> {
+                try {
+                    reservationService.addReservation(member.getMemberId(), restaurantEntity1.getRestaurantId(), reservationRequest1);
+                    successfulReservations.incrementAndGet();
+                } catch (DuplicateReservationTimeException e) {
+                    failedReservations.incrementAndGet(); // 예약이 실패했을 경우
+                } finally {
+                    latch.countDown();
+                }
+            };
+            runnables.add(reservationTask);
+        }
+
+        log.info("run : {}", runnables.size());
+
+        for (Runnable runnable : runnables) {
+            executorService.submit(runnable);
+        }
+
+        latch.await(); // 모든 스레드가 완료될 때까지 대기
+
+        log.info("count: {}" ,failedReservations.get());
+
+        // 한 명의 사용자만 성공해야 함을 검증
+        assertThat(successfulReservations.get()).isEqualTo(1);
+        assertThat(failedReservations.get()).isEqualTo(199);
+
+        executorService.shutdown();
+
+    }
+
+    @Test
+    @DisplayName("식당 동시 예약 100명")
+    void testRestaurantConcurrency1000() throws InterruptedException {
+        int numberOfThreads = 200; // 두 명이 동시에 예약을 시도
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
@@ -161,7 +214,7 @@ public class ConcurrencyTest {
 
             Runnable reservationTask = () -> {
                 try {
-                    reservationService.addReservation(member.getMemberId(), restaurantEntity1.getRestaurantId(), reservationRequest1);
+                    reservationService.addReservation(member.getMemberId(), restaurantEntity1.getRestaurantId(), reservationRequest3);
                     successfulReservations.incrementAndGet();
                 } catch (DuplicateReservationTimeException e) {
                     failedReservations.incrementAndGet(); // 예약이 실패했을 경우
@@ -182,7 +235,7 @@ public class ConcurrencyTest {
 
         // 한 명의 사용자만 성공해야 함을 검증
         assertThat(successfulReservations.get()).isEqualTo(1);
-        assertThat(failedReservations.get()).isEqualTo(99);
+        assertThat(failedReservations.get()).isEqualTo(199);
 
         executorService.shutdown();
 

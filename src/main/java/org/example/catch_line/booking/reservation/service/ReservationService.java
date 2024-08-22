@@ -38,8 +38,8 @@ public class ReservationService {
 	private final RestaurantValidator restaurantValidator;
 	private final HistoryMapper historyMapper;
 
-	@Transactional(isolation = Isolation.SERIALIZABLE)
-	public synchronized ReservationResponse addReservation(Long memberId, Long restaurantId, ReservationRequest reservationRequest) {
+	@Transactional(isolation = Isolation.READ_COMMITTED)
+	public ReservationResponse addReservation(Long memberId, Long restaurantId, ReservationRequest reservationRequest) {
 		if (isReservationTimeConflict(restaurantId, reservationRequest.getReservationDate())) {
 			throw new DuplicateReservationTimeException();
 		}

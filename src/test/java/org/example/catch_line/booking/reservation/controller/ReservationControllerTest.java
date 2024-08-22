@@ -76,7 +76,7 @@ class ReservationControllerTest {
 			.reservationDate(reservationDate)
 			.build();
 
-		when(reservationService.addReserve(anyLong(), any(ReservationRequest.class), anyLong()))
+		when(reservationService.addReservation(anyLong(), anyLong(), any(ReservationRequest.class)))
 			.thenReturn(reservationResponse);
 
 		mockMvc.perform(post("/restaurants/1/reservation")
@@ -95,7 +95,7 @@ class ReservationControllerTest {
 			.reservationDate(reservationDate)
 			.build();
 
-		when(reservationService.addReserve(anyLong(), any(ReservationRequest.class), anyLong()))
+		when(reservationService.addReservation(anyLong(), anyLong(), any(ReservationRequest.class)))
 			.thenThrow(new IllegalArgumentException("Reservation failed"));
 
 		mockMvc.perform(post("/restaurants/1/reservation")

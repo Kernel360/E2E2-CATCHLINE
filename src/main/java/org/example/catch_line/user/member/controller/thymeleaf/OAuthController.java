@@ -4,7 +4,7 @@ package org.example.catch_line.user.member.controller.thymeleaf;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.config.auth.PrincipalDetail;
+import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
@@ -29,7 +29,7 @@ public class OAuthController {
     }
 
     @GetMapping("/loginSuccess")
-    public String loginSuccess(@AuthenticationPrincipal PrincipalDetail principalDetail, Authentication authentication, HttpServletResponse response) {
+    public String loginSuccess(@AuthenticationPrincipal MemberUserDetails principalDetail, Authentication authentication, HttpServletResponse response) {
 
         if(Objects.isNull(principalDetail)) {
             throw new CatchLineException("Oauth2 user is null");

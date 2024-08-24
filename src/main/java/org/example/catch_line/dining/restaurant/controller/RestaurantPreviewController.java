@@ -3,9 +3,10 @@ package org.example.catch_line.dining.restaurant.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.common.cookie.CookieUtils;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.dining.restaurant.service.RestaurantPreviewService;
-import org.example.catch_line.user.token.JwtTokenUtil;
+import org.example.catch_line.exception.CatchLineException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RestaurantPreviewController {
 
     private final RestaurantPreviewService restaurantPreviewService;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final CookieUtils cookieUtils;
 
     @GetMapping("/restaurants")
     public String getRestaurantPreviewList(
@@ -28,11 +29,15 @@ public class RestaurantPreviewController {
             @PageableDefault(page=0, size = 2) Pageable pageable,
             Model model,
             HttpServletRequest request
-    ) {
+            ) {
 
-        String jwtToken = extractToken(request);
-        boolean isLoggedIn = jwtToken != null && jwtTokenUtil.validateToken(jwtToken, jwtTokenUtil.getUsernameFromToken(jwtToken));
-
+        boolean isLoggedIn;
+        try {
+            cookieUtils.validateUserByToken(request);
+            isLoggedIn = true;
+        } catch (CatchLineException e) {
+            isLoggedIn = false;
+        }
         model.addAttribute("isLoggedIn", isLoggedIn);
 
         Page<RestaurantPreviewResponse> restaurantPreviewPage = restaurantPreviewService.restaurantPreviewPaging(pageable, criteria);
@@ -47,13 +52,5 @@ public class RestaurantPreviewController {
         model.addAttribute("criteria", criteria);
 
         return "restaurant/restaurantPreview";
-    }
-
-    private String extractToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
     }
 }

@@ -1,5 +1,7 @@
 package org.example.catch_line.user.member.controller.thymeleaf;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.example.catch_line.user.member.model.dto.SignUpRequest;
 import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.user.member.service.AuthService;
 import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -71,12 +74,6 @@ public class AuthController {
 
         }
 
-        return "redirect:/";
-    }
-
-    @PostMapping("/logout")
-    public String logout(HttpSession httpSession) {
-        httpSession.invalidate();
         return "redirect:/";
     }
 }

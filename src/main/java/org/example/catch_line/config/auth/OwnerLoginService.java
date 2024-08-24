@@ -1,7 +1,6 @@
 package org.example.catch_line.config.auth;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.exception.login.LoginException;
 import org.example.catch_line.user.owner.model.entity.OwnerEntity;

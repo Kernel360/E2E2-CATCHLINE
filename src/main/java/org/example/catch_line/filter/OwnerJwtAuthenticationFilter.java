@@ -5,9 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.config.auth.OwnerUserDetails;
 import org.example.catch_line.exception.login.LoginException;
 import org.example.catch_line.user.token.JwtTokenUtil;
@@ -27,11 +25,17 @@ import java.io.IOException;
 // security config에서 formLogin disable해서 동작 안함.
 
 @Slf4j
-@RequiredArgsConstructor
 public class OwnerJwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenUtil jwtTokenUtil;
+
+    public OwnerJwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenUtil = jwtTokenUtil;
+        setFilterProcessesUrl("/owner/login");
+    }
+
 
     // /login 요청을 하면 로그인 시도를 위해서 실행되는 함수
     @Override

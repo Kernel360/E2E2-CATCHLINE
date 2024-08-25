@@ -1,11 +1,9 @@
 package org.example.catch_line.user.member.controller.thymeleaf;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.cookie.CookieUtils;
-import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.member.model.dto.MemberResponse;
@@ -33,38 +31,33 @@ public class MemberController {
 
 
     @GetMapping
-    public String findMember(HttpServletRequest request,  Model model) {
-        String email;
-        try {
-            email = cookieUtils.validateUserByToken(request);
-
-        } catch (CatchLineException e) {
-            return "redirect:/login";
-        }
-        MemberEntity member = memberDataProvider.provideMemberByEmail(new Email(email));
+    public String findMember(@AuthenticationPrincipal MemberUserDetails memberUserDetails, Model model) {
+        MemberEntity member = memberUserDetails.getMember();
         MemberResponse memberResponse = memberResponseMapper.entityToResponse(member);
         model.addAttribute("member", memberResponse);
         return "member/memberDetail";
     }
 
     @GetMapping("/update")
-    public String showUpdateMemberForm(@AuthenticationPrincipal MemberUserDetails principalDetail, Model model) {
-        model.addAttribute("memberUpdateRequest", new MemberUpdateRequest(null, null, null,  null));
-        MemberResponse memberResponse = memberResponseMapper.entityToResponse(principalDetail.getMember());
+    public String showUpdateMemberForm(@AuthenticationPrincipal MemberUserDetails memberUserDetails, Model model) {
+
+        MemberEntity member = memberUserDetails.getMember();
+        model.addAttribute("memberUpdateRequest", new MemberUpdateRequest(null, null, null, null));
+        MemberResponse memberResponse = memberResponseMapper.entityToResponse(member);
         model.addAttribute("member", memberResponse);
         return "member/memberUpdate";
     }
 
     @PostMapping("/update")
     public String updateMember(
-            @AuthenticationPrincipal MemberUserDetails principalDetail,
+            @AuthenticationPrincipal MemberUserDetails memberUserDetails,
             @Valid @ModelAttribute MemberUpdateRequest memberUpdateRequest,
             BindingResult bindingResult, Model model) {
 
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             log.info("error : {}", bindingResult);
-            MemberResponse memberResponse = memberResponseMapper.entityToResponse(principalDetail.getMember());
+            MemberResponse memberResponse = memberResponseMapper.entityToResponse(memberUserDetails.getMember());
             model.addAttribute("member", memberResponse);
 
             model.addAttribute("bindingResult", bindingResult);
@@ -72,11 +65,11 @@ public class MemberController {
         }
 
         try {
-            memberService.updateMember(memberUpdateRequest, principalDetail.getMember().getMemberId());
+            memberService.updateMember(memberUpdateRequest, memberUserDetails.getMember().getMemberId());
         } catch (CatchLineException e) {
             log.info("error : {}", e.getMessage());
 
-            MemberResponse memberResponse = memberService.findMember(principalDetail.getMember().getMemberId());
+            MemberResponse memberResponse = memberService.findMember(memberUserDetails.getMember().getMemberId());
             model.addAttribute("member", memberResponse);
 
             model.addAttribute("exception", e.getMessage());
@@ -87,8 +80,8 @@ public class MemberController {
     }
 
     @PostMapping("/delete")
-    public String deleteMember(@AuthenticationPrincipal MemberUserDetails principalDetail) {
-        memberService.deleteMember(principalDetail.getMember().getMemberId());
-        return "redirect:/";
+    public String deleteMember(@AuthenticationPrincipal MemberUserDetails memberUserDetails) {
+        memberService.deleteMember(memberUserDetails.getMember().getMemberId());
+        return "redirect:/logout";
     }
 }

@@ -24,7 +24,7 @@ public class MemberDataProvider {
         return memberValidator.checkIfMemberPresentByEmail(email);
     }
 
-    public MemberEntity provideMemberByKakaoMemberId(Long kakaoMemberId) {
+    public MemberEntity provideMemberByKakaoMemberId(String kakaoMemberId) {
         return memberValidator.checkIfKakaoMemberPresent(kakaoMemberId);
     }
 
@@ -43,7 +43,7 @@ public class MemberDataProvider {
     }
 
 
-    public boolean isNotDuplicateKakaoMember(Long kakaoMemberId, Email email) {
+    public boolean isNotDuplicateKakaoMember(String kakaoMemberId, Email email) {
         return memberRepository.findByKakaoMemberIdAndIsMemberDeletedFalse(kakaoMemberId).isEmpty()
                 &&
                 memberRepository.findByEmailAndIsMemberDeletedFalse(email).isEmpty();

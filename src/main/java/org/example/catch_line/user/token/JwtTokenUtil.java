@@ -21,9 +21,9 @@ public class JwtTokenUtil {
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    public String generateToken(String email) {
+    public String generateToken(String userName) {
         String token = Jwts.builder()
-                .setSubject(email)
+                .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS512, decodeSecret(secret))
@@ -41,9 +41,9 @@ public class JwtTokenUtil {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    public Boolean validateToken(String token, String email) {
+    public Boolean validateToken(String token, String userName) {
         final String emailFromToken = getUsernameFromToken(token);
-        return (emailFromToken.equals(email) && !isTokenExpired(token));
+        return (emailFromToken.equals(userName) && !isTokenExpired(token));
     }
 
     private Boolean isTokenExpired(String token) {

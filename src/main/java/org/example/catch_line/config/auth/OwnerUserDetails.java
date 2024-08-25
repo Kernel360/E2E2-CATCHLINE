@@ -23,7 +23,7 @@ public class OwnerUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(Role.USER.getAuthority()));
+        authorities.add(new SimpleGrantedAuthority(Role.OWNER.getAuthority()));
         return authorities;
     }
 

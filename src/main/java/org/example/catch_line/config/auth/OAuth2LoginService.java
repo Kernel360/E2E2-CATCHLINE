@@ -46,13 +46,14 @@ public class OAuth2LoginService extends DefaultOAuth2UserService {
         String provider = userRequest.getClientRegistration().getRegistrationId(); // kakao
         Long providerId = ((Number) attributes.get("id")).longValue();
         String nickname = provider + "_" + StringUtils.substring(providerId, 0, 7); // kakao_이름
+        String kakaoMemberId = provider + "_" + providerId;
 
-        if (memberDataProvider.isNotDuplicateKakaoMember(providerId, new Email(email))) {
+        if (memberDataProvider.isNotDuplicateKakaoMember(kakaoMemberId, new Email(email))) {
             MemberEntity member = MemberEntity.builder()
                     .name(name)
                     .nickname(nickname)
                     .email(new Email(email))
-                    .kakaoMemberId(providerId)
+                    .kakaoMemberId(kakaoMemberId)
                     .build();
             memberDataProvider.saveMember(member);
         }
@@ -61,6 +62,7 @@ public class OAuth2LoginService extends DefaultOAuth2UserService {
 
         // 어떤 OAuth2 공급자를 통해 로그인하는지, 해당 공급자에서 사용자의 고유 식별자를 나타내는 필드명이 무엇인지를 반환한다.
         // 지금 kakao login만 사용하기 때문에 필요없지만, 추후 구현 위해 남겨 놓는다.
+        // TODO: 여기에 provider에서 제공하는 id 값만 넘길 수 있는가?
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails()
                 .getUserInfoEndpoint()

@@ -99,9 +99,6 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
             throw new LoginException("로그인 실패");
         }
 
-
-
-
         // 1. username, password 받아서
         // 2. 정상인지 로그인 시도를 해본다.
          /*

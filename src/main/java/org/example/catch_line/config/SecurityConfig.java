@@ -6,6 +6,7 @@ import org.example.catch_line.config.auth.MemberDefaultLoginService;
 import org.example.catch_line.config.auth.OAuth2LoginService;
 import org.example.catch_line.filter.MemberJwtAuthenticationFilter;
 import org.example.catch_line.filter.MemberJwtAuthorizationFilter;
+import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.example.catch_line.user.token.JwtTokenUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,7 @@ public class SecurityConfig{
     private final OAuth2LoginService oauth2LoginService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtTokenUtil jwtTokenUtil;
+    private final MemberDataProvider memberDataProvider;
 
 
 
@@ -62,7 +64,7 @@ public class SecurityConfig{
 
         // /login 및 /owner/login 경로에 대해 JWT 필터 적용
         MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
-        MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, memberDefaultLoginService, oauth2LoginService);
+        MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, memberDataProvider);
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정을 최신 방식으로 변경

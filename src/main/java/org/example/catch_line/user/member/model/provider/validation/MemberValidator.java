@@ -31,7 +31,7 @@ public class MemberValidator {
                 .orElseThrow(() -> new CatchLineException("해당하는 사용자가 없습니다."));
     }
 
-    public MemberEntity checkIfKakaoMemberPresent(Long kakaoMemberId) {
+    public MemberEntity checkIfKakaoMemberPresent(String kakaoMemberId) {
         return memberRepository.findByKakaoMemberIdAndIsMemberDeletedFalse(kakaoMemberId)
                 .orElseThrow(() -> new CatchLineException("해당하는 카카오 로그인 사용자가 없습니다."));
     }

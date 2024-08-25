@@ -29,7 +29,6 @@ public class RestaurantPreviewController {
             @PageableDefault(page=0, size = 2) Pageable pageable,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String keyword,
-            @PageableDefault(page=0, size = 2)Pageable pageable,
             Model model,
             HttpServletRequest request
             ) {

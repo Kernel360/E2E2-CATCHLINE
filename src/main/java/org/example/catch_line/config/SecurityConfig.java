@@ -4,11 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.catch_line.config.auth.OAuth2SuccessHandler;
 import org.example.catch_line.config.auth.MemberDefaultLoginService;
 import org.example.catch_line.config.auth.OAuth2LoginService;
-import org.example.catch_line.config.auth.OwnerLoginService;
 import org.example.catch_line.filter.MemberJwtAuthenticationFilter;
 import org.example.catch_line.filter.MemberJwtAuthorizationFilter;
-import org.example.catch_line.filter.OwnerJwtAuthenticationFilter;
-import org.example.catch_line.filter.OwnerJwtAuthorizationFilter;
 import org.example.catch_line.user.token.JwtTokenUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,7 +37,6 @@ public class SecurityConfig{
     private final OAuth2LoginService oauth2LoginService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtTokenUtil jwtTokenUtil;
-    private final OwnerLoginService ownerLoginService;
 
 
 
@@ -68,23 +64,17 @@ public class SecurityConfig{
         MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
         MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, memberDefaultLoginService, oauth2LoginService);
 
-
-        OwnerJwtAuthenticationFilter ownerJwtAuthenticationFilter = new OwnerJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
-        ownerJwtAuthenticationFilter.setFilterProcessesUrl("/owner/login");
-
-        OwnerJwtAuthorizationFilter ownerJwtAuthorizationFilter = new OwnerJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, ownerLoginService);
-
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정을 최신 방식으로 변경
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)  // 폼 로그인 비활성화
                 .httpBasic(AbstractHttpConfigurer::disable)  // HTTP Basic 인증 비활성화
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))  // frameOptions 설정
-                .authorizeHttpRequests(requests ->requests
-                        .requestMatchers("/**", "/static/**", "/images/**", "/signup", "/login", "/restaurants/**", "/owner").permitAll()
-                        .requestMatchers("/members/**", "/history/**").hasRole("USER")
-                        .requestMatchers("/owner/restaurants/**").hasRole("OWNER")
-                        .anyRequest().permitAll() // 그 외의 요청은 권한 없이 접속 가능
+                .authorizeHttpRequests(requests -> requests
+                                .requestMatchers("/**", "/static/**", "/images/**", "/signup", "/login", "/restaurants/**", "/owner/**").permitAll()
+                                .requestMatchers("/members/**", "/history/**").hasRole("USER")
+//                        .requestMatchers("/owner/restaurants/**").hasRole("OWNER")
+                                .anyRequest().permitAll() // 그 외의 요청은 권한 없이 접속 가능
                 )
 
                 .addFilter(memberJwtAuthenticationFilter)
@@ -106,8 +96,8 @@ public class SecurityConfig{
                         .userInfoEndpoint()
                         .userService(oauth2LoginService) // OAuth 사용자 로그인 처리
                 )
-                .userDetailsService(memberDefaultLoginService) // 일반 사용자 로그인 처리
-                .userDetailsService(ownerLoginService); // 식당 사장님 로그인 처리
+                .userDetailsService(memberDefaultLoginService); // 일반 사용자 로그인 처리
+//                .userDetailsService(ownerLoginService); // 식당 사장님 로그인 처리
 
 //                .logout(AbstractHttpConfigurer::disable);  // Spring Security 로그아웃 비활성화
 

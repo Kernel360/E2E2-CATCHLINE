@@ -1,9 +1,7 @@
 package org.example.catch_line.config.auth;
 
 import lombok.Data;
-import lombok.Getter;
 import org.example.catch_line.common.constant.Role;
-import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.owner.model.entity.OwnerEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

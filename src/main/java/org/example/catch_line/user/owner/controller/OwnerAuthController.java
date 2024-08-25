@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.common.constant.Role;
-import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.owner.model.dto.OwnerLoginRequest;
 import org.example.catch_line.user.owner.model.dto.OwnerResponse;
@@ -15,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static org.example.catch_line.common.session.SessionConst.ROLE;
+import static org.example.catch_line.common.session.SessionConst.*;
 
 @Controller
 @RequestMapping("/owner")
@@ -25,7 +24,8 @@ public class OwnerAuthController {
     private final OwnerAuthService ownerAuthService;
 
     @GetMapping("/login")
-    public String showOwnerLoginForm( ) {
+    public String showOwnerLoginForm(Model model) {
+        model.addAttribute("ownerLoginRequest", new OwnerLoginRequest());
         return "owner/ownerLogin";
     }
 
@@ -58,35 +58,36 @@ public class OwnerAuthController {
         return "redirect:/owner";
     }
 
-//    @PostMapping("/login")
-//    public String ownerLogin(
-//            @Valid @ModelAttribute OwnerLoginRequest ownerLoginRequest,
-//            BindingResult bindingResult,
-//            HttpSession httpSession,
-//            Model model
-//    ) {
-//        if (bindingResult.hasErrors()) {
-//            return "owner/ownerLogin";
-//        }
-//
-//        OwnerResponse ownerResponse;
-//        try {
-//            ownerResponse =
-//                    ownerAuthService.login(ownerLoginRequest);
-//        } catch (CatchLineException e) {
-//            model.addAttribute("exception", e.getMessage());
-//            return "owner/ownerLogin";
-//        }
-//        httpSession.setAttribute(SessionConst.OWNER_ID, ownerResponse.getOwnerId());
-//        httpSession.setAttribute(ROLE, Role.OWNER);
-//
-//        return "redirect:/owner";
-//    }
+    @PostMapping("/login")
+    public String ownerLogin(
+            @Valid @ModelAttribute OwnerLoginRequest ownerLoginRequest,
+            BindingResult bindingResult,
+            HttpSession httpSession,
+            Model model
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "owner/ownerLogin";
+        }
+
+        OwnerResponse ownerResponse;
+        try {
+            ownerResponse =
+                    ownerAuthService.login(ownerLoginRequest);
+        } catch (CatchLineException e) {
+            model.addAttribute("exception", e.getMessage());
+            return "owner/ownerLogin";
+        }
+
+        httpSession.setAttribute(OWNER_ID, ownerResponse.getOwnerId());
+        httpSession.setAttribute(ROLE, Role.OWNER);
+
+        return "redirect:/owner";
+    }
 
     @PostMapping("/logout")
     public String logout(HttpSession httpSession) {
         httpSession.invalidate();
-        return "redirect:/";
+        return "redirect:/owner";
     }
 
 }

@@ -45,7 +45,6 @@ public class RestaurantHourEntity {
 	@JoinColumn(name = "restaurant_id")
 	private RestaurantEntity restaurant;
 
-	@Builder
 	public RestaurantHourEntity(DayOfWeeks dayOfWeek, LocalTime openTime, LocalTime closeTime, OpenStatus openStatus,
 		RestaurantEntity restaurant) {
 		this.dayOfWeek = dayOfWeek;
@@ -55,10 +54,8 @@ public class RestaurantHourEntity {
 		this.restaurant = restaurant;
 	}
 
-	public void updateRestaurantHourEntity(String dayOfWeekStr, LocalTime openTime, LocalTime closeTime,
-		String openStatusStr) {
+	public void updateRestaurantHourEntity(String dayOfWeekStr, LocalTime openTime, LocalTime closeTime, String openStatusStr) {
 		try {
-
 			DayOfWeeks dayOfWeek = DayOfWeeks.fromDescription(dayOfWeekStr.toUpperCase());
 			OpenStatus openStatus = OpenStatus.valueOf(openStatusStr.toUpperCase());
 
@@ -70,10 +67,6 @@ public class RestaurantHourEntity {
 		} catch (CatchLineException e) {
 			System.err.println("Enum 값이 잘못되었습니다: " + e.getMessage());
 		}
-	}
-
-	public void closeBusiness() {
-		this.openStatus = OpenStatus.CLOSE;
 	}
 
 	public void updateOpenStatus(OpenStatus openStatus) {

@@ -43,14 +43,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
@@ -78,11 +71,7 @@ public class OwnerController {
 	private String jsKey;
 
 	@GetMapping
-	public String viewOwnerPage(
-		HttpSession httpSession,
-		Model model
-	) {
-
+	public String viewOwnerPage(HttpSession httpSession, Model model) {
 		boolean isLoggedIn = httpSession.getAttribute(SessionConst.OWNER_ID) != null; // "user" 세션 속성으로 로그인 상태 확인
 		model.addAttribute("isLoggedIn", isLoggedIn);
 
@@ -122,13 +111,13 @@ public class OwnerController {
 	}
 
 	@PostMapping("/restaurants/{restaurantId}")
-	public String updateRestaurant(@PathVariable Long restaurantId,
+	public String updateRestaurant(@PathVariable Long restaurantId, HttpSession session,
 								   @Valid @ModelAttribute("restaurant") RestaurantUpdateRequest request, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return "owner/updateRestaurant";
 		}
-
-		restaurantService.updateRestaurant(restaurantId, request);
+		Long ownerId = SessionUtils.getOwnerId(session);
+		restaurantService.updateRestaurant(ownerId, restaurantId, request);
 
 		return "redirect:/owner/restaurants/list/" + restaurantId;
 	}
@@ -223,14 +212,9 @@ public class OwnerController {
 	}
 
 	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
-	public String getReservationDetails(
-		@PathVariable Long restaurantId,
-		@PathVariable Long reservationId,
-		Model model,
-		HttpSession session
-	) {
-		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
-
+	public String getReservationDetails(@PathVariable Long restaurantId, @PathVariable Long reservationId,
+										Model model, HttpSession session) {
+		List<HistoryResponse> historyList = (List<HistoryResponse>) session.getAttribute("historyList");
 
 		if (historyList != null) {
 			try {
@@ -249,7 +233,6 @@ public class OwnerController {
 
 	@GetMapping("/restaurants/list/{restaurantId}/reviews")
 	public String getReviews(@PathVariable Long restaurantId, Model model) {
-
 		List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurantId);
 		BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
 		model.addAttribute("averageRating", averageRating);
@@ -295,7 +278,6 @@ public class OwnerController {
 
 	@GetMapping("restaurants/list/{restaurantId}/menus")
 	public String getMenus(@PathVariable Long restaurantId, Model model) {
-
 		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
 
 		model.addAttribute("jsKey", jsKey);
@@ -304,22 +286,27 @@ public class OwnerController {
 		return "owner/menus";
 	}
 
-	@PostMapping("/restaurants/list/{restaurantId}/{hourId}")
-	private String updateRestaurantHour(@PathVariable Long restaurantId, @PathVariable Long hourId, @ModelAttribute
-	RestaurantHourRequest request, RedirectAttributes redirectAttributes) {
+	@PatchMapping("/restaurants/list/{restaurantId}/{hourId}")
+	private String updateRestaurantHour(@PathVariable Long restaurantId, @PathVariable Long hourId,
+										@Valid @ModelAttribute RestaurantHourRequest request, BindingResult bindingResult, Model model,
+										RedirectAttributes redirectAttributes) {
+		if (bindingResult.hasErrors()) {
+			redirectAttributes.addFlashAttribute("error", "영업 시간 업데이트 중 오류가 발생했습니다.");
+			return "redirect:/owner/restaurants/list/" + restaurantId;
+		}
+
 		try {
 			restaurantHourService.updateRestaurantHour(hourId, request);
 			redirectAttributes.addFlashAttribute("message", "영업 시간이 성공적으로 업데이트");
 		} catch (CatchLineException e) {
 			redirectAttributes.addFlashAttribute("error", "영업 시간 업데이트 중 오류가 발생했습니다.");
-
 		}
 		return "redirect:/owner/restaurants/list/" + restaurantId;
 	}
 
 	@PutMapping("/restaurants/list/{restaurantId}/menus/menu")
 	public String updateMenu(@PathVariable Long restaurantId, @RequestParam Long menuId,
-		@ModelAttribute MenuRequest menuRequest, Model model) {
+							 @ModelAttribute MenuRequest menuRequest, Model model) {
 
 		menuService.updateRestaurantMenu(restaurantId, menuId, menuRequest);
 
@@ -331,14 +318,12 @@ public class OwnerController {
 
 	@DeleteMapping("/restaurants/list/{restaurantId}/menus/menu")
 	public String deleteMenu(@PathVariable Long restaurantId, @RequestParam Long menuId) {
-
 		menuService.deleteRestaurantMenu(menuId);
 		return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
 	}
 
 	@PostMapping("/restaurants/list/{restaurantId}/menus/menu")
 	public String addMenu(@PathVariable Long restaurantId, @ModelAttribute MenuRequest menuRequest, Model model) {
-
 		menuService.createRestaurantMenu(restaurantId, menuRequest);
 
 		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
@@ -348,9 +333,7 @@ public class OwnerController {
 
 	private List<RestaurantResponse> getRestaurantResponseList(HttpSession session) {
 		Long ownerId = SessionUtils.getOwnerId(session);
-
-		List<RestaurantResponse> restaurantList = ownerService.findAllRestaurantByOwnerId(ownerId);
-		return restaurantList;
+        return ownerService.findAllRestaurantByOwnerId(ownerId);
 	}
 
 	private String invalidPhoneNumberException(Exception e, BindingResult bindingResult) {

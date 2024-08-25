@@ -2,7 +2,6 @@ package org.example.catch_line.dining.restaurant.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,7 +26,6 @@ public class RestaurantImageEntity {
     @JoinColumn(name = "restaurant_id")
     RestaurantEntity restaurant;
 
-    @Builder
     public RestaurantImageEntity(String fileName, String fileType, byte[] imageBinaryData, RestaurantEntity restaurant) {
         this.fileName = fileName;
         this.fileType = fileType;

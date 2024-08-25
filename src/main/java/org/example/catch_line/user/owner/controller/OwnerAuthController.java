@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.common.constant.Role;
-import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.owner.model.dto.OwnerLoginRequest;
 import org.example.catch_line.user.owner.model.dto.OwnerResponse;
@@ -15,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static org.example.catch_line.common.session.SessionConst.ROLE;
+import static org.example.catch_line.common.session.SessionConst.*;
 
 @Controller
 @RequestMapping("/owner")
@@ -78,7 +77,8 @@ public class OwnerAuthController {
             model.addAttribute("exception", e.getMessage());
             return "owner/ownerLogin";
         }
-        httpSession.setAttribute(SessionConst.OWNER_ID, ownerResponse.getOwnerId());
+
+        httpSession.setAttribute(OWNER_ID, ownerResponse.getOwnerId());
         httpSession.setAttribute(ROLE, Role.OWNER);
 
         return "redirect:/owner";
@@ -87,7 +87,7 @@ public class OwnerAuthController {
     @PostMapping("/logout")
     public String logout(HttpSession httpSession) {
         httpSession.invalidate();
-        return "redirect:/";
+        return "redirect:/owner";
     }
 
 }

@@ -1,15 +1,19 @@
 package org.example.catch_line.user.member.controller.thymeleaf;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.config.auth.PrincipalDetail;
+import org.example.catch_line.common.cookie.CookieUtils;
+import org.example.catch_line.common.model.vo.Email;
+import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.member.model.dto.MemberResponse;
 import org.example.catch_line.user.member.model.dto.MemberUpdateRequest;
+import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.model.mapper.MemberResponseMapper;
+import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.example.catch_line.user.member.service.MemberService;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,18 +28,27 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MemberResponseMapper memberResponseMapper;
+    private final CookieUtils cookieUtils;
+    private final MemberDataProvider memberDataProvider;
 
 
     @GetMapping
-    public String findMember(@AuthenticationPrincipal PrincipalDetail principalDetail, Authentication authentication, Model model) {
-        log.info("member 조회 시 authentication 객체가 들어와야 한다. : " + authentication.getPrincipal());
-        MemberResponse memberResponse = memberResponseMapper.entityToResponse(principalDetail.getMember());
+    public String findMember(HttpServletRequest request,  Model model) {
+        String email;
+        try {
+            email = cookieUtils.validateUserByToken(request);
+
+        } catch (CatchLineException e) {
+            return "redirect:/login";
+        }
+        MemberEntity member = memberDataProvider.provideMemberByEmail(new Email(email));
+        MemberResponse memberResponse = memberResponseMapper.entityToResponse(member);
         model.addAttribute("member", memberResponse);
         return "member/memberDetail";
     }
 
     @GetMapping("/update")
-    public String showUpdateMemberForm(@AuthenticationPrincipal PrincipalDetail principalDetail, Authentication authentication, Model model) {
+    public String showUpdateMemberForm(@AuthenticationPrincipal MemberUserDetails principalDetail, Model model) {
         model.addAttribute("memberUpdateRequest", new MemberUpdateRequest(null, null, null,  null));
         MemberResponse memberResponse = memberResponseMapper.entityToResponse(principalDetail.getMember());
         model.addAttribute("member", memberResponse);
@@ -44,7 +57,7 @@ public class MemberController {
 
     @PostMapping("/update")
     public String updateMember(
-            @AuthenticationPrincipal PrincipalDetail principalDetail, Authentication authentication,
+            @AuthenticationPrincipal MemberUserDetails principalDetail,
             @Valid @ModelAttribute MemberUpdateRequest memberUpdateRequest,
             BindingResult bindingResult, Model model) {
 
@@ -74,7 +87,7 @@ public class MemberController {
     }
 
     @PostMapping("/delete")
-    public String deleteMember(@AuthenticationPrincipal PrincipalDetail principalDetail, Authentication authentication) {
+    public String deleteMember(@AuthenticationPrincipal MemberUserDetails principalDetail) {
         memberService.deleteMember(principalDetail.getMember().getMemberId());
         return "redirect:/";
     }

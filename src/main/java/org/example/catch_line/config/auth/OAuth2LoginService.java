@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
@@ -21,7 +22,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PrincipleOAuth2DetailsService extends DefaultOAuth2UserService {
+public class OAuth2LoginService extends DefaultOAuth2UserService {
 
     private final MemberDataProvider memberDataProvider;
 
@@ -31,7 +32,7 @@ public class PrincipleOAuth2DetailsService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         // Role generate
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.USER.getDescription());
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.USER.getAuthority());
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
         log.info("attributes: {}", attributes);
@@ -56,7 +57,7 @@ public class PrincipleOAuth2DetailsService extends DefaultOAuth2UserService {
             memberDataProvider.saveMember(member);
         }
 
-        MemberEntity member = memberDataProvider.provideMemberByKakaoMemberId(providerId);
+//        MemberEntity member = memberDataProvider.provideMemberByKakaoMemberId(providerId);
 
         // 어떤 OAuth2 공급자를 통해 로그인하는지, 해당 공급자에서 사용자의 고유 식별자를 나타내는 필드명이 무엇인지를 반환한다.
         // 지금 kakao login만 사용하기 때문에 필요없지만, 추후 구현 위해 남겨 놓는다.
@@ -65,7 +66,9 @@ public class PrincipleOAuth2DetailsService extends DefaultOAuth2UserService {
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName();
 
-        return new PrincipalDetail(member, oAuth2User.getAttributes());
+        log.info("userNameAttributeName: {}", userNameAttributeName);
+
+        return new DefaultOAuth2User(authorities, oAuth2User.getAttributes(), userNameAttributeName);
     }
 }
 

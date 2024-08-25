@@ -27,6 +27,9 @@ public class RestaurantPreviewController {
     public String getRestaurantPreviewList(
             @RequestParam(required = false, defaultValue = "reviewCount") String criteria,
             @PageableDefault(page=0, size = 2) Pageable pageable,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(page=0, size = 2)Pageable pageable,
             Model model,
             HttpServletRequest request
             ) {
@@ -39,17 +42,29 @@ public class RestaurantPreviewController {
             isLoggedIn = false;
         }
         model.addAttribute("isLoggedIn", isLoggedIn);
-
+      
         Page<RestaurantPreviewResponse> restaurantPreviewPage = restaurantPreviewService.restaurantPreviewPaging(pageable, criteria);
+
+        if (type != null && keyword != null) {
+            restaurantPreviewPage = restaurantPreviewService.restaurantPreviewSearchAndPaging(pageable, criteria, type, keyword);
+        }
 
         int blockLimit = 5;
         int startPage = (((int) Math.ceil(((double) (pageable.getPageNumber() + 1) / blockLimit))) - 1) * blockLimit + 1;
         int endPage = Math.min((startPage + blockLimit - 1), restaurantPreviewPage.getTotalPages());
 
+
         model.addAttribute("restaurantPreviewPage", restaurantPreviewPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("criteria", criteria);
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("restaurantPreviewPage",restaurantPreviewPage);
+        model.addAttribute("startPage",startPage);
+        model.addAttribute("endPage",endPage);
+        model.addAttribute("criteria",criteria);
+        model.addAttribute("type", type);
+        model.addAttribute("keyword", keyword);
 
         return "restaurant/restaurantPreview";
     }

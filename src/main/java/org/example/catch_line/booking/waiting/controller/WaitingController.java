@@ -6,6 +6,7 @@ import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.exception.booking.WaitingException;
+import org.example.catch_line.exception.session.InvalidSessionException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +25,8 @@ public class WaitingController {
 	private final WaitingService waitingService;
 
 	@GetMapping("/restaurants/{restaurantId}/waiting")
-	public String addWaitingForm(
-		@PathVariable("restaurantId") Long restaurantId
-	) {
+	public String addWaitingForm(@PathVariable Long restaurantId, Model model) {
+		model.addAttribute("restaurantId", restaurantId);
 		return "waiting/waiting";
 	}
 
@@ -36,8 +36,7 @@ public class WaitingController {
 		@PathVariable Long restaurantId,
 		@ModelAttribute WaitingRequest waitingRequest,
 		Model model,
-		HttpSession session,
-		RedirectAttributes redirectAttributes
+		HttpSession session
 	) {
 		try {
 			Long memberId = SessionUtils.getMemberId(session);
@@ -51,10 +50,10 @@ public class WaitingController {
 
 			WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, memberId);
 
+			model.addAttribute("restaurantId", restaurantId);
 			model.addAttribute("waitingResponse", waitingResponse);
-
 			return "redirect:/history";
-		} catch (WaitingException e) {
+		} catch (InvalidSessionException | WaitingException e) {
 			// 오류 메시지를 추가하고 현재 페이지로 리디렉션
 			model.addAttribute("error", "Waiting failed: " + e.getMessage());
 			return "waiting/waiting"; // 현재 페이지를 보여주는 템플릿 이름으로 수정

@@ -110,6 +110,36 @@
             justify-content: flex-end; /* 오른쪽 정렬 */
             margin-bottom: 20px;
         }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .search-container .dropdown, .search-container .form-control, .search-container .btn {
+            margin-right: 10px;
+        }
+        .search-container .form-control {
+            max-width: 300px;
+        }
+        .dropdown-menu {
+            min-width: 100px; /* 최소 너비 */
+        }
+
+        /* 라디오 버튼 가로 정렬 */
+        #radioButtonsContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #radioButtonsContainer .form-check {
+            margin-right: 20px; /* 라디오 버튼 사이의 간격 */
+        }
+
+        #radioButtonsContainer .form-check-label {
+            margin-left: 5px; /* 라벨과 라디오 버튼 사이의 간격 */
+        }
     </style>
 </head>
 <!--<script src="/js/addTokenSession.js"></script>-->
@@ -146,13 +176,50 @@
 
     <hr class="my-4">
 
+    <div class="search-container">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                식당 이름
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#" data-criteria="name">식당 이름</a>
+                <a class="dropdown-item" href="#" data-criteria="foodType">음식 종류</a>
+            </div>
+        </div>
+
+        <!-- 검색어 입력 필드 -->
+        <input type="text" class="form-control" id="searchKeyword" placeholder="검색어를 입력하세요">
+
+        <!-- 라디오 버튼 컨테이너 (초기에는 숨김 상태) -->
+        <div id="radioButtonsContainer" style="display: none;">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="foodType" id="radioKorean" value="한식">
+                <label class="form-check-label" for="radioKorean">한식</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="foodType" id="radioChinese" value="중식">
+                <label class="form-check-label" for="radioChinese">중식</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="foodType" id="radioJapanese" value="일식">
+                <label class="form-check-label" for="radioJapanese">일식</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="foodType" id="radioWestern" value="양식">
+                <label class="form-check-label" for="radioWestern">양식</label>
+            </div>
+        </div>
+
+        <button class="btn btn-orange" type="button" id="searchButton">검색</button>
+    </div>
+
     <!-- 정렬 버튼들 -->
     <div class="sort-buttons">
-        <a th:href="@{/restaurants(criteria='reviewCount', page=0, size=${restaurantPreviewPage.size})}"
+        <a th:href="@{/restaurants(criteria='reviewCount', type=${type}, keyword=${keyword}, page=0, size=${restaurantPreviewPage.size})}"
            class="btn btn-orange" th:classappend="${criteria == 'reviewCount'} ? 'active' : ''">리뷰 순</a>
-        <a th:href="@{/restaurants(criteria='scrapCount', page=0, size=${restaurantPreviewPage.size})}"
+        <a th:href="@{/restaurants(criteria='scrapCount', type=${type}, keyword=${keyword}, page=0, size=${restaurantPreviewPage.size})}"
            class="btn btn-orange" th:classappend="${criteria == 'scrapCount'} ? 'active' : ''">스크랩 순</a>
-        <a th:href="@{/restaurants(criteria='rating', page=0, size=${restaurantPreviewPage.size})}"
+        <a th:href="@{/restaurants(criteria='rating', type=${type}, keyword=${keyword}, page=0, size=${restaurantPreviewPage.size})}"
            class="btn btn-orange" th:classappend="${criteria == 'rating'} ? 'active' : ''">별점 순</a>
     </div>
 
@@ -167,6 +234,7 @@
                         <span th:text="${preview.name}">식당 이름</span><br>
                         <span th:text="'평점: ' + ${preview.averageRating}">평점</span><br>
                         <span th:text="'리뷰 수: ' + ${preview.reviewCount}">리뷰 수</span><br>
+                        <span th:text="'스크랩 수: ' + ${preview.scrapCount}">스크랩 수</span><br>
                         <span th:text="'음식 종류: ' + ${preview.foodType}">음식 종류</span><br>
                         <span th:text="'서비스 종류: ' + ${preview.serviceType}">서비스 종류</span>
                     </div>
@@ -180,21 +248,81 @@
         <ul class="pagination">
             <!-- 이전 페이지 버튼 -->
             <li class="page-item" th:classappend="${!restaurantPreviewPage.hasPrevious()} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{/restaurants(page=${restaurantPreviewPage.number - 1}, size=${restaurantPreviewPage.size}, criteria=${criteria})}" th:text="'Previous'"></a>
+                <a class="page-link" th:href="@{/restaurants(page=${restaurantPreviewPage.number - 1}, size=${restaurantPreviewPage.size}, criteria=${criteria}, type=${type}, keyword=${keyword})}" th:text="'Previous'"></a>
             </li>
 
             <!-- 페이지 번호 버튼 -->
             <li class="page-item" th:each="i : ${#numbers.sequence(startPage, endPage)}" th:classappend="${i == restaurantPreviewPage.number + 1} ? 'active' : ''">
-                <a class="page-link" th:href="@{/restaurants(page=${i - 1}, size=${restaurantPreviewPage.size}, criteria=${criteria})}" th:text="${i}"></a>
+                <a class="page-link" th:href="@{/restaurants(page=${i - 1}, size=${restaurantPreviewPage.size}, criteria=${criteria}, type=${type}, keyword=${keyword})}" th:text="${i}"></a>
             </li>
 
             <!-- 다음 페이지 버튼 -->
             <li class="page-item" th:classappend="${!restaurantPreviewPage.hasNext()} ? 'disabled' : ''">
-                <a class="page-link" th:href="@{/restaurants(page=${restaurantPreviewPage.number + 1}, size=${restaurantPreviewPage.size}, criteria=${criteria})}" th:text="'Next'"></a>
+                <a class="page-link" th:href="@{/restaurants(page=${restaurantPreviewPage.number + 1}, size=${restaurantPreviewPage.size}, criteria=${criteria}, type=${type}, keyword=${keyword})}" th:text="'Next'"></a>
             </li>
         </ul>
     </nav>
 
-</div> <!-- /container -->
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var selectedType = "name"; // 기본 검색 조건을 '식당 이름'으로 설정
+
+        // 드롭다운 메뉴 항목 클릭 시 이벤트 처리
+        document.querySelectorAll('.dropdown-item').forEach(function(item) {
+            item.addEventListener('click', function(event) {
+                event.preventDefault();
+                selectedType = this.getAttribute('data-criteria');
+                var dropdownButton = document.getElementById('dropdownMenuButton');
+                if (dropdownButton) {
+                    dropdownButton.textContent = this.textContent;
+                }
+
+                // 검색 조건이 'foodType'이면 검색어 입력 창을 숨기고 라디오 버튼을 표시
+                if (selectedType === 'foodType') {
+                    document.getElementById('searchKeyword').style.display = 'none';
+                    document.getElementById('radioButtonsContainer').style.display = 'flex';
+                } else {
+                    document.getElementById('searchKeyword').style.display = 'block';
+                    document.getElementById('radioButtonsContainer').style.display = 'none';
+                }
+            });
+        });
+
+        // 검색 버튼 클릭 시 이벤트 처리
+        function performSearch() {
+            var keyword;
+
+            if (selectedType === 'foodType') {
+                // 선택된 라디오 버튼의 값을 가져옴
+                var selectedRadio = document.querySelector('input[name="foodType"]:checked');
+                if (selectedRadio) {
+                    keyword = selectedRadio.value;
+                } else {
+                    alert("음식 종류를 선택하세요.");
+                    return;
+                }
+            } else {
+                keyword = document.getElementById('searchKeyword').value;
+            }
+
+            var url = `/restaurants?criteria=[[${criteria}]]&type=` + selectedType + `&keyword=` + encodeURIComponent(keyword);
+            window.location.href = url;
+        }
+
+        // 검색 버튼 클릭 시 검색 실행
+        document.getElementById('searchButton').addEventListener('click', performSearch);
+
+        // 검색 창에서 엔터 키를 눌렀을 때 검색 실행 (식당 이름 검색 시)
+        document.getElementById('searchKeyword').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && selectedType !== 'foodType') {
+                performSearch();
+            }
+        });
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

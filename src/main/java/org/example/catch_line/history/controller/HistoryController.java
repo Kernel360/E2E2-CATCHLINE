@@ -2,6 +2,7 @@ package org.example.catch_line.history.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
@@ -9,10 +10,13 @@ import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.booking.BookingErrorException;
+import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
+import org.example.catch_line.history.validation.HistoryValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +37,7 @@ public class HistoryController {
 	private final ReservationService reservationService;
 	private final WaitingService waitingService;
 	private final HistoryService historyService;
-	private final ReservationRepository reservationRepository;
+	private final HistoryValidator historyValidator;
 
 	@GetMapping("/history")
 	public String getHistories(
@@ -82,7 +86,7 @@ public class HistoryController {
 				model.addAttribute("historyResponse", historyResponse);
 				return "history/reservationDetail";
 			} catch (HistoryException e) {
-				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
+				model.addAttribute("errorMessage", e.getMessage());
 				return "error";
 			}
 		}
@@ -90,12 +94,25 @@ public class HistoryController {
 	}
 
 	@PostMapping("/history/reservation/{reservationId}")
-	public String deleteReservation(@PathVariable Long reservationId, Model model) {
+	public String deleteReservation(@PathVariable Long reservationId, Model model, HttpSession session) {
+		Long memberId = SessionUtils.getMemberId(session);
 		try {
-			reservationService.cancelReservation(reservationId);
-		} catch (BookingErrorException e) {
-			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
-			return "error"; // 오류 페이지로 리다이렉트
+			historyValidator.validateReservationOwnership(memberId, reservationId);
+			reservationService.cancelReservation(memberId, reservationId);
+		} catch (BookingErrorException | HistoryException e) {
+			model.addAttribute( "errorMessage", e.getMessage());
+		}
+		return "redirect:/history";
+	}
+
+	@PostMapping("/history/waiting/{waitingId}")
+	public String deleteWaiting(@PathVariable Long waitingId, Model model, HttpSession session) {
+		Long memberId = SessionUtils.getMemberId(session);
+		try {
+			historyValidator.validateWaitingOwnership(memberId, waitingId);
+			waitingService.cancelWaiting(memberId, waitingId);
+		} catch (BookingErrorException | HistoryException e) {
+			model.addAttribute( "errorMessage", e.getMessage());
 		}
 
 		return "redirect:/history";
@@ -117,26 +134,16 @@ public class HistoryController {
 	}
 
 	@PutMapping("/history/reservation/{reservationId}")
-	public String updateReservation(@PathVariable Long reservationId, @ModelAttribute ReservationRequest updateRequest,
-		RedirectAttributes redirectAttributes) {
+	public String updateReservation(@PathVariable Long reservationId, @Valid @ModelAttribute ReservationRequest updateRequest,
+									RedirectAttributes redirectAttributes, HttpSession session) {
+		Long memberId = SessionUtils.getMemberId(session);
 		try {
-			HistoryResponse updateReservation = historyService.updateReservation(reservationId,
-				updateRequest.getMemberCount(), updateRequest.getReservationDate());
+			historyValidator.validateReservationOwnership(memberId, reservationId);
+			reservationService.updateReservation(memberId, reservationId, updateRequest.getMemberCount(), updateRequest.getReservationDate());
 			redirectAttributes.addFlashAttribute("message", "예약이 업데이트 되었습니다");
-		} catch (BookingErrorException e) {
-			redirectAttributes.addFlashAttribute("errorMessage", "예약 업데이트를 실패했습니다");
-		}
-
-		return "redirect:/history";
-	}
-
-	@PostMapping("/history/waiting/{waitingId}")
-	public String deleteWaiting(@PathVariable Long waitingId, Model model) {
-		try {
-			waitingService.cancelWaiting(waitingId);
-		} catch (BookingErrorException e) {
-			model.addAttribute("errorMessage", "웨이팅 삭제 중 오류가 발생했습니다.");
-			return "error"; // 오류 페이지로 리다이렉트
+		} catch (DuplicateReservationTimeException e) {
+			redirectAttributes.addFlashAttribute("error", e.getMessage());
+			return "redirect:/history/reservation/" + reservationId + "/edit";
 		}
 
 		return "redirect:/history";

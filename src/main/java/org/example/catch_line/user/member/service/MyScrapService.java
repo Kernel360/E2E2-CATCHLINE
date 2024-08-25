@@ -18,6 +18,7 @@ public class MyScrapService {
 
     private final MemberValidator memberValidator;
     private final ScrapRepository scrapRepository;
+    private final RestaurantPreviewMapper restaurantPreviewMapper;
 
     public List<RestaurantPreviewResponse> findMyRestaurants(Long memberId) {
 
@@ -25,7 +26,7 @@ public class MyScrapService {
         List<ScrapEntity> scrapList = scrapRepository.findAllByMemberOrderByCreatedAtDesc(member);
 
         return scrapList.stream()
-                .map(scrap -> RestaurantPreviewMapper.entityToResponse(scrap.getRestaurant()))
+                .map(scrap -> restaurantPreviewMapper.entityToResponse(scrap.getRestaurant()))
                 .collect(Collectors.toList());
     }
 

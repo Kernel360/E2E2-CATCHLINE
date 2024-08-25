@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .btn-orange {
+            background-color: #c6a9e2;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">전체 메뉴</h5>
+            <div class="list-group" id="menu-list">
+                <div class="list-group-item" th:each="menu : ${restaurantMenuList}" th:data-menu-id="${menu.menuId}">
+                    <span th:text="${menu.name}">Menu Name</span>
+                    <span th:text="${menu.price + '원'}">Price</span>
+                    <!-- 수정 및 삭제 버튼에 menuId를 포함 -->
+                    <button class="btn btn-sm btn-warning" th:onclick="'editMenu(' + ${menu.menuId} + ')'">수정</button>
+                    <button class="btn btn-sm btn-danger" th:onclick="'deleteMenu(' + ${menu.menuId} + ')'">삭제</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-orange" onclick="showAddMenuForm()">메뉴 추가</button>
+
+    <form id="add-menu-form" th:action="@{/owner/restaurants/list/{restaurantId}/menus/menu(restaurantId=${restaurantId})}" th:method="post" style="display:none;">
+        <div class="form-group">
+            <label for="menuName">메뉴 이름</label>
+            <input type="text" class="form-control" id="menuName" name="name" placeholder="메뉴 이름">
+        </div>
+        <div class="form-group">
+            <label for="menuPrice">가격</label>
+            <input type="number" class="form-control" id="menuPrice" name="price" placeholder="가격">
+        </div>
+        <button type="submit" class="btn btn-orange">추가</button>
+    </form>
+
+    <form id="delete-menu-form" th:action="@{/owner/restaurants/list/{restaurantId}/menus/menu(restaurantId=${restaurantId})}" th:method="post" style="display:none;">
+        <input type="hidden" name="menuId" id="deleteMenuId">
+        <input type="hidden" name="_method" value="DELETE">
+    </form>
+
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}(restaurantId=${restaurantId})}'|"
+                    type="button">뒤로</button>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const restaurantId = /*[[${restaurantId}]]*/ '0';
+
+    function showAddMenuForm() {
+        document.getElementById('add-menu-form').style.display = 'block';
+        document.getElementById('menuName').value = '';
+        document.getElementById('menuPrice').value = '';
+        document.getElementById('add-menu-form').setAttribute('method', 'post');
+        document.getElementById('add-menu-form').setAttribute('action', `/owner/restaurants/list/${restaurantId}/menus/menu`);
+    }
+
+    function editMenu(menuId) {
+        document.getElementById('add-menu-form').style.display = 'block';
+        document.getElementById('menuName').value = '';
+        document.getElementById('menuPrice').value = '';
+
+        const menuElement = document.querySelector(`.list-group-item[data-menu-id="${menuId}"]`);
+        if (menuElement) {
+            const menuName = menuElement.querySelector('span:nth-child(1)').textContent.trim();
+            const menuPrice = menuElement.querySelector('span:nth-child(2)').textContent.trim().replace('원', '');
+
+            document.getElementById('menuName').value = menuName;
+            document.getElementById('menuPrice').value = menuPrice;
+        }
+
+        document.getElementById('add-menu-form').setAttribute('method', 'post');
+        document.getElementById('add-menu-form').setAttribute('action', `/owner/restaurants/list/${restaurantId}/menus/menu?_method=PUT&menuId=${menuId}`);
+    }
+
+    function deleteMenu(menuId) {
+        if (confirm('정말로 이 메뉴를 삭제하시겠습니까?')) {
+            document.getElementById('deleteMenuId').value = menuId;
+            document.getElementById('delete-menu-form').setAttribute('action', `/owner/restaurants/list/${restaurantId}/menus/menu`);
+            document.getElementById('delete-menu-form').submit();
+        }
+    }
+</script>
+
+</body>
+</html>

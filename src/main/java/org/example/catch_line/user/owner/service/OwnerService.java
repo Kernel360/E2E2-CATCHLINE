@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.common.kakao.model.dto.KakaoCoordinateResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
 import org.example.catch_line.exception.CatchLineException;
@@ -54,12 +55,12 @@ public class OwnerService {
 
 	}
 
-	public RestaurantResponse findRestaurantByOwnerId(Long ownerId) {
+	public List<RestaurantResponse> findAllRestaurantByOwnerId(Long ownerId) {
 
-		RestaurantEntity restaurantEntity = restaurantRepository.findByOwnerOwnerId(ownerId)
-			.orElseThrow(() -> new CatchLineException("등록한 식당이 없습니다"));
+		List<RestaurantEntity> restaurantEntityList = restaurantRepository.findAllByOwnerOwnerId(ownerId);
 
-		return RestaurantMapper.entityToResponse(restaurantEntity);
+
+		return restaurantEntityList.stream().map(RestaurantMapper::entityToResponse).collect(Collectors.toList());
 
 	}
 
@@ -72,10 +73,9 @@ public class OwnerService {
 			.collect(Collectors.toList());
 	}
 
-	public List<HistoryResponse> findHistoryByRestaurantId(Long restaurantId) {
-		List<HistoryResponse> historyResponses = historyService.findByRestaurantId(restaurantId);
+	public List<HistoryResponse> findHistoryByRestaurantIdAndStatus(Long restaurantId, Status status) {
 
-		return historyResponses;
+        return historyService.findByRestaurantId(restaurantId,status);
 
 	}
 

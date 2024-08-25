@@ -180,7 +180,7 @@ public class WaitingServiceTest {
 		when(waitingRepository.findById(id)).thenReturn(Optional.of(waitingEntity));
 
 		// when
-		waitingService.cancelWaiting(id);
+		waitingService.cancelWaiting(id,id);
 
 		// then
 		assertEquals(Status.CANCELED, waitingEntity.getStatus()); // 상태가 CANCELED로 변경되었는지 확인
@@ -198,7 +198,7 @@ public class WaitingServiceTest {
 
 		// when & then
 		assertThrows(IllegalArgumentException.class, () -> {
-			waitingService.cancelWaiting(id);
+			waitingService.cancelWaiting(id,id);
 		});
 		verify(waitingRepository, never()).save(any(WaitingEntity.class)); // save 메서드가 호출되지 않았는지 확인
 	}

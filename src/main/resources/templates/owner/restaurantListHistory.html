@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #f1f1f1;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .list-group-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            padding: 15px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            cursor: pointer;
+        }
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        .btn-orange {
+            background-color: #c6a9e2;
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+            margin-bottom: 5px;
+        }
+        .btn-orange.active {
+            background-color: white;
+            color: #c6a9e2;
+            border: 1px solid #c6a9e2;
+        }
+        .btn-orange:hover {
+            background-color: #b399d4;
+        }
+        .sort-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .sort-buttons .btn {
+            margin: 0 5px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="text-center mb-4">
+        <h2 th:text="'식당 리스트'">식당 리스트</h2>
+    </div>
+    <div class="row mb-4 btn-container">
+        <div class="col-auto">
+            <button class="btn btn-orange btn-lg"
+                    th:onclick="|location.href='@{/owner}'|"
+                    type="button">뒤로
+            </button>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">식당 정보</h5>
+            <div class="list-group">
+                <!-- 식당 정보 리스트 -->
+                <div class="list-group-item" th:each="restaurant : ${restaurantList}"
+                     th:onclick="|location.href='@{/owner/restaurants/{restaurantId}/history(restaurantId=${restaurant.restaurantId})}'|">
+                    <div>
+                        <span th:text="${restaurant.name}">식당 이름</span><br>
+                        <span th:text="'평점: ' + ${restaurant.averageRating}">평점</span><br>
+                        <span th:text="'리뷰 수: ' + ${restaurant.reviewCount}">리뷰 수</span><br>
+                        <span th:text="'음식 종류: ' + ${restaurant.foodType}">음식 종류</span><br>
+                        <span th:text="'서비스 종류: ' + ${restaurant.serviceType}">서비스 종류</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- /container -->
+</body>
+</html>

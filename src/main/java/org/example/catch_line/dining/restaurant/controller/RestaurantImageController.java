@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -44,7 +45,7 @@ public class RestaurantImageController {
         try {
             RestaurantImageEntity savedImage = restaurantImageService.saveImage(restaurantId, image);
             model.addAttribute("imageId", savedImage.getRestaurantImageId());
-            return "redirect:/owner/restaurants/list";
+            return String.format("redirect:/owner/restaurants/%d/edit-images", restaurantId);
             // return "redirect:/restaurants/" + savedImage.getRestaurant().getRestaurantId();
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,4 +53,21 @@ public class RestaurantImageController {
             return "restaurant/upload-image";
         }
     }
+
+    @GetMapping("/owner/restaurants/{restaurantId}/edit-images")
+    public String editImages(@PathVariable Long restaurantId, Model model) {
+        List<RestaurantImageEntity> imageList = restaurantImageService.getImageList(restaurantId);
+        model.addAttribute("imageList", imageList);
+        model.addAttribute("restaurantId", restaurantId);
+        return "owner/edit-images";
+    }
+    @DeleteMapping("/restaurants/{restaurantId}/images/delete")
+    public String deleteImage(@PathVariable Long restaurantId, @RequestParam Long imageId) {
+        // 이미지 삭제 처리 로직'
+        restaurantImageService.deleteImage(imageId);
+
+        return "redirect:/owner/restaurants/{restaurantId}/edit-images";
+    }
+
+
 }

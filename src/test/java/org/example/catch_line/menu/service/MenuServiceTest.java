@@ -35,8 +35,9 @@ class MenuServiceTest {
     @Mock MenuRepository menuRepository;
     @Mock RestaurantValidator restaurantValidator;
     @Mock MenuValidator menuValidator;
-    @InjectMocks
-    MenuService menuService;
+    @Mock MenuMapper menuMapper;
+
+    @InjectMocks MenuService menuService;
 
     @Test
     @DisplayName("식당 메뉴 전체 조회 테스트")
@@ -63,7 +64,7 @@ class MenuServiceTest {
         Long restaurantId = 1L;
         MenuRequest request = getMenuRequest();
         RestaurantEntity restaurantEntity = getRestaurantEntity();
-        MenuEntity menuEntity = MenuMapper.requestToEntity(request, restaurantEntity);
+        MenuEntity menuEntity = menuMapper.requestToEntity(request, restaurantEntity);
 
         when(restaurantValidator.checkIfRestaurantPresent(restaurantId)).thenReturn(restaurantEntity);
         when(menuRepository.save(any(MenuEntity.class))).thenReturn(menuEntity);
@@ -85,7 +86,7 @@ class MenuServiceTest {
         Long menuId = 1L;
         MenuRequest request = getMenuUpdateRequest();
         RestaurantEntity restaurantEntity = getRestaurantEntity();
-        MenuEntity menuEntity = MenuMapper.requestToEntity(request, restaurantEntity);
+        MenuEntity menuEntity = menuMapper.requestToEntity(request, restaurantEntity);
 
         when(restaurantValidator.checkIfRestaurantPresent(restaurantId)).thenReturn(restaurantEntity);
         when(menuValidator.checkIfMenuPresent(menuId)).thenReturn(menuEntity);

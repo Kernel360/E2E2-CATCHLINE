@@ -30,11 +30,7 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	@GetMapping
-	public String getRestaurantReviews(
-			@PathVariable Long restaurantId,
-			Model model,
-			HttpSession session
-	) {
+	public String getRestaurantReviews(@PathVariable Long restaurantId, Model model, HttpSession session) {
 		Long memberId = (Long) session.getAttribute(SessionConst.MEMBER_ID);
 		List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurantId);
 		BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
@@ -45,14 +41,9 @@ public class ReviewController {
 		return "review/reviews";
 	}
 
-
 	@GetMapping("/create")
-	public String showReviewForm(
-			@PathVariable Long restaurantId,
-			HttpSession session,
-			RedirectAttributes redirectAttributes,
-			Model model
-	) {
+	public String showReviewForm(@PathVariable Long restaurantId, RedirectAttributes redirectAttributes, Model model,
+								 HttpSession session) {
 		try {
 			SessionUtils.getMemberId(session);
 			model.addAttribute("restaurantId", restaurantId);
@@ -66,14 +57,10 @@ public class ReviewController {
 	}
 
 	@PostMapping("/create")
-	public String addReview(
-			@PathVariable Long restaurantId,
-			@Valid @ModelAttribute ReviewCreateRequest reviewCreateRequest,
-			BindingResult bindingResult,
-			Model model,
-			RedirectAttributes redirectAttributes,
-			HttpSession session
-	) {
+	public String addReview(@PathVariable Long restaurantId,
+							@Valid @ModelAttribute ReviewCreateRequest reviewCreateRequest,
+							BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes,
+							HttpSession session) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("restaurantId", restaurantId);
 			return "review/reviewCreateForm";
@@ -91,13 +78,8 @@ public class ReviewController {
 	}
 
 	@GetMapping("/{reviewId}/update")
-	public String updateForm(
-		@PathVariable Long restaurantId,
-		@PathVariable Long reviewId,
-		HttpSession session,
-		RedirectAttributes redirectAttributes,
-		Model model
-	) {
+	public String updateForm(@PathVariable Long restaurantId, @PathVariable Long reviewId,
+							 RedirectAttributes redirectAttributes, Model model, HttpSession session) {
 		Long memberId;
 		try {
 			memberId = SessionUtils.getMemberId(session);
@@ -114,15 +96,9 @@ public class ReviewController {
 	}
 
 	@PutMapping("/{reviewId}")
-	public String updateReview(
-		@PathVariable Long restaurantId,
-		@PathVariable Long reviewId,
-		@Valid @ModelAttribute("review") ReviewUpdateRequest reviewUpdateRequest,
-		BindingResult bindingResult,
-		Model model,
-		HttpSession session,
-		RedirectAttributes redirectAttributes
-	) {
+	public String updateReview(@PathVariable Long restaurantId, @PathVariable Long reviewId,
+							   @Valid @ModelAttribute("review") ReviewUpdateRequest reviewUpdateRequest, BindingResult bindingResult,
+							   Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("reviewId", reviewId);
 			model.addAttribute("restaurantId", restaurantId);
@@ -141,12 +117,8 @@ public class ReviewController {
 	}
 
 	@DeleteMapping("/{reviewId}")
-	public String deleteReview(
-		@PathVariable Long restaurantId,
-		@PathVariable Long reviewId,
-		HttpSession session,
-		RedirectAttributes redirectAttributes
-	) {
+	public String deleteReview(@PathVariable Long restaurantId, @PathVariable Long reviewId,
+							   RedirectAttributes redirectAttributes, HttpSession session) {
 		Long memberId;
 		try {
 			memberId = SessionUtils.getMemberId(session);

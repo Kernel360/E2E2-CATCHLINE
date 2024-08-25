@@ -31,7 +31,6 @@ public class ReviewService {
 	private final ReviewValidator reviewValidator;
 	private final ReviewMapper reviewMapper;
 
-	// 식당 별 리뷰 전체 조회
 	public List<ReviewResponse> getRestaurantReviewList(Long restaurantId) {
 		List<ReviewEntity> reviewList = reviewRepository.findAllByRestaurantRestaurantIdOrderByCreatedAtDesc(restaurantId);
 
@@ -40,7 +39,6 @@ public class ReviewService {
 			.collect(Collectors.toList());
 	}
 
-	// 작성자만 리뷰 데이터 조회 가능
 	public ReviewResponse getReviewById(Long reviewId, Long memberId) {
 		ReviewEntity reviewEntity = reviewValidator.checkIfReviewPresent(reviewId);
 		isMemberOfReview(reviewEntity, memberId);
@@ -48,7 +46,6 @@ public class ReviewService {
 		return reviewMapper.entityToResponse(reviewEntity);
 	}
 
-	// 리뷰 작성
 	public ReviewResponse createReview(Long memberId, Long restaurantId, ReviewCreateRequest reviewCreateRequest) {
 		MemberEntity memberEntity = memberValidator.checkIfMemberPresent(memberId);
 		RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
@@ -58,7 +55,6 @@ public class ReviewService {
 		return reviewMapper.entityToResponse(savedEntity);
 	}
 
-	// 리뷰 수정
 	public ReviewResponse updateReview(Long reviewId, Long memberId, Integer rating, String content) {
 		ReviewEntity reviewEntity = reviewValidator.checkIfReviewPresent(reviewId);
 		isMemberOfReview(reviewEntity, memberId);
@@ -68,31 +64,23 @@ public class ReviewService {
 		return reviewMapper.entityToResponse(updatedReview);
 	}
 
-	// 리뷰 삭제
 	public void deleteReview(Long reviewId, Long memberId) {
 		ReviewEntity reviewEntity = reviewValidator.checkIfReviewPresent(reviewId);
 		isMemberOfReview(reviewEntity, memberId);
 		reviewRepository.deleteById(reviewId);
 	}
 
-	// 식당 평점 구하기
 	public Rating getAverageRating(Long restaurantId) {
 		List<Integer> reviewRatingList = reviewRepository.findRatingsByRestaurantId(restaurantId);
 		return new Rating(reviewRatingList);
 	}
 
-	// 리뷰 전체 수 조회
 	public Long getReviewCount(Long restaurantId) {
 		return reviewRepository.countByRestaurantRestaurantId(restaurantId);
 	}
 
 	private ReviewEntity createRequestToEntity(ReviewCreateRequest reviewCreateRequest, MemberEntity memberEntity, RestaurantEntity restaurantEntity) {
-		return ReviewEntity.builder()
-			.rating(reviewCreateRequest.getRating())
-			.content(reviewCreateRequest.getContent())
-			.member(memberEntity)
-			.restaurant(restaurantEntity)
-			.build();
+		return new ReviewEntity(reviewCreateRequest.getRating(), reviewCreateRequest.getContent(), memberEntity, restaurantEntity);
 	}
 
 	private void isMemberOfReview(ReviewEntity reviewEntity, Long memberId) {

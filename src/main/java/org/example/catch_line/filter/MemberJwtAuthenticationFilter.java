@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.config.auth.MemberUserDetails;
-import org.example.catch_line.exception.login.LoginException;
 import org.example.catch_line.user.token.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,7 +34,7 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
     // /login 요청을 하면 로그인 시도를 위해서 실행되는 함수
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws LoginException {
+            throws AuthenticationException {
         log.info("로그인 시도: JwtAuthenticationFilter");
 
         try {
@@ -79,8 +78,13 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
             // PrincipalDetailsService의 loadUserByUsername() 함수가 실행됨
             // 정상이면 authentication이 리턴됨.
             // DB에 있는 username과 password가 일치한다.
+            log.info("authentication manager 호출");
+            // TODO: 무한루프
             Authentication authentication =
                     authenticationManager.authenticate(authenticationToken);
+
+            log.info("authentication manager 완료");
+
 
             MemberUserDetails principalDetail = (MemberUserDetails) authentication.getPrincipal();
 
@@ -96,7 +100,13 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
 
 
         } catch (IOException e) {
-            throw new LoginException("로그인 실패");
+            throw new AuthenticationException("입력 데이터를 읽는 중 오류가 발생했습니다.") {};
+        } catch (AuthenticationException e) {
+            log.error("Authentication failed: " + e.getMessage());
+            throw e;  // This will trigger unsuccessfulAuthentication
+        } catch (Exception e) {
+            log.error("Unexpected authentication error: " + e.getMessage());
+            throw new AuthenticationException("Unexpected error during authentication", e) {};
         }
 
         // 1. username, password 받아서

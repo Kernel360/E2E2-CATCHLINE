@@ -32,9 +32,9 @@ public class ReservationController {
 	public String addReservation(
 		@ModelAttribute ReservationRequest reservationRequest,
 		@PathVariable Long restaurantId,
+		@AuthenticationPrincipal MemberUserDetails userDetails,
 		Model model,
-		RedirectAttributes redirectAttributes,
-		@AuthenticationPrincipal MemberUserDetails userDetails
+		RedirectAttributes redirectAttributes
 	) {
 		try {
 			Long memberId = userDetails.getMember().getMemberId();

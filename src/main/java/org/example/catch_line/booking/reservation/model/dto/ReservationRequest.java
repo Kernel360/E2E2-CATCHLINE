@@ -17,12 +17,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ReservationRequest {
 
-	@NotNull(message = "최소 인원 수는 1명입니다")  // Change to @NotNull
+	@NotNull(message = "최소 인원 수는 1명입니다")
 	@Min(value = 1, message = "최소 인원 수는 1명입니다")
-	private Integer memberCount;  // Use Integer instead of int for @NotNull
+	private Integer memberCount;
 
 	@ValidReservationDate
-	@NotNull(message = "날짜를 선택해야 합니다")  // Change to @NotNull
+	@NotNull(message = "날짜를 선택해야 합니다")
 	private LocalDateTime reservationDate;
 
 	private Status status;

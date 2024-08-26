@@ -10,29 +10,13 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class NotificationResponse {
-    /**
-     * 알림 id
-     */
+
     private Long notificationId;
-
-    /**
-     * 알림 내용
-     */
     private String content;
-
-    /**
-     * 알림 클릭 시 이동할 url
-     */
+    // 알림 클릭 시 이동할 경로
     private String url;
-
-    /**
-     * 알림이 생성된 날짜(몇일 전 계산 위함)
-     */
     private LocalDateTime createdAt;
-
-    /**
-     * 알림 읽음 여부
-     */
+    // 알림 읽음 여부
     private boolean read;
 
     @Builder

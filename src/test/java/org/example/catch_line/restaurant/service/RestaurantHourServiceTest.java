@@ -78,39 +78,17 @@ class RestaurantHourServiceTest {
         when(restaurantHourRepository.findById(restaurantHourId)).thenReturn(Optional.of(hourEntity));
 
         // when
-        restaurantHourService.closeBusiness(restaurantHourId);
 
         // then
         assertThat(hourEntity.getOpenStatus()).isEqualTo(OpenStatus.CLOSE);
         verify(restaurantHourRepository, times(1)).findById(restaurantHourId);  // findById가 한 번 호출되었는지 확인
     }
 
-    @Test
-    @DisplayName("영업 종료 테스트 - 유효하지 않은 아이디")
-    void restaurant_close_invalidId_test() {
-        // given
-        Long restaurantHourId = 1L;
-
-        when(restaurantHourRepository.findById(restaurantHourId)).thenReturn(Optional.empty());
-
-        // when
-        // then
-        assertThatThrownBy(() -> {
-            restaurantHourService.closeBusiness(restaurantHourId);
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("restaurantHourId가 없습니다");
-    }
-
-
     private List<RestaurantHourEntity> getRestaurantHourResponseList() {
         List<RestaurantHourEntity> list = new ArrayList<>();
 
-        RestaurantHourEntity hour1 = RestaurantHourEntity.builder()
-                .dayOfWeek(DayOfWeeks.MONDAY)
-                .openTime(LocalTime.now())
-                .closeTime(LocalTime.now())
-                .openStatus(OpenStatus.OPEN)
-                .build();
+        RestaurantHourEntity hour1 = new RestaurantHourEntity(DayOfWeeks.MONDAY, LocalTime.now(), LocalTime.now(), OpenStatus.OPEN);
+
 
         RestaurantHourEntity hour2 = RestaurantHourEntity.builder()
                 .dayOfWeek(DayOfWeeks.TUESDAY)

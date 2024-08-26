@@ -12,6 +12,11 @@ public class OwnerValidator {
 
     private final OwnerRepository ownerRepository;
 
+    public OwnerEntity checkIfOwnerIdExist(Long ownerId) {
+        return ownerRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> new CatchLineException("해당하는 식당 사장님 사용자가 없습니다."));
+    }
+
     public OwnerEntity checkIfOwnerPresent(String loginId) {
         return ownerRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new CatchLineException("해당하는 식당 사장님 사용자가 없습니다."));

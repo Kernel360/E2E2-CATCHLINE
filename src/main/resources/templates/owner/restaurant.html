@@ -214,6 +214,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">영업 시간 수정</h5>
                                 <form th:action="@{/owner/restaurants/list/{restaurantId}/{hourId}(restaurantId=${restaurant.restaurantId}, hourId=${restaurantHour.restaurantHourId})}" method="post">
+                                    <input type="hidden" name="_method" value="patch"/>
                                     <div class="form-group">
                                         <label for="dayOfWeek">요일</label>
                                         <input type="text" class="form-control" id="dayOfWeek" name="dayOfWeek" th:value="${restaurantHour.dayOfWeek}">

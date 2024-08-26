@@ -30,7 +30,6 @@ public class ReviewEntity extends BaseTimeEntity {
     @JoinColumn(name = "restaurant_id")
     private RestaurantEntity restaurant;
 
-    @Builder
     public ReviewEntity(Integer rating, String content, MemberEntity member, RestaurantEntity restaurant) {
         this.rating = rating;
         this.content = content;

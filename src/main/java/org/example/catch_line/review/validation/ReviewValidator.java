@@ -1,6 +1,7 @@
 package org.example.catch_line.review.validation;
 
 import lombok.RequiredArgsConstructor;
+import org.example.catch_line.exception.review.ReviewNotFoundException;
 import org.example.catch_line.review.model.entity.ReviewEntity;
 import org.example.catch_line.review.repository.ReviewRepository;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,6 @@ public class ReviewValidator {
 
     public ReviewEntity checkIfReviewPresent(Long reviewId) {
         return reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 리뷰가 없습니다."));
+                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
     }
 }

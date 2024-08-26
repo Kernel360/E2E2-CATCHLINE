@@ -6,12 +6,14 @@ import org.example.catch_line.dining.restaurant.model.dto.RestaurantCreateReques
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.user.owner.model.entity.OwnerEntity;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+@Component
 public class RestaurantMapper {
 
-    public static RestaurantResponse entityToResponse(RestaurantEntity entity) {
+    public RestaurantResponse entityToResponse(RestaurantEntity entity) {
         return RestaurantResponse.builder()
                 .restaurantId(entity.getRestaurantId())
                 .name(entity.getName())
@@ -28,7 +30,7 @@ public class RestaurantMapper {
                 .build();
     }
 
-    public static RestaurantResponse entityToResponse(RestaurantEntity entity, boolean hasScrapped) {
+    public RestaurantResponse entityToResponse(RestaurantEntity entity, boolean hasScrapped) {
         return RestaurantResponse.builder()
                 .restaurantId(entity.getRestaurantId())
                 .name(entity.getName())
@@ -45,33 +47,10 @@ public class RestaurantMapper {
                 .build();
     }
 
-    // TODO: 식당 위치 조회 구현하기
-    public static RestaurantEntity requestToEntity(RestaurantCreateRequest request) {
-
-        return RestaurantEntity.builder()
-                .name(request.getName())
-                .description(request.getDescription())
-                .phoneNumber(new PhoneNumber(request.getPhoneNumber()))
-                .foodType(request.getFoodType())
-                .serviceType(request.getServiceType())
-                .rating(new Rating(BigDecimal.ZERO))
-                .build();
+    public RestaurantEntity requestToEntity(RestaurantCreateRequest request, OwnerEntity ownerEntity, BigDecimal latitude, BigDecimal longitude) {
+        return new RestaurantEntity(request.getName(), request.getDescription(), new Rating(BigDecimal.ZERO),
+                new PhoneNumber(request.getPhoneNumber()), request.getFoodType(), request.getServiceType(),
+                ownerEntity, latitude, longitude);
     }
-
-    public static RestaurantEntity requestToEntity(RestaurantCreateRequest request, BigDecimal latitude, BigDecimal longitude,OwnerEntity owner) {
-
-        return RestaurantEntity.builder()
-            .name(request.getName())
-            .description(request.getDescription())
-            .phoneNumber(new PhoneNumber(request.getPhoneNumber()))
-            .foodType(request.getFoodType())
-            .serviceType(request.getServiceType())
-            .rating(new Rating(BigDecimal.ZERO))
-            .longitude(longitude)
-            .latitude(latitude)
-            .owner(owner)
-            .build();
-    }
-
 
 }

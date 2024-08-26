@@ -13,7 +13,6 @@ import org.example.catch_line.dining.restaurant.service.RestaurantImageService;
 import org.example.catch_line.dining.restaurant.service.RestaurantService;
 import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.dining.restaurant.service.RestaurantHourService;
-import org.example.catch_line.scrap.service.ScrapService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +34,6 @@ public class RestaurantController {
     private final RestaurantHourService restaurantHourService;
     private final RestaurantImageService restaurantImageService;
     private final KakaoAddressService kakaoAddressService;
-    private final ScrapService scrapService;
 
     @Value("${kakao.maps.js-key}")
     private String jsKey;

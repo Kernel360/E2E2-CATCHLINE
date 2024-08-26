@@ -13,11 +13,12 @@ import org.example.catch_line.dining.restaurant.model.entity.RestaurantHourEntit
 import org.example.catch_line.dining.restaurant.model.entity.constant.OpenStatus;
 import org.example.catch_line.dining.restaurant.model.mapper.RestaurantHourMapper;
 import org.example.catch_line.dining.restaurant.repository.RestaurantHourRepository;
-import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -25,24 +26,20 @@ import lombok.extern.slf4j.Slf4j;
 public class RestaurantHourService {
 
 	private final RestaurantHourRepository restaurantHourRepository;
+	private final RestaurantValidator restaurantValidator;
+	private final RestaurantHourMapper restaurantHourMapper;
 
-	// 영업 시간 전체 조회
 	public List<RestaurantHourResponse> getAllRestaurantHours(Long restaurantId) {
-		List<RestaurantHourEntity> restaurantHourList = restaurantHourRepository.findAllByRestaurantRestaurantId(
-			restaurantId);
-
-		log.info("size : {}", restaurantHourList.size());
+		List<RestaurantHourEntity> restaurantHourList = restaurantHourRepository.findAllByRestaurantRestaurantId(restaurantId);
 
 		return restaurantHourList.stream()
-			.map(RestaurantHourMapper::entityToResponse)
+			.map(restaurantHourMapper::entityToResponse)
 			.collect(Collectors.toList());
 	}
 
-	// 오늘 영업 시간 조회
+	@Transactional
 	public RestaurantHourResponse getRestaurantHour(Long restaurantId, DayOfWeeks dayOfWeek) {
-
-		RestaurantHourEntity entity = restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(restaurantId,
-			dayOfWeek);
+		RestaurantHourEntity entity = restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(restaurantId, dayOfWeek);
 
 		if (LocalTime.now().isBefore(entity.getCloseTime()) && LocalTime.now().isAfter(entity.getOpenTime())) {
 			entity.updateOpenStatus(OpenStatus.OPEN);
@@ -50,49 +47,29 @@ public class RestaurantHourService {
 			entity.updateOpenStatus(OpenStatus.CLOSE);
 		}
 
-		return RestaurantHourMapper.entityToResponse(entity);
+		return restaurantHourMapper.entityToResponse(entity);
 	}
 
-	// 영업 재개
-
-	// 영업 종료
-	public void closeBusiness(Long restaurantHourId) {
-		RestaurantHourEntity entity = restaurantHourRepository.findById(restaurantHourId).orElseThrow(() -> {
-			throw new IllegalArgumentException("restaurantHourId가 없습니다 : " + restaurantHourId);
-		});
-
-		entity.closeBusiness();
-	}
-
-	public List<RestaurantHourEntity> createRestaurantHour(RestaurantEntity restaurant) {
+	public void createRestaurantHour(RestaurantEntity restaurant) {
 		List<RestaurantHourEntity> list = new ArrayList<>();
-
 		DayOfWeeks[] dayOfWeeks = DayOfWeeks.values();
 
 		for (DayOfWeeks dayOfWeek : dayOfWeeks) {
-			RestaurantHourEntity restaurantHourEntity = RestaurantHourEntity.builder()
-				.dayOfWeek(dayOfWeek)
-				.openTime(LocalTime.MIN)
-				.closeTime(LocalTime.MAX)
-				.openStatus(OpenStatus.OPEN)
-				.restaurant(restaurant)
-				.build();
+			RestaurantHourEntity restaurantHourEntity = createRestaurantHourEntity(restaurant, dayOfWeek);
 			list.add(restaurantHourEntity);
 		}
-
 		restaurantHourRepository.saveAll(list);
-
-		return list;
-
 	}
 
+	@Transactional
 	public void updateRestaurantHour(Long restaurantHourId, RestaurantHourRequest request) {
-		RestaurantHourEntity restaurantHourEntity = restaurantHourRepository.findById(restaurantHourId)
-			.orElseThrow(() -> new CatchLineException("영업 시간이 존재하지 않습니다"));
+		RestaurantHourEntity restaurantHourEntity = restaurantValidator.checkIfRestaurantHourPresent(restaurantHourId);
 		restaurantHourEntity.updateRestaurantHourEntity(request.getDayOfWeek(), request.getOpenTime(),
-			request.getCloseTime(), request.getOpenStatus());
-		restaurantHourRepository.save(restaurantHourEntity);
+				request.getCloseTime(), request.getOpenStatus());
+	}
 
+	private RestaurantHourEntity createRestaurantHourEntity(RestaurantEntity restaurant, DayOfWeeks dayOfWeek) {
+		return new RestaurantHourEntity(dayOfWeek, LocalTime.MIN, LocalTime.MAX, OpenStatus.OPEN, restaurant);
 	}
 
 }

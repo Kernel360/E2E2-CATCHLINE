@@ -17,42 +17,35 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class MenuService {
 
     private final MenuRepository menuRepository;
     private final RestaurantValidator restaurantValidator;
     private final MenuValidator menuValidator;
+    private final MenuMapper menuMapper;
 
-    // 식당에 대한 메뉴 조회
     public List<MenuResponse> getRestaurantMenuList(Long restaurantId) {
         List<MenuEntity> menuList = menuRepository.findAllByRestaurantRestaurantId(restaurantId);
 
         return menuList.stream()
-                .map(entity -> MenuMapper.entityToResponse(entity)) // .map(menuMapper::entityToResponse)
+                .map(menuMapper::entityToResponse)
                 .collect(Collectors.toList());
     }
 
-
-    // TODO: 이 부분은 아마 사장님 구현할 때 사용
-    // 메뉴 상세 조회
-    // 메뉴 추가
     public MenuResponse createRestaurantMenu(Long restaurantId, MenuRequest menuRequest) {
         RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
-        MenuEntity menuEntity = MenuMapper.requestToEntity(menuRequest, restaurantEntity);
+        MenuEntity menuEntity = menuMapper.requestToEntity(menuRequest, restaurantEntity);
         MenuEntity savedEntity = menuRepository.save(menuEntity);
-        return MenuMapper.entityToResponse(savedEntity);
+        return menuMapper.entityToResponse(savedEntity);
     }
 
-    // 메뉴 수정
+    @Transactional
     public void updateRestaurantMenu(Long restaurantId, Long menuId, MenuRequest menuRequest) {
-        RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
+        restaurantValidator.checkIfRestaurantPresent(restaurantId);
         MenuEntity menuEntity = menuValidator.checkIfMenuPresent(menuId);
         menuEntity.updateMenu(menuRequest.getName(), menuRequest.getPrice());
-
     }
 
-    // 메뉴 삭제
     public void deleteRestaurantMenu(Long menuId) {
         menuRepository.deleteById(menuId);
     }

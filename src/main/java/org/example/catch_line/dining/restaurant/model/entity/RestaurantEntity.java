@@ -85,9 +85,7 @@ public class RestaurantEntity extends BaseTimeEntity {
     @JoinColumn(name = "owner_id")
     private OwnerEntity owner;
 
-
-    @Builder
-    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType,OwnerEntity owner, BigDecimal latitude, BigDecimal longitude) {
+    public RestaurantEntity(String name, String description, Rating rating, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType, OwnerEntity owner, BigDecimal latitude, BigDecimal longitude) {
         this.name = name;
         this.description = description;
         this.rating = rating;
@@ -110,7 +108,6 @@ public class RestaurantEntity extends BaseTimeEntity {
         this.scrapCount = scrapCount;
     }
 
-    // TODO: 위도, 경도 값도 수정할 수 있도록 변경
     public void updateReservation(String name, String description, PhoneNumber phoneNumber, FoodType foodType, ServiceType serviceType) {
         this.name = name;
         this.description = description;
@@ -119,14 +116,15 @@ public class RestaurantEntity extends BaseTimeEntity {
         this.serviceType = serviceType;
     }
 
+
     // TODO : native query 사용으로 변경
     // 사용자가 식당 스크랩 시 `scrapCount` 1 증가
+
     public void addScrapCountByUser() {
         this.scrapCount++;
 
     }
 
-    // 사용자가 식당 스크랩 취소 시 `scrapCount` 1 감소
     public void reduceScrapCountByUser() {
         this.scrapCount--;
     }

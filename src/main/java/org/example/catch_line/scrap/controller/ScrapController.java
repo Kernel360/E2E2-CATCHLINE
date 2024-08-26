@@ -24,10 +24,7 @@ public class ScrapController {
     private final ScrapService scrapService;
 
     @PostMapping
-    public ResponseEntity<?> scrapRestaurantByUser(
-            @PathVariable Long restaurantId,
-            HttpSession httpSession
-    ) {
+    public ResponseEntity<?> scrapRestaurantByUser(@PathVariable Long restaurantId, HttpSession httpSession) {
         Long memberId;
         try {
             memberId = SessionUtils.getMemberId(httpSession);
@@ -38,15 +35,11 @@ public class ScrapController {
         }
 
         RestaurantResponse restaurantResponse = scrapService.createScrap(memberId, restaurantId);
-
         return ResponseEntity.ok().body(restaurantResponse);
     }
 
     @DeleteMapping
-    public ResponseEntity<RestaurantResponse> cancelScrapByUser(
-            @PathVariable Long restaurantId,
-            HttpSession httpSession
-    ) {
+    public ResponseEntity<RestaurantResponse> cancelScrapByUser(@PathVariable Long restaurantId, HttpSession httpSession) {
         RestaurantResponse restaurantResponse = scrapService.deleteScrap(SessionUtils.getMemberId(httpSession), restaurantId);
         return ResponseEntity.ok().body(restaurantResponse);
     }

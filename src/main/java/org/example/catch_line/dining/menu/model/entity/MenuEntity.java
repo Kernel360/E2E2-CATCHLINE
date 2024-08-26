@@ -24,7 +24,6 @@ public class MenuEntity {
     @JoinColumn(name = "restaurant_id")
     private RestaurantEntity restaurant;
 
-    @Builder
     public MenuEntity(String name, Long price, RestaurantEntity restaurant) {
         this.name = name;
         this.price = price;

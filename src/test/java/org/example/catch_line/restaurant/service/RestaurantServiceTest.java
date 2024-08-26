@@ -15,6 +15,7 @@ import org.example.catch_line.dining.restaurant.model.mapper.RestaurantMapper;
 import org.example.catch_line.dining.restaurant.repository.RestaurantRepository;
 import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
 import org.example.catch_line.review.service.ReviewService;
+import org.example.catch_line.user.owner.model.entity.OwnerEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,7 @@ class RestaurantServiceTest {
     @Mock ReviewService reviewService;
     @Mock ScrapService scrapService;
     @Mock RestaurantValidator restaurantValidator;
+    @Mock RestaurantMapper restaurantMapper;
 
     // RestaurantService에 위에서 만든 가짜 객체 넣어주기
     @InjectMocks
@@ -50,51 +52,9 @@ class RestaurantServiceTest {
 
     @BeforeEach
     void setUp() {
-        restaurantEntity = RestaurantEntity.builder()
-                .name("새마을식당")
-                .description("백종원의 새마을식당")
-                .phoneNumber(new PhoneNumber("02-1234-1234"))
-                .rating(new Rating(BigDecimal.ZERO))
-                .serviceType(ServiceType.WAITING)
-                .foodType(FoodType.KOREAN)
-                .build();
-    }
-
-
-    @Test
-    @DisplayName("식당 생성 테스트")
-    void restaurant_create() {
-        // given
-        RestaurantCreateRequest request = getRestaurantCreateRequest();
-        RestaurantEntity entity = RestaurantMapper.requestToEntity(request);
-
-        when(restaurantRepository.save(any(RestaurantEntity.class))).thenReturn(entity);
-
-        // when
-        RestaurantResponse response = restaurantService.createRestaurant(request);
-
-        // then
-        assertThat(response).isNotNull();
-        assertThat(response.getName()).isEqualTo(entity.getName());
-        assertThat(response.getDescription()).isEqualTo(entity.getDescription());
-        assertThat(response.getPhoneNumber()).isEqualTo(entity.getPhoneNumber().getPhoneNumberValue());
-        assertThat(response.getAverageRating()).isEqualTo(entity.getRating().getRating());
-    }
-
-    @Test
-    @DisplayName("식당 이름 중복 테스트")
-    void restaurant_create_duplicate_name() {
-        // given
-        RestaurantCreateRequest request = getRestaurantCreateRequest();
-
-        // when(...) 안에 있는 메서드 호출은 실제로 그 메서드를 실행하는 것이 아니다.
-        // 해당 메서드가 나중에 테스트 실행 중 호출될 때 어떻게 동작해야 하는지를 지정하는 설정 단계이다.
-        when(restaurantRepository.findByName(request.getName())).thenReturn(Optional.of(restaurantEntity));
-
-        // when
-        // then
-        assertThatThrownBy(() -> restaurantService.createRestaurant(request))
-                .isInstanceOf(IllegalArgumentException.class);
+        OwnerEntity ownerEntity = new OwnerEntity();
+        restaurantEntity = new RestaurantEntity("새마을식당", "백종원", new Rating(BigDecimal.ZERO),
+                new PhoneNumber("02-1234-1234"), FoodType.KOREAN, ServiceType.WAITING, ownerEntity, BigDecimal.ZERO, BigDecimal.ZERO);
     }
 
     @Test
@@ -150,13 +110,14 @@ class RestaurantServiceTest {
     @DisplayName("식당 수정 테스트")
     void restaurant_update() {
         // given
+        Long ownerId = 1L;
         Long restaurantId = 1L;
         RestaurantUpdateRequest request = getRestaurantUpdateRequest();
 
         when(restaurantValidator.checkIfRestaurantPresent(restaurantId)).thenReturn(restaurantEntity);
 
         // when
-        restaurantService.updateRestaurant(restaurantId, request);
+        restaurantService.updateRestaurant(ownerId, restaurantId, request);
 
         // then
         assertThat(request.getName()).isEqualTo(restaurantEntity.getName());

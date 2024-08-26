@@ -23,6 +23,7 @@ public class ScrapService {
 
     private final MemberValidator memberValidator;
     private final RestaurantValidator restaurantValidator;
+    private final RestaurantMapper restaurantMapper;
     private final ScrapRepository scrapRepository;
 
     public Long getRestaurantScraps(Long restaurantId) {
@@ -42,14 +43,14 @@ public class ScrapService {
         boolean existScrap = scrapRepository.existsById(scrapId);
 
         if (existScrap) {
-            return RestaurantMapper.entityToResponse(restaurant);
+            return restaurantMapper.entityToResponse(restaurant);
         }
 
         ScrapEntity scrapEntity = new ScrapEntity(scrapId, member, restaurant);
         scrapRepository.save(scrapEntity);
         restaurant.addScrapCountByUser();
 
-        return RestaurantMapper.entityToResponse(restaurant, true);
+        return restaurantMapper.entityToResponse(restaurant, true);
     }
 
     public RestaurantResponse deleteScrap(Long memberId, Long restaurantId) {
@@ -59,7 +60,7 @@ public class ScrapService {
         scrapRepository.deleteById(scrapId);
         restaurant.reduceScrapCountByUser();
 
-        return RestaurantMapper.entityToResponse(restaurant);
+        return restaurantMapper.entityToResponse(restaurant);
     }
 }
 

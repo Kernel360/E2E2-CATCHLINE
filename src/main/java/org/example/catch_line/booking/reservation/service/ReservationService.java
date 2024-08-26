@@ -1,5 +1,6 @@
 package org.example.catch_line.booking.reservation.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
@@ -24,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 //@Transactional
@@ -38,9 +41,9 @@ public class ReservationService {
 	private final RestaurantValidator restaurantValidator;
 	private final HistoryMapper historyMapper;
 
-	@Transactional(isolation = Isolation.READ_COMMITTED)
+	@Transactional
 	public ReservationResponse addReservation(Long memberId, Long restaurantId, ReservationRequest reservationRequest) {
-		if (isReservationTimeConflict(restaurantId, reservationRequest.getReservationDate())) {
+		if(isReservationTimeConflict(restaurantId, reservationRequest.getReservationDate())) {
 			throw new DuplicateReservationTimeException();
 		}
 
@@ -67,7 +70,7 @@ public class ReservationService {
 				.getRestaurantId();
 		MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 
-		if (isReservationTimeConflict(restaurantId, reservationDate)) {
+		if(isReservationTimeConflict(restaurantId, reservationDate)) {
 			throw new DuplicateReservationTimeException();
 		}
 
@@ -112,8 +115,8 @@ public class ReservationService {
 	}
 
 	private boolean isReservationTimeConflict(Long restaurantId, LocalDateTime reservationDate) {
-		List<ReservationEntity> existingReservations = reservationRepository.findByRestaurantRestaurantIdAndReservationDate(restaurantId, reservationDate);
-		return !existingReservations.isEmpty();
+		Optional<ReservationEntity> reservationEntityOptional = reservationRepository.findByRestaurantRestaurantIdAndReservationDate(restaurantId, reservationDate);
+		return reservationEntityOptional.isPresent();
 	}
 
 }

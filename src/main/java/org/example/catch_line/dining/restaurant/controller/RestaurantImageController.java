@@ -21,7 +21,6 @@ public class RestaurantImageController {
 
     private final RestaurantImageService restaurantImageService;
 
-    // 이미지 불러오는 메서드
     @GetMapping("/images/{restaurantImageId}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long restaurantImageId) {
         RestaurantImageEntity image = restaurantImageService.getImage(restaurantImageId);
@@ -32,21 +31,18 @@ public class RestaurantImageController {
                 .body(image.getImageBinaryData());
     }
 
-    // 업로드 페이지
     @GetMapping("/restaurants/{restaurantId}/upload")
     public String upload(Model model, @PathVariable String restaurantId) {
         model.addAttribute("restaurantId", restaurantId);
         return "restaurant/upload-image";
     }
 
-    // 업로드
     @PostMapping("/restaurants/{restaurantId}/upload")
     public String uploadImage(@PathVariable Long restaurantId, @RequestPart("image") MultipartFile image, Model model) {
         try {
             RestaurantImageEntity savedImage = restaurantImageService.saveImage(restaurantId, image);
             model.addAttribute("imageId", savedImage.getRestaurantImageId());
             return String.format("redirect:/owner/restaurants/%d/edit-images", restaurantId);
-            // return "redirect:/restaurants/" + savedImage.getRestaurant().getRestaurantId();
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "업로드 오류: " + e.getMessage());
@@ -61,13 +57,10 @@ public class RestaurantImageController {
         model.addAttribute("restaurantId", restaurantId);
         return "owner/edit-images";
     }
+
     @DeleteMapping("/restaurants/{restaurantId}/images/delete")
     public String deleteImage(@PathVariable Long restaurantId, @RequestParam Long imageId) {
-        // 이미지 삭제 처리 로직'
         restaurantImageService.deleteImage(imageId);
-
         return "redirect:/owner/restaurants/{restaurantId}/edit-images";
     }
-
-
 }

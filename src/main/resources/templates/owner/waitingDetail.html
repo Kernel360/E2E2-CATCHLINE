@@ -97,7 +97,7 @@
             method: 'POST'
         })
             .then(response => {
-                if (response.ok) {
+                if ((response.ok && response.status >= 200 && response.status < 300) || response.status === 302) {
                     alert('대기가 취소되었습니다.');
                     window.location.href = '/owner'; // 취소 후 history 페이지로 리디렉션
                 } else {
@@ -118,7 +118,7 @@
             method: 'POST'
         })
             .then(response => {
-                if (response.ok) {
+                if ((response.ok && response.status >= 200 && response.status < 300) || response.status === 302) {
                     alert('대기가 완료되었습니다.');
                     window.location.href = '/owner'; // 취소 후 history 페이지로 리디렉션
                 } else {

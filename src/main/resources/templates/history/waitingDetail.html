@@ -88,7 +88,10 @@
             <div class="row">
                 <div class="col text-right">
                     <!-- 대기 취소 버튼 -->
-                    <button type="button" class="btn btn-danger" onclick="cancelWaiting()">취소하기</button>
+                    <button type="button" class="btn btn-danger"
+                            th:if="${historyResponse.status.name() == 'SCHEDULED'}"
+                            th:onclick="cancelWaiting()">취소하기</button>
+
                 </div>
             </div>
         </div>
@@ -103,19 +106,11 @@
         fetch(url, {
             method: 'POST'
         })
-            .then(response => {
-                if ((response.ok && response.status >= 200 && response.status < 300) || response.status === 302) {
-                    alert('대기가 취소되었습니다.');
-                    window.location.href = '/history'; // 취소 후 history 페이지로 리디렉션
-                } else {
-                    alert('대기 취소에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('대기 취소에 실패했습니다.');
+            .finally(() => {
+                window.location.href = '/history'; // 취소 후 history 페이지로 리디렉션
             });
     }
 </script>
+
 </body>
 </html>

@@ -1,24 +1,23 @@
 package org.example.catch_line.review.controller;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.session.SessionConst;
-import org.example.catch_line.common.session.SessionUtils;
+import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.exception.authorizaion.UnauthorizedException;
-import org.example.catch_line.exception.session.InvalidSessionException;
 import org.example.catch_line.review.model.dto.ReviewCreateRequest;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.model.dto.ReviewUpdateRequest;
 import org.example.catch_line.review.service.ReviewService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Slf4j
@@ -30,8 +29,8 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	@GetMapping
-	public String getRestaurantReviews(@PathVariable Long restaurantId, Model model, HttpSession session) {
-		Long memberId = (Long) session.getAttribute(SessionConst.MEMBER_ID);
+	public String getRestaurantReviews(@PathVariable Long restaurantId, Model model, @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
+		Long memberId = memberUserDetails.getMember().getMemberId();
 		List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurantId);
 		BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
 		model.addAttribute("averageRating", averageRating);
@@ -43,16 +42,14 @@ public class ReviewController {
 
 	@GetMapping("/create")
 	public String showReviewForm(@PathVariable Long restaurantId, RedirectAttributes redirectAttributes, Model model,
-								 HttpSession session) {
-		try {
-			SessionUtils.getMemberId(session);
-			model.addAttribute("restaurantId", restaurantId);
-			model.addAttribute("reviewCreateRequest", new ReviewCreateRequest(null, null));
-		} catch (InvalidSessionException e) {
-			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+								 @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
+		if(Objects.isNull(memberUserDetails)) {
+			redirectAttributes.addFlashAttribute("errorMessage", "로그인하지 않은 사용자입니다. 로그인 후 이용 부탁드립니다.");
 			return String.format("redirect:/restaurants/%d/reviews", restaurantId);
 		}
 
+		model.addAttribute("restaurantId", restaurantId);
+		model.addAttribute("reviewCreateRequest", new ReviewCreateRequest(null, null));
 		return "review/reviewCreateForm";
 	}
 
@@ -60,34 +57,31 @@ public class ReviewController {
 	public String addReview(@PathVariable Long restaurantId,
 							@Valid @ModelAttribute ReviewCreateRequest reviewCreateRequest,
 							BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes,
-							HttpSession session) {
+							@AuthenticationPrincipal MemberUserDetails memberUserDetails) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("restaurantId", restaurantId);
 			return "review/reviewCreateForm";
 		}
 
-		Long memberId;
-		try {
-			memberId = SessionUtils.getMemberId(session);
-			reviewService.createReview(memberId, restaurantId, reviewCreateRequest);
-		} catch (InvalidSessionException e) {
-			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+		if(Objects.isNull(memberUserDetails)) {
+			redirectAttributes.addFlashAttribute("errorMessage", "로그인하지 않은 사용자입니다. 로그인 후 이용 부탁드립니다.");
 		}
-
 		return String.format("redirect:/restaurants/%d/reviews", restaurantId);
+
 	}
 
 	@GetMapping("/{reviewId}/update")
 	public String updateForm(@PathVariable Long restaurantId, @PathVariable Long reviewId,
-							 RedirectAttributes redirectAttributes, Model model, HttpSession session) {
+							 RedirectAttributes redirectAttributes, Model model, @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
+
 		Long memberId;
 		try {
-			memberId = SessionUtils.getMemberId(session);
+			memberId = memberUserDetails.getMember().getMemberId();
 			ReviewResponse reviewResponse = reviewService.getReviewById(reviewId, memberId);
 			model.addAttribute("review", reviewResponse);
 			model.addAttribute("reviewId", reviewId);
 			model.addAttribute("restaurantId", restaurantId);
-		} catch (InvalidSessionException | UnauthorizedException e) {
+		} catch (NullPointerException | UnauthorizedException e) {
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 			return String.format("redirect:/restaurants/%d/reviews", restaurantId);
 		}
@@ -98,7 +92,7 @@ public class ReviewController {
 	@PutMapping("/{reviewId}")
 	public String updateReview(@PathVariable Long restaurantId, @PathVariable Long reviewId,
 							   @Valid @ModelAttribute("review") ReviewUpdateRequest reviewUpdateRequest, BindingResult bindingResult,
-							   Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+							   Model model, RedirectAttributes redirectAttributes, @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("reviewId", reviewId);
 			model.addAttribute("restaurantId", restaurantId);
@@ -107,9 +101,9 @@ public class ReviewController {
 
 		Long memberId;
 		try {
-			memberId = SessionUtils.getMemberId(session);
+			memberId = memberUserDetails.getMember().getMemberId();
 			reviewService.updateReview(reviewId, memberId, reviewUpdateRequest.getRating(), reviewUpdateRequest.getContent());
-		} catch (InvalidSessionException | UnauthorizedException e) {
+		} catch (NullPointerException | UnauthorizedException e) {
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 		}
 
@@ -118,16 +112,16 @@ public class ReviewController {
 
 	@DeleteMapping("/{reviewId}")
 	public String deleteReview(@PathVariable Long restaurantId, @PathVariable Long reviewId,
-							   RedirectAttributes redirectAttributes, HttpSession session) {
+							   RedirectAttributes redirectAttributes, @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
 		Long memberId;
 		try {
-			memberId = SessionUtils.getMemberId(session);
+			memberId = memberUserDetails.getMember().getMemberId();
 			reviewService.deleteReview(reviewId, memberId);
-		} catch (InvalidSessionException | UnauthorizedException e) {
+		} catch (NullPointerException | UnauthorizedException e) {
 			log.info("exception");
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 		}
 
-        return String.format("redirect:/restaurants/%d/reviews", restaurantId);
+		return String.format("redirect:/restaurants/%d/reviews", restaurantId);
 	}
 }

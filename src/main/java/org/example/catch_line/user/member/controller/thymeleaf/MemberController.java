@@ -26,9 +26,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MemberResponseMapper memberResponseMapper;
-    private final CookieUtils cookieUtils;
-    private final MemberDataProvider memberDataProvider;
-
 
     @GetMapping
     public String findMember(@AuthenticationPrincipal MemberUserDetails memberUserDetails, Model model) {

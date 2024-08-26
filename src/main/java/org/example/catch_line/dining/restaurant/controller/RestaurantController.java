@@ -1,11 +1,10 @@
 package org.example.catch_line.dining.restaurant.controller;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.session.SessionConst;
 import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
+import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantImageEntity;
@@ -13,7 +12,9 @@ import org.example.catch_line.dining.restaurant.service.RestaurantImageService;
 import org.example.catch_line.dining.restaurant.service.RestaurantService;
 import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.dining.restaurant.service.RestaurantHourService;
+import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -42,12 +44,16 @@ public class RestaurantController {
     public String viewRestaurant(
             @PathVariable Long restaurantId,
             Model model,
-            HttpSession session
-    ) {
+            @AuthenticationPrincipal MemberUserDetails memberUserDetails
+            ) {
         DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
         DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
 
-        Long memberId = (Long) session.getAttribute(SessionConst.MEMBER_ID);
+        Long memberId = Optional.ofNullable(memberUserDetails)
+                .map(MemberUserDetails::getMember)
+                .map(MemberEntity::getMemberId)
+                .orElse(null);
+
         RestaurantResponse restaurant = restaurantService.findRestaurant(memberId, restaurantId);
         List<RestaurantHourResponse> restaurantHours = restaurantHourService.getAllRestaurantHours(restaurantId);
         RestaurantHourResponse hourResponse = restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek);

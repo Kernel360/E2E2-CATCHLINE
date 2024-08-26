@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
-import java.nio.file.AccessDeniedException;
-
 @Component
 @RequiredArgsConstructor
 public class HistoryValidator {

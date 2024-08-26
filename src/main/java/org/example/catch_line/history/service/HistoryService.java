@@ -77,7 +77,7 @@ public class HistoryService {
 	// 예약 상세 정보 조회
 	public HistoryResponse findReservationDetailById(List<HistoryResponse> historyList, Long reservationId) {
 		return historyList.stream()
-			.filter(h -> h.getReservationId() != null && reservationId.equals(h.getReservationId()))  // null 체크 추가
+			.filter(h -> !Objects.isNull(h.getReservationId()) && Objects.equals(reservationId,h.getReservationId()))  // null 체크 추가
 			.findFirst()
 			.orElseThrow(HistoryException::new);
 	}
@@ -85,7 +85,7 @@ public class HistoryService {
 	// 웨이팅 상세 정보 조회
 	public HistoryResponse findWaitingDetailById(List<HistoryResponse> historyList, Long waitingId) {
 		return historyList.stream()
-			.filter(h -> h.getWaitingId() != null && waitingId.equals(h.getWaitingId()))  // null 체크 추가
+			.filter(h -> !Objects.isNull(h.getWaitingId()) && Objects.equals(waitingId,h.getWaitingId()))  // null 체크 추가
 			.findFirst()
 			.orElseThrow(HistoryException::new);
 	}

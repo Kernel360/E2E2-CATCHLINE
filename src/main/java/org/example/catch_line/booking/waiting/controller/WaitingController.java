@@ -3,7 +3,6 @@ package org.example.catch_line.booking.waiting.controller;
 import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.booking.waiting.service.WaitingService;
-import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.exception.booking.WaitingException;
@@ -15,9 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller

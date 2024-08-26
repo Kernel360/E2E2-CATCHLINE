@@ -63,12 +63,16 @@ public class ReviewController {
 			return "review/reviewCreateForm";
 		}
 
-		if(Objects.isNull(memberUserDetails)) {
+		if (Objects.isNull(memberUserDetails)) {
 			redirectAttributes.addFlashAttribute("errorMessage", "로그인하지 않은 사용자입니다. 로그인 후 이용 부탁드립니다.");
+		} else {
+			Long memberId = memberUserDetails.getMember().getMemberId();
+			reviewService.createReview(memberId, restaurantId, reviewCreateRequest);
+
 		}
 		return String.format("redirect:/restaurants/%d/reviews", restaurantId);
-
 	}
+
 
 	@GetMapping("/{reviewId}/update")
 	public String updateForm(@PathVariable Long restaurantId, @PathVariable Long reviewId,

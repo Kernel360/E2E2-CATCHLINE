@@ -26,6 +26,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+
 public class WaitingService {
 
 	private final NotificationService notificationService;
@@ -52,6 +53,7 @@ public class WaitingService {
 		return waitingResponseMapper.convertToResponse(savedEntity);
 	}
 
+	@Transactional
 	public void cancelWaiting(Long memberId, Long waitingId) {
 		MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 		WaitingEntity waiting = historyValidator.checkIfWaitingPresent(waitingId);
@@ -61,6 +63,7 @@ public class WaitingService {
 		notificationService.sendWaiting(member, waiting, "웨이팅이 취소되었습니다.");
 	}
 
+	@Transactional
 	public void completedWaiting(Long waitingId) {
 		WaitingEntity entity = historyValidator.checkIfWaitingPresent(waitingId);
 
@@ -68,6 +71,7 @@ public class WaitingService {
 		waitingRepository.save(entity);
 	}
 
+	@Transactional
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void updateScheduledWaiting() {
 		List<WaitingEntity> waitingEntities = waitingRepository.findAllByStatus(Status.SCHEDULED);

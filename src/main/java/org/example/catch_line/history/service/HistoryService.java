@@ -34,7 +34,6 @@ public class HistoryService {
 	public List<HistoryResponse> getAllHistory(Long memberId, Status status) {
 		List<HistoryResponse> historyResponseList = new ArrayList<>();
 
-		// 오늘 등록된 상태가 SCHEDULED인 웨이팅 리스트 가져오기
 		List<WaitingEntity> scheduledWaitingEntities = getWaitingEntitiesScheduledForToday(memberId, status);
 		List<ReservationEntity> allReservation = getReservationEntities(memberId, status);
 

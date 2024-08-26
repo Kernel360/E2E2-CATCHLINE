@@ -30,7 +30,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-//@Transactional
+@Transactional
 public class ReservationService {
 
 	private final NotificationService notificationService;
@@ -41,7 +41,6 @@ public class ReservationService {
 	private final RestaurantValidator restaurantValidator;
 	private final HistoryMapper historyMapper;
 
-	@Transactional
 	public ReservationResponse addReservation(Long memberId, Long restaurantId, ReservationRequest reservationRequest) {
 		if(isReservationTimeConflict(restaurantId, reservationRequest.getReservationDate())) {
 			throw new DuplicateReservationTimeException();
@@ -82,7 +81,6 @@ public class ReservationService {
 		return historyMapper.reservationToHistoryResponse(savedEntity);
 	}
 
-	@Transactional
 	@Scheduled(cron = "0 0 0 * * ?")
 	public void updateScheduledReservation() {
 		List<ReservationEntity> reservationEntities = reservationRepository.findAllByStatus(Status.SCHEDULED);

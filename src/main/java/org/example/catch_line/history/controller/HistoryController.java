@@ -10,6 +10,7 @@ import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.common.constant.Status;
+import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.booking.BookingErrorException;
 import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
@@ -17,6 +18,7 @@ import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
 import org.example.catch_line.history.validation.HistoryValidator;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,25 +44,27 @@ public class HistoryController {
 	@GetMapping("/history")
 	public String getHistories(
 		Model model,
-		HttpSession session,
+		@AuthenticationPrincipal MemberUserDetails userDetails,
 		@RequestParam(defaultValue = "SCHEDULED") Status status
 	) {
-		Long memberId = SessionUtils.getMemberId(session);
+		Long memberId = userDetails.getMember().getMemberId();
 		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId, status);
-		session.setAttribute("historyList", allHistory);
 		model.addAttribute("history", allHistory);
 
 		return "history/history";
 	}
 
 	@GetMapping("/history/waiting/{waitingId}")
-	public String getWaitingDetail(@PathVariable Long waitingId, HttpSession session, Model model) {
+	public String getWaitingDetail(@PathVariable Long waitingId,Model model, @AuthenticationPrincipal MemberUserDetails userDetails, @RequestParam(defaultValue = "SCHEDULED") Status status
+	) {
 
-		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
+		Long memberId = userDetails.getMember().getMemberId();
 
-		if (historyList != null) {
+		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId, status);
+
+		if (allHistory != null) {
 			try {
-				HistoryResponse historyResponse = historyService.findWaitingDetailById(historyList, waitingId);
+				HistoryResponse historyResponse = historyService.findWaitingDetailById(allHistory, waitingId);
 				model.addAttribute("historyResponse", historyResponse);
 				return "history/waitingDetail";
 			} catch (HistoryException e) {
@@ -75,14 +79,16 @@ public class HistoryController {
 	@GetMapping("/history/reservation/{reservationId}")
 	public String getReservationDetail(
 		@PathVariable Long reservationId,
-		Model model,
-		HttpSession session
-	) {
-		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
+		Model model,@AuthenticationPrincipal MemberUserDetails userDetails,@RequestParam(defaultValue = "SCHEDULED") Status status
 
-		if (historyList != null) {
+	) {
+		Long memberId = userDetails.getMember().getMemberId();
+
+		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId, status);
+
+		if (allHistory != null) {
 			try {
-				HistoryResponse historyResponse = historyService.findReservationDetailById(historyList, reservationId);
+				HistoryResponse historyResponse = historyService.findReservationDetailById(allHistory, reservationId);
 				model.addAttribute("historyResponse", historyResponse);
 				return "history/reservationDetail";
 			} catch (HistoryException e) {
@@ -94,8 +100,9 @@ public class HistoryController {
 	}
 
 	@PostMapping("/history/reservation/{reservationId}")
-	public String deleteReservation(@PathVariable Long reservationId, Model model, HttpSession session) {
-		Long memberId = SessionUtils.getMemberId(session);
+	public String deleteReservation(@PathVariable Long reservationId, Model model, @AuthenticationPrincipal MemberUserDetails userDetails
+	) {
+		Long memberId = userDetails.getMember().getMemberId();
 		try {
 			historyValidator.validateReservationOwnership(memberId, reservationId);
 			reservationService.cancelReservation(memberId, reservationId);
@@ -106,8 +113,8 @@ public class HistoryController {
 	}
 
 	@PostMapping("/history/waiting/{waitingId}")
-	public String deleteWaiting(@PathVariable Long waitingId, Model model, HttpSession session) {
-		Long memberId = SessionUtils.getMemberId(session);
+	public String deleteWaiting(@PathVariable Long waitingId, Model model, @AuthenticationPrincipal MemberUserDetails userDetails) {
+		Long memberId = userDetails.getMember().getMemberId();
 		try {
 			historyValidator.validateWaitingOwnership(memberId, waitingId);
 			waitingService.cancelWaiting(memberId, waitingId);
@@ -135,8 +142,8 @@ public class HistoryController {
 
 	@PutMapping("/history/reservation/{reservationId}")
 	public String updateReservation(@PathVariable Long reservationId, @Valid @ModelAttribute ReservationRequest updateRequest,
-									RedirectAttributes redirectAttributes, HttpSession session) {
-		Long memberId = SessionUtils.getMemberId(session);
+									RedirectAttributes redirectAttributes, @AuthenticationPrincipal MemberUserDetails userDetails) {
+		Long memberId = userDetails.getMember().getMemberId();
 		try {
 			historyValidator.validateReservationOwnership(memberId, reservationId);
 			reservationService.updateReservation(memberId, reservationId, updateRequest.getMemberCount(), updateRequest.getReservationDate());

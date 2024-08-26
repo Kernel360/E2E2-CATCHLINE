@@ -47,6 +47,7 @@ public class SecurityConfig{
         return new BCryptPasswordEncoder();
     }
 
+    // TODO: AuthenticationManager에 LoginService를 굳이 넣어야 할까?
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
@@ -62,7 +63,6 @@ public class SecurityConfig{
 
         // form Login disable -> 해당 필터 사용할 수 있도록 추가, AuthenticationManager 넣어줘야 한다.
 
-        // /login 및 /owner/login 경로에 대해 JWT 필터 적용
         MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
         MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, memberDataProvider);
 

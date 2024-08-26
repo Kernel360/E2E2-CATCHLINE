@@ -8,14 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.config.auth.MemberUserDetails;
-import org.example.catch_line.config.auth.MemberDefaultLoginService;
-import org.example.catch_line.config.auth.OAuth2LoginService;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.example.catch_line.user.token.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;

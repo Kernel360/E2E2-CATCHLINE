@@ -4,8 +4,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.example.catch_line.user.token.JwtTokenUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -17,9 +15,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    // TODO: MemberDAtaProvider를 사용하지 않은 방법
     private final JwtTokenUtil jwtTokenUtil;
-
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -27,8 +23,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // 이메일로 토큰 생성
 //        MemberEntity member = memberDataProvider.provideMemberByKakaoMemberId(Long.valueOf(authentication.getName()));
 //        String jwtToken = jwtTokenUtil.generateToken( member.getEmail().getEmailValue());
-        // 카카오 아이디로 토큰 생성
 
+        // 카카오 아이디로 토큰 생성
         String jwtToken = jwtTokenUtil.generateToken("kakao_" + authentication.getName());
 
         // JWT 토큰을 쿠키에 저장

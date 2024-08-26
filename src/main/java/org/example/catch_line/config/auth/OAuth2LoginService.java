@@ -62,6 +62,7 @@ public class OAuth2LoginService extends DefaultOAuth2UserService {
 
         // 어떤 OAuth2 공급자를 통해 로그인하는지, 해당 공급자에서 사용자의 고유 식별자를 나타내는 필드명이 무엇인지를 반환한다.
         // 지금 kakao login만 사용하기 때문에 필요없지만, 추후 구현 위해 남겨 놓는다.
+
         // TODO: 여기에 provider에서 제공하는 id 값만 넘길 수 있는가?
         String userNameAttributeName = userRequest.getClientRegistration()
                 .getProviderDetails()

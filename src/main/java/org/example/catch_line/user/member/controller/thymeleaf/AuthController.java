@@ -1,8 +1,5 @@
 package org.example.catch_line.user.member.controller.thymeleaf;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +9,6 @@ import org.example.catch_line.user.member.model.dto.SignUpRequest;
 import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.user.member.service.AuthService;
 import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -37,7 +33,7 @@ public class AuthController {
     public boolean checkEmail(@RequestParam String email) {
 
         try {
-            // TODO: validate 메서드를 controller에서 가져다 쓰는게 맞을까요?
+            // TODO: validate 메서드를 controller에서 가져다 쓰는게 맞을까요? OO
             memberValidator.checkDuplicateEmail(new Email(email));
             return true;
         } catch (DuplicateEmailException e) {

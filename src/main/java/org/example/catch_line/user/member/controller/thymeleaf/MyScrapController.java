@@ -1,11 +1,11 @@
 package org.example.catch_line.user.member.controller.thymeleaf;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.session.SessionUtils;
+import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.user.member.service.MyScrapService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +24,9 @@ public class MyScrapController {
     @GetMapping
     public String findMyRestaurantsByScrap(
             Model model,
-            HttpSession httpSession
-    ) {
-        Long memberId = SessionUtils.getMemberId(httpSession);
-
+            @AuthenticationPrincipal MemberUserDetails memberUserDetails
+            ) {
+        Long memberId = memberUserDetails.getMember().getMemberId();
         List<RestaurantPreviewResponse> myRestaurants = myScrapService.findMyRestaurants(memberId);
         model.addAttribute("myRestaurants", myRestaurants);
         return "member/my-page/scraps";

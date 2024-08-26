@@ -1,18 +1,17 @@
 package org.example.catch_line.user.member.controller.thymeleaf;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.session.SessionUtils;
+import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.exception.authorizaion.UnauthorizedException;
 import org.example.catch_line.exception.session.InvalidSessionException;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.model.dto.ReviewUpdateRequest;
 import org.example.catch_line.review.service.ReviewService;
 import org.example.catch_line.user.member.model.dto.MyReviewResponse;
-import org.example.catch_line.user.member.service.MemberService;
 import org.example.catch_line.user.member.service.MyReviewService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,9 +32,9 @@ public class MyReviewController {
     @GetMapping
     public String myReviewList(
             Model model,
-            HttpSession httpSession
-    ) {
-        Long memberId = SessionUtils.getMemberId(httpSession);
+            @AuthenticationPrincipal MemberUserDetails memberUserDetails
+            ) {
+        Long memberId = memberUserDetails.getMember().getMemberId();
         List<MyReviewResponse> reviewList = myReviewService.getMyReviewList(memberId);
 
         model.addAttribute("reviewList", reviewList);
@@ -46,17 +45,17 @@ public class MyReviewController {
     @GetMapping("/{reviewId}/update")
     public String updateForm(
             @PathVariable Long reviewId,
-            HttpSession session,
+            @AuthenticationPrincipal MemberUserDetails memberUserDetails,
             RedirectAttributes redirectAttributes,
             Model model
     ) {
         Long memberId;
         try {
-            memberId = SessionUtils.getMemberId(session);
+            memberId = memberUserDetails.getMember().getMemberId();
             ReviewResponse reviewResponse = reviewService.getReviewById(reviewId, memberId);
             model.addAttribute("review", reviewResponse);
             model.addAttribute("reviewId", reviewId);
-        } catch (InvalidSessionException | UnauthorizedException e) {
+        } catch (NullPointerException | UnauthorizedException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/my-page/reviews";
         }
@@ -70,7 +69,7 @@ public class MyReviewController {
             @Valid @ModelAttribute("review") ReviewUpdateRequest reviewUpdateRequest,
             BindingResult bindingResult,
             Model model,
-            HttpSession session,
+            @AuthenticationPrincipal MemberUserDetails memberUserDetails,
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
@@ -80,9 +79,9 @@ public class MyReviewController {
 
         Long memberId;
         try {
-            memberId = SessionUtils.getMemberId(session);
+            memberId = memberUserDetails.getMember().getMemberId();
             reviewService.updateReview(reviewId, memberId, reviewUpdateRequest.getRating(), reviewUpdateRequest.getContent());
-        } catch (InvalidSessionException | UnauthorizedException e) {
+        } catch (NullPointerException | UnauthorizedException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
 
@@ -92,14 +91,14 @@ public class MyReviewController {
     @DeleteMapping("/{reviewId}")
     public String deleteReview(
             @PathVariable Long reviewId,
-            HttpSession session,
+            @AuthenticationPrincipal MemberUserDetails memberUserDetails,
             RedirectAttributes redirectAttributes
     ) {
         Long memberId;
         try {
-            memberId = SessionUtils.getMemberId(session);
+            memberId = memberUserDetails.getMember().getMemberId();
             reviewService.deleteReview(reviewId, memberId);
-        } catch (InvalidSessionException | UnauthorizedException e) {
+        } catch (NullPointerException | UnauthorizedException e) {
             log.info("exception");
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }

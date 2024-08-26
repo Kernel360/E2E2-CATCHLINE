@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,15 +28,25 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
     private final JwtTokenUtil jwtTokenUtil;
 
     private static final List<String> WHITELIST_URLS = Arrays.asList(
-            "/login",
+            "/login/**",
+            "/logout/**",
             "/signup",
             "/public/**",
             "/static/**",
             "/css/**",
             "/js/**",
             "/images/**",
-            "/restaurants",
-            "/owner"
+            "/restaurant/**",
+            // TODO: 수정 필요
+            "/owner/**",
+            "/"
+    );
+
+    private static final List<String> BLACKLIST_URLS = Arrays.asList(
+            "/reviews/create",
+            "/scraps",
+            "/waiting",
+            "/reservation"
     );
 
     public MemberJwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, MemberDataProvider memberDataProvider) {
@@ -47,9 +59,12 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String requestURI = request.getRequestURI();
 
+
         log.info("MemberJwtAuthorizationFilter 진입");
 
-        if (isWhitelisted(requestURI)) {
+        if (isWhitelisted(requestURI) && !isBlacklisted(requestURI)) {
+            log.info("isWhitelisted : {}", isWhitelisted(requestURI));
+            log.info("isBlacklisted : {}", isBlacklisted(requestURI));
             chain.doFilter(request, response);
             return;
         }
@@ -67,16 +82,22 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
             }
         }
 
-        if (jwtToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if(jwtToken == null) {
+            String encodedMessage = URLEncoder.encode("로그인이 필요합니다", StandardCharsets.UTF_8.toString());
+            response.sendRedirect("/login?message=" + encodedMessage);
+            return; // 필터 체인 진행 중단
+        }
+
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
             String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 
             if (username != null && jwtTokenUtil.validateToken(jwtToken, username)) {
 
                 MemberUserDetails memberUserDetails;
                 if(username.contains("kakao")) {
-                     memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByKakaoMemberId(username));
+                    memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByKakaoMemberId(username));
                 } else {
-                     memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByEmail(new Email(username)));
+                    memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByEmail(new Email(username)));
                 }
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(memberUserDetails, null, memberUserDetails.getAuthorities());
@@ -85,6 +106,16 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private boolean isBlacklisted(String requestURI) {
+
+        return BLACKLIST_URLS.stream().anyMatch(url -> {
+            log.info("url: {}", url);
+            log.info("requestURI: {}", requestURI);
+            if(requestURI.endsWith(url)) return true;
+            return false;
+        });
     }
 
     private boolean isWhitelisted(String requestURI) {

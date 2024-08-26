@@ -7,7 +7,7 @@ import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.common.model.vo.Password;
 import org.example.catch_line.common.model.vo.PhoneNumber;
-import org.example.catch_line.user.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;

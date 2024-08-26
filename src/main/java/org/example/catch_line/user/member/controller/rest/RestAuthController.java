@@ -6,9 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.constant.Role;
-import org.example.catch_line.user.member.model.dto.LoginRequest;
-import org.example.catch_line.user.member.model.dto.MemberResponse;
-import org.example.catch_line.user.member.model.dto.SignUpRequest;
+import org.example.catch_line.user.member.model.dto.*;
 import org.example.catch_line.user.member.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +25,7 @@ public class RestAuthController {
 
 
     @PostMapping("/signup")
-    public ResponseEntity<MemberResponse> signup(
+    public ResponseEntity<SignUpResponse> signup(
             @Valid
             @RequestBody SignUpRequest signUpRequest
     ) {
@@ -37,17 +35,16 @@ public class RestAuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberResponse> login(
+    public ResponseEntity<LoginResponse> login(
             @Valid
             @RequestBody LoginRequest loginRequest,
             HttpSession httpSession
     ) {
-        MemberResponse memberResponse = authService.login(loginRequest);
-        httpSession.setAttribute(MEMBER_ID, memberResponse.getMemberId());
+        LoginResponse loginResponse = authService.login(loginRequest);
+        httpSession.setAttribute(MEMBER_ID, loginResponse.getMemberId());
         httpSession.setAttribute(ROLE, Role.USER);
 
-        return ResponseEntity.ok().body(memberResponse);
-
+        return ResponseEntity.ok().body(loginResponse);
     }
 
     @PostMapping("/logout")

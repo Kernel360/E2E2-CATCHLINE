@@ -6,8 +6,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.session.SessionUtils;
+import org.example.catch_line.user.member.model.dto.MemberDeleteResponse;
 import org.example.catch_line.user.member.model.dto.MemberResponse;
 import org.example.catch_line.user.member.model.dto.MemberUpdateRequest;
+import org.example.catch_line.user.member.model.dto.MemberUpdateResponse;
 import org.example.catch_line.user.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,23 +31,23 @@ public class RestMemberController {
         return ResponseEntity.ok().body(memberResponse);
     }
 
-    @PutMapping
-    public ResponseEntity<MemberResponse> updateMember(
+    @PatchMapping
+    public ResponseEntity<MemberUpdateResponse> updateMember(
             @Valid
             @RequestBody MemberUpdateRequest memberUpdateRequest,
             HttpSession httpSession
     ) {
 
-        MemberResponse memberResponse = memberService.updateMember(memberUpdateRequest, SessionUtils.getMemberId(httpSession));
+        MemberUpdateResponse memberResponse = memberService.updateMember(memberUpdateRequest, SessionUtils.getMemberId(httpSession));
         return ResponseEntity.ok().body(memberResponse);
 
     }
 
-    @PatchMapping
-    public ResponseEntity<MemberResponse> deleteMember(
+    @DeleteMapping
+    public ResponseEntity<MemberDeleteResponse> deleteMember(
             HttpSession httpSession
     ) {
-        MemberResponse memberResponse = memberService.deleteMember(SessionUtils.getMemberId(httpSession));
+        MemberDeleteResponse memberResponse = memberService.deleteMember(SessionUtils.getMemberId(httpSession));
         httpSession.invalidate();
         return ResponseEntity.ok().body(memberResponse);
     }

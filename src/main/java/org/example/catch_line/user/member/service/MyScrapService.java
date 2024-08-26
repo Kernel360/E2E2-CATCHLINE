@@ -6,7 +6,7 @@ import org.example.catch_line.dining.restaurant.model.mapper.RestaurantPreviewMa
 import org.example.catch_line.scrap.model.entity.ScrapEntity;
 import org.example.catch_line.scrap.repository.ScrapRepository;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.validation.MemberValidator;
+import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

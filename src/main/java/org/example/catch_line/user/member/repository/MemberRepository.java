@@ -18,6 +18,6 @@ public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     Optional<MemberEntity> findByMemberIdAndIsMemberDeletedFalse(Long memberId);
 
     // 탈퇴한 회원 제외하고, 카카오 계정으로 로그인한 회원이 존재하는지 탐색
-    Optional<MemberEntity> findByKakaoMemberIdAndIsMemberDeletedFalse(Long kakaoId);
+    Optional<MemberEntity> findByKakaoMemberIdAndIsMemberDeletedFalse(String kakaoId);
 
 }

@@ -116,6 +116,10 @@ public class RestaurantEntity extends BaseTimeEntity {
         this.serviceType = serviceType;
     }
 
+
+    // TODO : native query 사용으로 변경
+    // 사용자가 식당 스크랩 시 `scrapCount` 1 증가
+
     public void addScrapCountByUser() {
         this.scrapCount++;
 

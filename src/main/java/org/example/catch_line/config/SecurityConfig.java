@@ -109,7 +109,7 @@ public class SecurityConfig{
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:8081")); // 모든 IP의 응답을 허용
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080","https://catchline.site","http://localhost:8081"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 모든 종류의 요청을 허용
         configuration.setAllowedHeaders(List.of("*")); // 모든 Header에 응답을 허용
         configuration.setAllowCredentials(true); // 내 서버가 응답을 할 때 json을 자바스크립트에서 처리할 수 있도록 할지 설정

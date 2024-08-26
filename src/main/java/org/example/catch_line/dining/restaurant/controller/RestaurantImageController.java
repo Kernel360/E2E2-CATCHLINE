@@ -25,11 +25,19 @@ public class RestaurantImageController {
     public ResponseEntity<byte[]> getImage(@PathVariable Long restaurantImageId) {
         RestaurantImageEntity image = restaurantImageService.getImage(restaurantImageId);
 
+        if (image == null || image.getImageBinaryData() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + image.getFileName() + "\"");
+        headers.set(HttpHeaders.CONTENT_TYPE, image.getFileType());
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getFileName() + "\"")
-                .header(HttpHeaders.CONTENT_TYPE, image.getFileType())
+                .headers(headers)
                 .body(image.getImageBinaryData());
     }
+
 
     @GetMapping("/restaurants/{restaurantId}/upload")
     public String upload(Model model, @PathVariable String restaurantId) {
@@ -40,6 +48,12 @@ public class RestaurantImageController {
     @PostMapping("/restaurants/{restaurantId}/upload")
     public String uploadImage(@PathVariable Long restaurantId, @RequestPart("image") MultipartFile image, Model model) {
         try {
+            // 파일 크기 제한을 체크
+            if (image.getSize() > 10485760) { // 예: 10MB 제한
+                model.addAttribute("errorMessage", "파일 크기가 너무 큽니다. 10MB 이하의 파일만 업로드 가능합니다.");
+                return "restaurant/upload-image";
+            }
+
             RestaurantImageEntity savedImage = restaurantImageService.saveImage(restaurantId, image);
             model.addAttribute("imageId", savedImage.getRestaurantImageId());
             return String.format("redirect:/owner/restaurants/%d/edit-images", restaurantId);

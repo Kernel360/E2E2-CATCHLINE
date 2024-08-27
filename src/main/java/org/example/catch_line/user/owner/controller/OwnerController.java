@@ -153,7 +153,7 @@ public class OwnerController {
 				return "owner/waitingDetail";
 			} catch (HistoryException e) {
 				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
-				return "error";
+				return "redirect:/owner/waitingDetail";
 			}
 		}
 
@@ -167,7 +167,7 @@ public class OwnerController {
 			reservationService.cancelReservation(memberId, reservationId);
 		} catch (BookingErrorException e) {
 			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
-			return "error"; // 오류 페이지로 리다이렉트
+			return "redirect:/owner"; // 오류 페이지로 리다이렉트
 		}
 
 		return "redirect:/owner";
@@ -179,7 +179,7 @@ public class OwnerController {
 			reservationService.completedReservation(reservationId);
 		} catch (BookingErrorException e) {
 			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
-			return "error"; // 오류 페이지로 리다이렉트
+			return "redirect:/owner"; // 오류 페이지로 리다이렉트
 		}
 
 		return "redirect:/owner";
@@ -193,7 +193,7 @@ public class OwnerController {
 			waitingService.cancelWaiting(memberId, waitingId);
 		} catch (BookingErrorException e) {
 			model.addAttribute("errorMessage", "웨이팅 삭제 중 오류가 발생했습니다.");
-			return "error"; // 오류 페이지로 리다이렉트
+			return "redirect:/owner"; // 오류 페이지로 리다이렉트
 		}
 
 		return "redirect:/owner";
@@ -205,7 +205,7 @@ public class OwnerController {
 			waitingService.completedWaiting(waitingId);
 		} catch (BookingErrorException e) {
 			model.addAttribute("errorMessage", "웨이팅 완료 중 오류가 발생했습니다.");
-			return "error"; // 오류 페이지로 리다이렉트
+			return "redirect:/owner"; // 오류 페이지로 리다이렉트
 		}
 
 		return "redirect:/owner";
@@ -225,7 +225,7 @@ public class OwnerController {
 				return "owner/reservationDetail";
 			} catch (HistoryException e) {
 				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
-				return "error";
+				return "redirect:/owner/reservationDetail";
 			}
 		}
 		return "redirect:/owner";

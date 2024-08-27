@@ -1,6 +1,7 @@
 package org.example.catch_line.history.controller;
 
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.validation.Valid;
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
@@ -61,7 +62,7 @@ public class HistoryController {
 
 		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId, waitingRepository.findByWaitingId(waitingId).get().getStatus());
 
-		if (allHistory != null) {
+		if (Objects.nonNull(allHistory)) {
 			try {
 				HistoryResponse historyResponse = historyService.findWaitingDetailById(allHistory, waitingId);
 				model.addAttribute("historyResponse", historyResponse);
@@ -85,7 +86,7 @@ public class HistoryController {
 
 		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId, reservationRepository.findByReservationId(reservationId).get().getStatus());
 
-		if (allHistory != null) {
+		if (Objects.nonNull(allHistory)) {
 			try {
 				HistoryResponse historyResponse = historyService.findReservationDetailById(allHistory, reservationId);
 				model.addAttribute("historyResponse", historyResponse);

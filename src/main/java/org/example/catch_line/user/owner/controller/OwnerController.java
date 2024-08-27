@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.validation.Valid;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
@@ -145,7 +146,7 @@ public class OwnerController {
 		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
 		model.addAttribute("restaurantId", restaurantId);
 
-		if (historyList != null) {
+		if (Objects.nonNull(historyList)) {
 			try {
 				HistoryResponse historyResponse = historyService.findWaitingDetailById(historyList, waitingId);
 				model.addAttribute("historyResponse", historyResponse);
@@ -216,7 +217,7 @@ public class OwnerController {
 										Model model, HttpSession session) {
 		List<HistoryResponse> historyList = (List<HistoryResponse>) session.getAttribute("historyList");
 
-		if (historyList != null) {
+		if (Objects.nonNull(historyList)) {
 			try {
 				HistoryResponse historyResponse = historyService.findReservationDetailById(historyList, reservationId);
 				model.addAttribute("historyResponse", historyResponse);

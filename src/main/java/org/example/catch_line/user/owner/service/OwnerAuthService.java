@@ -38,13 +38,8 @@ public class OwnerAuthService {
 
         // VO에는 암호화된 비밀번호가 넘어간다.
 
-        OwnerEntity owner = OwnerEntity.builder()
-                .loginId(ownerSignUpRequest.getLoginId())
-                .name(ownerSignUpRequest.getName())
-                .password(new Password(encodedPassword))
-                .phoneNumber(new PhoneNumber(ownerSignUpRequest.getPhoneNumber()))
-                .build();
-
+        OwnerEntity owner = new OwnerEntity(ownerSignUpRequest.getLoginId(), ownerSignUpRequest.getName(),
+                new Password(encodedPassword), new PhoneNumber(ownerSignUpRequest.getPhoneNumber()));
         ownerRepository.save(owner);
 
         return ownerResponseMapper.entityToResponse(owner);

@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Objects;
 
 
 // 스프링 시큐리티의 필터
@@ -61,9 +62,9 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
                 if (keyValue.length == 2) {
                     String key = keyValue[0];
                     String value = java.net.URLDecoder.decode(keyValue[1], "UTF-8");
-                    if ("username".equals(key)) {
+                    if (Objects.equals("username", key)) {
                         username = value;
-                    } else if ("password".equals(key)) {
+                    } else if (Objects.equals("password", key)) {
                         password = value;
                     }
                 }

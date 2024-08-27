@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @ToString
@@ -15,7 +16,7 @@ public class Rating {
     private final BigDecimal rating;
 
     public Rating(List<Integer> ratings) {
-        if(ratings == null || ratings.isEmpty()) {
+        if(Objects.isNull(ratings) || ratings.isEmpty()) {
             this.rating = BigDecimal.ZERO;
             return;
         }

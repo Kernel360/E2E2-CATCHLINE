@@ -39,7 +39,7 @@ public class ScrapEntity extends BaseTimeEntity {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         ScrapEntity that = (ScrapEntity) o;
-        return getScrapId() != null && Objects.equals(getScrapId(), that.getScrapId());
+        return Objects.nonNull(getScrapId()) && Objects.equals(getScrapId(), that.getScrapId());
     }
 
     @Override

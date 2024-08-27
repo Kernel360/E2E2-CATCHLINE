@@ -1,6 +1,7 @@
 package org.example.catch_line.booking.reservation.validation;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -9,7 +10,7 @@ public class ReservationDateValidator implements ConstraintValidator<ValidReserv
 
 	@Override
 	public boolean isValid(LocalDateTime reservationDate, ConstraintValidatorContext context) {
-		if (reservationDate == null) {
+		if (Objects.nonNull(reservationDate)) {
 			return true;
 		}
 		LocalDateTime now = LocalDateTime.now();

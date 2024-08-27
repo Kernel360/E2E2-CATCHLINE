@@ -25,13 +25,13 @@ public class OwnerAuthController {
 
     @GetMapping("/login")
     public String showOwnerLoginForm(Model model) {
-        model.addAttribute("ownerLoginRequest", new OwnerLoginRequest());
+        model.addAttribute("ownerLoginRequest", new OwnerLoginRequest(null, null));
         return "owner/ownerLogin";
     }
 
     @GetMapping("/signup")
     public String showOwnerSignUpForm(Model model) {
-        model.addAttribute("ownerSignUpRequest", new OwnerSignUpRequest());
+        model.addAttribute("ownerSignUpRequest", new OwnerSignUpRequest(null, null, null, null ));
         return "owner/ownerSignup";
     }
 

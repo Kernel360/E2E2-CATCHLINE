@@ -88,13 +88,7 @@ public class WaitingService {
 	}
 
 	private WaitingEntity requestToEntity(WaitingRequest waitingRequest, MemberEntity member, RestaurantEntity restaurant) {
-		return WaitingEntity.builder()
-				.memberCount(waitingRequest.getMemberCount())
-				.status(Status.SCHEDULED)
-				.waitingType(waitingRequest.getWaitingType())
-				.member(member)
-				.restaurant(restaurant)
-				.build();
+        return new WaitingEntity(waitingRequest.getMemberCount(),Status.SCHEDULED,waitingRequest.getWaitingType(),member,restaurant);
 	}
 
 }

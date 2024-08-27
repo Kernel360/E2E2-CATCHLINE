@@ -2,6 +2,7 @@ package org.example.catch_line.common.constant;
 
 import java.time.DayOfWeek;
 import java.util.Arrays;
+import java.util.Objects;
 
 import org.example.catch_line.exception.CatchLineException;
 
@@ -33,14 +34,14 @@ public enum DayOfWeeks {
 
 	public static DayOfWeeks from(DayOfWeek dayOfWeek) {
 		return Arrays.stream(values())
-			.filter(e -> e.dayOfWeek == dayOfWeek)
+			.filter(e -> Objects.equals(e.dayOfWeek,dayOfWeek))
 			.findFirst()
 			.orElse(null);
 	}
 
 	public static DayOfWeeks fromDescription(String description) {
 		return Arrays.stream(values())
-			.filter(e -> e.description.equals(description))
+			.filter(e -> Objects.equals(e.description,description))
 			.findFirst()
 			.orElseThrow(() -> new CatchLineException("Enum에 값이 없습니다: " + description));
 	}

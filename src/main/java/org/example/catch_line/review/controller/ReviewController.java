@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.config.auth.MemberUserDetails;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.exception.authorizaion.UnauthorizedException;
 import org.example.catch_line.review.model.dto.ReviewCreateRequest;
 import org.example.catch_line.review.model.dto.ReviewResponse;

@@ -1,4 +1,4 @@
-package org.example.catch_line.user.member.controller.thymeleaf;
+package org.example.catch_line.user.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.email.DuplicateEmailException;
 import org.example.catch_line.user.member.model.dto.SignUpRequest;
 import org.example.catch_line.common.model.vo.Email;
-import org.example.catch_line.user.member.service.AuthService;
+import org.example.catch_line.user.member.service.SignUpService;
 import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,15 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-public class AuthController {
+public class SignUpController {
 
-    private final AuthService authService;
+    private final SignUpService authService;
     private final MemberValidator memberValidator;
 
-    @GetMapping("/login")
-    public String showLoginForm(Model model) {
-        return "member/login";
-    }
 
     // TODO: boolean 말고 response 반환
     @GetMapping("/check-email")

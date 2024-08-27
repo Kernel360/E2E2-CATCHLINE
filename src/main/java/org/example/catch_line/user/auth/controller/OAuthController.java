@@ -1,17 +1,17 @@
-package org.example.catch_line.user.member.controller.thymeleaf;
+package org.example.catch_line.user.auth.controller;
 
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.config.auth.MemberUserDetails;
 import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
+import org.example.catch_line.user.auth.token.JwtTokenUtil;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
-import org.example.catch_line.user.token.JwtTokenUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Objects;
@@ -20,8 +20,12 @@ import java.util.Objects;
 @Controller
 @RequiredArgsConstructor
 public class OAuthController {
-    private final MemberValidator memberValidator;
     private final JwtTokenUtil jwtTokenUtil;
+
+    @GetMapping("/login")
+    public String showLoginForm(Model model) {
+        return "member/login";
+    }
 
     @GetMapping("/login/oauth")
     public String kakaoLogin() {

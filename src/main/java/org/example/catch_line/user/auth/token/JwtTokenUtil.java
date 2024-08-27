@@ -1,4 +1,4 @@
-package org.example.catch_line.user.token;
+package org.example.catch_line.user.auth.token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

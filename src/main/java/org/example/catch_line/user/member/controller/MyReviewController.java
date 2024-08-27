@@ -1,11 +1,10 @@
-package org.example.catch_line.user.member.controller.thymeleaf;
+package org.example.catch_line.user.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.config.auth.MemberUserDetails;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.exception.authorizaion.UnauthorizedException;
-import org.example.catch_line.exception.session.InvalidSessionException;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.model.dto.ReviewUpdateRequest;
 import org.example.catch_line.review.service.ReviewService;

@@ -1,19 +1,19 @@
 package org.example.catch_line.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.config.auth.OAuth2SuccessHandler;
-import org.example.catch_line.config.auth.MemberDefaultLoginService;
-import org.example.catch_line.config.auth.OAuth2LoginService;
+import org.example.catch_line.filter.RestaurantPreviewFilter;
+import org.example.catch_line.user.auth.handler.OAuth2SuccessHandler;
+import org.example.catch_line.user.auth.service.MemberDefaultLoginService;
+import org.example.catch_line.user.auth.service.OAuth2LoginService;
 import org.example.catch_line.filter.MemberJwtAuthenticationFilter;
 import org.example.catch_line.filter.MemberJwtAuthorizationFilter;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
-import org.example.catch_line.user.token.JwtTokenUtil;
+import org.example.catch_line.user.auth.token.JwtTokenUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -64,6 +64,7 @@ public class SecurityConfig{
 
         MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
         MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, memberDataProvider);
+        RestaurantPreviewFilter restaurantPreviewFilter = new RestaurantPreviewFilter(jwtTokenUtil, memberDataProvider);
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정을 최신 방식으로 변경
@@ -83,6 +84,7 @@ public class SecurityConfig{
 
                 .addFilter(memberJwtAuthenticationFilter)
                 .addFilter(memberJwtAuthorizationFilter)
+                .addFilterAfter(restaurantPreviewFilter, memberJwtAuthorizationFilter.getClass())
 //                .addFilter(ownerJwtAuthenticationFilter)
 //                .addFilter(ownerJwtAuthorizationFilter)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 비활성화

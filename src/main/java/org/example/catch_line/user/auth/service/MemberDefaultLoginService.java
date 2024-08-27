@@ -1,7 +1,8 @@
-package org.example.catch_line.config.auth;
+package org.example.catch_line.user.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.common.model.vo.Email;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,7 +1,7 @@
 package org.example.catch_line.scrap.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.config.auth.MemberUserDetails;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.scrap.service.ScrapService;
 import org.springframework.http.ResponseEntity;

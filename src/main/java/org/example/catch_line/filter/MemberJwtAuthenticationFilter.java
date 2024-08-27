@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.config.auth.MemberUserDetails;
-import org.example.catch_line.user.token.JwtTokenUtil;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
+import org.example.catch_line.user.auth.token.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -128,8 +128,8 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("successfulAuthentication 실행, 인증 완료 !!!");
 
-        MemberUserDetails principalDetail = (MemberUserDetails) authResult.getPrincipal();
-        String jwtToken = jwtTokenUtil.generateToken(principalDetail.getUsername());
+        MemberUserDetails memberUserDetails = (MemberUserDetails) authResult.getPrincipal();
+        String jwtToken = jwtTokenUtil.generateToken(memberUserDetails.getUsername());
 
         response.addHeader("Authorization", "Bearer " + jwtToken);
 

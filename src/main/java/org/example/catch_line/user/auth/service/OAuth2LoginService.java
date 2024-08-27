@@ -1,4 +1,4 @@
-package org.example.catch_line.config.auth;
+package org.example.catch_line.user.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

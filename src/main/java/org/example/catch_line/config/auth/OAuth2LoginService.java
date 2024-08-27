@@ -49,12 +49,7 @@ public class OAuth2LoginService extends DefaultOAuth2UserService {
         String kakaoMemberId = provider + "_" + providerId;
 
         if (memberDataProvider.isNotDuplicateKakaoMember(kakaoMemberId, new Email(email))) {
-            MemberEntity member = MemberEntity.builder()
-                    .name(name)
-                    .nickname(nickname)
-                    .email(new Email(email))
-                    .kakaoMemberId(kakaoMemberId)
-                    .build();
+            MemberEntity member = new MemberEntity(kakaoMemberId, new Email(email), name, nickname);
             memberDataProvider.saveMember(member);
         }
 

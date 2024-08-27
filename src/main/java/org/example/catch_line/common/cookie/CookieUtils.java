@@ -8,6 +8,8 @@ import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.token.JwtTokenUtil;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 
 @Slf4j
 @Component
@@ -21,7 +23,7 @@ public class CookieUtils {
 
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if ("JWT_TOKEN".equals(cookie.getName())) {
+                if (Objects.equals("JWT_TOKEN", cookie.getName())) {
                     return cookie.getValue();
                 }
             }

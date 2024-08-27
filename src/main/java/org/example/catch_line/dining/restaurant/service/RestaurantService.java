@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -41,7 +42,7 @@ public class RestaurantService {
         Long scrapCount = scrapService.getRestaurantScraps(restaurantId);
 
         boolean userHasScrapped = false;
-        if(memberId != null) {
+        if(Objects.nonNull(memberId)) {
             userHasScrapped = scrapService.hasMemberScrapRestaurant(memberId, restaurantId);
         }
 

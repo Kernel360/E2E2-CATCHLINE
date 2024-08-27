@@ -6,6 +6,8 @@ import org.example.catch_line.user.member.model.dto.MemberUpdateResponse;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class MemberResponseMapper {
 
@@ -27,9 +29,9 @@ public class MemberResponseMapper {
         return MemberResponse.builder()
                 .memberId(member.getMemberId())
                 .email(member.getEmail().getEmailValue())
-                .name(member.getName() != null ? member.getName() : "")
-                .nickname(member.getNickname() != null ? member.getNickname() : "")
-                .phoneNumber(member.getPhoneNumber() != null ? member.getPhoneNumber().getPhoneNumberValue() : "")
+                .name(Objects.nonNull(member.getName()) ? member.getName() : "")
+                .nickname(Objects.nonNull(member.getNickname()) ? member.getNickname() : "")
+                .phoneNumber(Objects.nonNull(member.getPhoneNumber())? member.getPhoneNumber().getPhoneNumberValue() : "")
                 .isMemberDeleted(member.isMemberDeleted())
                 .build();
     }

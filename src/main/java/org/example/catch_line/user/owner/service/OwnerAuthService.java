@@ -24,6 +24,7 @@ public class OwnerAuthService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final OwnerRepository ownerRepository;
     private final OwnerValidator  ownerValidator;
+    private final OwnerResponseMapper ownerResponseMapper;
 
     // owner 회원가입
     public OwnerResponse signUp(OwnerSignUpRequest ownerSignUpRequest) {
@@ -37,17 +38,11 @@ public class OwnerAuthService {
 
         // VO에는 암호화된 비밀번호가 넘어간다.
 
-        OwnerEntity owner = OwnerEntity.builder()
-                .loginId(ownerSignUpRequest.getLoginId())
-                .name(ownerSignUpRequest.getName())
-                .password(new Password(encodedPassword))
-                .phoneNumber(new PhoneNumber(ownerSignUpRequest.getPhoneNumber()))
-                .build();
-
+        OwnerEntity owner = new OwnerEntity(ownerSignUpRequest.getLoginId(), ownerSignUpRequest.getName(),
+                new Password(encodedPassword), new PhoneNumber(ownerSignUpRequest.getPhoneNumber()));
         ownerRepository.save(owner);
 
-        return OwnerResponseMapper.entityToResponse(owner);
-
+        return ownerResponseMapper.entityToResponse(owner);
     }
 
 
@@ -56,7 +51,7 @@ public class OwnerAuthService {
 
         return ownerRepository.findByLoginId(ownerLoginRequest.getLoginId())
                 .filter(owner -> passwordEncoder.matches(ownerLoginRequest.getPassword(), owner.getPassword().getEncodedPassword())) // 비밀번호 비교
-                .map(OwnerResponseMapper::entityToResponse)
+                .map(ownerResponseMapper::entityToResponse)
                 .orElseThrow(() -> new CatchLineException("로그인에 실패하였습니다."));
 
     }

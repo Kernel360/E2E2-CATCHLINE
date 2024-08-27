@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Objects;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -44,7 +46,7 @@ public class RestaurantPreviewController {
       
         Page<RestaurantPreviewResponse> restaurantPreviewPage = restaurantPreviewService.restaurantPreviewPaging(pageable, criteria);
 
-        if (type != null && keyword != null) {
+        if (Objects.nonNull(type) && Objects.nonNull(keyword)) {
             restaurantPreviewPage = restaurantPreviewService.restaurantPreviewSearchAndPaging(pageable, criteria, type, keyword);
         }
 

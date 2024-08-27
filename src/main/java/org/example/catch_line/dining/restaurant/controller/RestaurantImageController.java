@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -25,7 +26,7 @@ public class RestaurantImageController {
     public ResponseEntity<byte[]> getImage(@PathVariable Long restaurantImageId) {
         RestaurantImageEntity image = restaurantImageService.getImage(restaurantImageId);
 
-        if (image == null || image.getImageBinaryData() == null) {
+        if (Objects.isNull(image) || Objects.isNull(image.getImageBinaryData())) {
             return ResponseEntity.notFound().build();
         }
 

@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -75,7 +76,7 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if ("JWT_TOKEN".equals(cookie.getName())) {
+                if (Objects.equals("JWT_TOKEN", cookie.getName())) {
                     jwtToken = cookie.getValue();
                     break;
                 }
@@ -123,7 +124,7 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
             if (url.endsWith("/**")) {
                 return requestURI.startsWith(url.substring(0, url.length() - 3));
             }
-            return requestURI.equals(url);
+            return Objects.equals(requestURI, url);
         });
     }
 

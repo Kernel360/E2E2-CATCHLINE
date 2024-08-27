@@ -49,13 +49,8 @@ public class ReservationService {
 		MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 		RestaurantEntity restaurant = restaurantValidator.checkIfRestaurantPresent(restaurantId);
 
-		ReservationEntity reservation = ReservationEntity.builder()
-			.member(member)
-			.restaurant(restaurant)
-			.memberCount(reservationRequest.getMemberCount())
-			.status(Status.SCHEDULED)
-			.reservationDate(reservationRequest.getReservationDate())
-			.build();
+		ReservationEntity reservation = new ReservationEntity(reservationRequest.getMemberCount(),Status.SCHEDULED,reservationRequest.getReservationDate(),member,restaurant);
+
 		ReservationEntity savedEntity = reservationRepository.save(reservation);
 
 		notificationService.sendReservation(member, reservation, "예약에 성공하였습니다.");

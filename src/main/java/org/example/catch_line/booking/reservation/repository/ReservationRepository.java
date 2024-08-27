@@ -24,8 +24,6 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
 	List<ReservationEntity> findAllByStatus(Status status);
 
-//	List<ReservationEntity> findByRestaurantRestaurantIdAndReservationDate(Long restaurantId, LocalDateTime reservationDate);
-
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	Optional<ReservationEntity> findByRestaurantRestaurantIdAndReservationDate(Long restaurantId, LocalDateTime reservationDate);
 }

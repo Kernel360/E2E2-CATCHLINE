@@ -2,9 +2,10 @@ package org.example.catch_line.booking.waiting.model.mapper;
 
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+@Component
 public class WaitingResponseMapper {
 
 	public WaitingResponse convertToResponse(WaitingEntity entity) {

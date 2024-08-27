@@ -27,8 +27,8 @@ public class ScrapId {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         ScrapId scrapId = (ScrapId) o;
-        return getMemberId() != null && Objects.equals(getMemberId(), scrapId.getMemberId())
-                && getRestaurantId() != null && Objects.equals(getRestaurantId(), scrapId.getRestaurantId());
+        return Objects.nonNull(getMemberId()) && Objects.equals(getMemberId(), scrapId.getMemberId())
+                && Objects.nonNull(getRestaurantId()) && Objects.equals(getRestaurantId(), scrapId.getRestaurantId());
     }
 
     @Override

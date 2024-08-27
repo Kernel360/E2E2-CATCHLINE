@@ -7,9 +7,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.model.vo.Email;
-import org.example.catch_line.config.auth.MemberUserDetails;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
-import org.example.catch_line.user.token.JwtTokenUtil;
+import org.example.catch_line.user.auth.token.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -75,23 +76,23 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if ("JWT_TOKEN".equals(cookie.getName())) {
+                if (Objects.equals("JWT_TOKEN", cookie.getName())) {
                     jwtToken = cookie.getValue();
                     break;
                 }
             }
         }
 
-        if(jwtToken == null) {
+        if(Objects.isNull(jwtToken)) {
             String encodedMessage = URLEncoder.encode("로그인이 필요합니다", StandardCharsets.UTF_8.toString());
             response.sendRedirect("/login?message=" + encodedMessage);
             return; // 필터 체인 진행 중단
         }
 
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
             String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 
-            if (username != null && jwtTokenUtil.validateToken(jwtToken, username)) {
+            if (Objects.nonNull(username) && jwtTokenUtil.validateToken(jwtToken, username)) {
 
                 MemberUserDetails memberUserDetails;
                 if(username.contains("kakao")) {
@@ -123,7 +124,7 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
             if (url.endsWith("/**")) {
                 return requestURI.startsWith(url.substring(0, url.length() - 3));
             }
-            return requestURI.equals(url);
+            return Objects.equals(requestURI, url);
         });
     }
 

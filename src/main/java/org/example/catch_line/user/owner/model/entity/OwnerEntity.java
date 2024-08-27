@@ -5,7 +5,6 @@ import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -43,7 +42,6 @@ public class OwnerEntity {
     private List<RestaurantEntity> restaurants = new ArrayList<>();
 
 
-    @Builder
     public OwnerEntity(String loginId, String name, Password password, PhoneNumber phoneNumber) {
         this.loginId = loginId;
         this.name = name;

@@ -4,7 +4,7 @@ import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.config.auth.MemberUserDetails;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.exception.booking.WaitingException;
 import org.example.catch_line.exception.session.InvalidSessionException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

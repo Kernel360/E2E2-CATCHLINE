@@ -1,4 +1,4 @@
-package org.example.catch_line.config.auth;
+package org.example.catch_line.user.auth.details;
 
 import lombok.Data;
 import org.example.catch_line.common.constant.Role;

@@ -1,4 +1,4 @@
-package org.example.catch_line.user.token;
+package org.example.catch_line.user.auth.token;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Function;
 
 @Slf4j
@@ -43,7 +44,7 @@ public class JwtTokenUtil {
 
     public Boolean validateToken(String token, String userName) {
         final String emailFromToken = getUsernameFromToken(token);
-        return (emailFromToken.equals(userName) && !isTokenExpired(token));
+        return (Objects.equals(emailFromToken, userName) && !isTokenExpired(token));
     }
 
     private Boolean isTokenExpired(String token) {

@@ -1,6 +1,11 @@
 package org.example.catch_line.user.owner.controller;
 
 
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +52,9 @@ public class OwnerController {
 
 	@GetMapping
 	public String viewOwnerPage(HttpSession httpSession, Model model) {
-		boolean isLoggedIn = httpSession.getAttribute(SessionConst.OWNER_ID) != null;
+
+		boolean isLoggedIn = Objects.nonNull(httpSession.getAttribute(SessionConst.OWNER_ID)); // "user" 세션 속성으로 로그인 상태 확인
+
 		model.addAttribute("isLoggedIn", isLoggedIn);
 
 		return "owner/owner";
@@ -81,7 +88,7 @@ public class OwnerController {
 		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
 		model.addAttribute("restaurantId", restaurantId);
 
-		if (historyList != null) {
+		if (Objects.nonNull(historyList)) {
 			try {
 				HistoryResponse historyResponse = historyService.findWaitingDetailById(historyList, waitingId);
 				model.addAttribute("historyResponse", historyResponse);
@@ -157,7 +164,7 @@ public class OwnerController {
 										Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 		List<HistoryResponse> historyList = (List<HistoryResponse>) session.getAttribute("historyList");
 
-		if (historyList != null) {
+		if (Objects.nonNull(historyList)) {
 			try {
 				HistoryResponse historyResponse = historyService.findReservationDetailById(historyList, reservationId);
 				model.addAttribute("historyResponse", historyResponse);

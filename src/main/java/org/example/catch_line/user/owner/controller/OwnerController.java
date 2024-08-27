@@ -83,7 +83,7 @@ public class OwnerController {
 	@GetMapping("/restaurants")
 	public String createRestaurantForm(Model model) {
 		model.addAttribute("request",
-			new RestaurantCreateRequest("", "", "", "", FoodType.KOREAN, ServiceType.WAITING));
+				new RestaurantCreateRequest("", "", "", "", FoodType.KOREAN, ServiceType.WAITING));
 		return "owner/createRestaurant";
 	}
 
@@ -322,7 +322,12 @@ public class OwnerController {
 
 	@PutMapping("/restaurants/list/{restaurantId}/menus/menu")
 	public String updateMenu(@PathVariable Long restaurantId, @RequestParam Long menuId,
-							 @ModelAttribute MenuRequest menuRequest, Model model) {
+							 @Valid @ModelAttribute MenuRequest menuRequest, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+
+		if (bindingResult.hasErrors()) {
+			redirectAttributes.addFlashAttribute("errorMessage", "입력한 값이 유효하지 않습니다");
+			return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
+		}
 
 		menuService.updateRestaurantMenu(restaurantId, menuId, menuRequest);
 
@@ -332,14 +337,12 @@ public class OwnerController {
 		return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
 	}
 
-	@DeleteMapping("/restaurants/list/{restaurantId}/menus/menu")
-	public String deleteMenu(@PathVariable Long restaurantId, @RequestParam Long menuId) {
-		menuService.deleteRestaurantMenu(menuId);
-		return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
-	}
-
 	@PostMapping("/restaurants/list/{restaurantId}/menus/menu")
-	public String addMenu(@PathVariable Long restaurantId, @ModelAttribute MenuRequest menuRequest, Model model) {
+	public String addMenu(@PathVariable Long restaurantId, @Valid @ModelAttribute MenuRequest menuRequest, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+		if (bindingResult.hasErrors()) {
+			redirectAttributes.addFlashAttribute("errorMessage","입력한 값이 유효하지 않습니다");
+			return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
+		}
 		menuService.createRestaurantMenu(restaurantId, menuRequest);
 
 		List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
@@ -347,9 +350,17 @@ public class OwnerController {
 		return "redirect:/owner/restaurants/list/{restaurantId}/menus";
 	}
 
+	@DeleteMapping("/restaurants/list/{restaurantId}/menus/menu")
+	public String deleteMenu(@PathVariable Long restaurantId, @RequestParam Long menuId) {
+		menuService.deleteRestaurantMenu(menuId);
+		return "redirect:/owner/restaurants/list/" + restaurantId + "/menus";
+	}
+
+
+
 	private List<RestaurantResponse> getRestaurantResponseList(HttpSession session) {
 		Long ownerId = SessionUtils.getOwnerId(session);
-        return ownerService.findAllRestaurantByOwnerId(ownerId);
+		return ownerService.findAllRestaurantByOwnerId(ownerId);
 	}
 
 	private String invalidPhoneNumberException(Exception e, BindingResult bindingResult) {

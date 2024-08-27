@@ -10,7 +10,7 @@ public class ReservationDateValidator implements ConstraintValidator<ValidReserv
 
 	@Override
 	public boolean isValid(LocalDateTime reservationDate, ConstraintValidatorContext context) {
-		if (Objects.nonNull(reservationDate)) {
+		if (Objects.isNull(reservationDate)) {
 			return true;
 		}
 		LocalDateTime now = LocalDateTime.now();

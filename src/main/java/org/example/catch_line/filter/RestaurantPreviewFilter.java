@@ -51,14 +51,17 @@ public class RestaurantPreviewFilter extends OncePerRequestFilter {
         }
 
         if (Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
+            log.info("jwt token이 있음");
             String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 
             if (Objects.nonNull(username) && jwtTokenUtil.validateToken(jwtToken, username)) {
 
                 MemberUserDetails memberUserDetails;
                 if(username.contains("kakao")) {
+                    log.info("kakao username 이 있음");
                     memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByKakaoMemberId(username));
                 } else {
+                    log.info("일반 회원이 있음");
                     memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByEmail(new Email(username)));
                 }
 

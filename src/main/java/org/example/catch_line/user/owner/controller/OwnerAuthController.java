@@ -25,7 +25,6 @@ public class OwnerAuthController {
 
     @GetMapping("/login")
     public String showOwnerLoginForm() {
-//        model.addAttribute("ownerLoginRequest", new OwnerLoginRequest());
         return "owner/ownerLogin";
     }
 
@@ -57,32 +56,6 @@ public class OwnerAuthController {
 
         return "redirect:/owner";
     }
-
-//    @PostMapping("/login")
-//    public String ownerLogin(
-//            @Valid @ModelAttribute OwnerLoginRequest ownerLoginRequest,
-//            BindingResult bindingResult,
-//            HttpSession httpSession,
-//            Model model
-//    ) {
-//        if (bindingResult.hasErrors()) {
-//            return "owner/ownerLogin";
-//        }
-//
-//        OwnerResponse ownerResponse;
-//        try {
-//            ownerResponse =
-//                    ownerAuthService.login(ownerLoginRequest);
-//        } catch (CatchLineException e) {
-//            model.addAttribute("exception", e.getMessage());
-//            return "owner/ownerLogin";
-//        }
-//
-//        httpSession.setAttribute(OWNER_ID, ownerResponse.getOwnerId());
-//        httpSession.setAttribute(ROLE, Role.OWNER);
-//
-//        return "redirect:/owner";
-//    }
 
     @PostMapping("/logout")
     public String logout(HttpSession httpSession) {

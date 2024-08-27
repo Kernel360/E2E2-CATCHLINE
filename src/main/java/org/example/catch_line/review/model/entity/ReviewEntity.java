@@ -9,7 +9,7 @@ import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 @Entity
 @Table(name = "review")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReviewEntity extends BaseTimeEntity {
 
     @Id

@@ -3,6 +3,8 @@ package org.example.catch_line.user.member.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.catch_line.scrap.model.entity.ScrapEntity;
+import org.example.catch_line.scrap.repository.ScrapRepository;
 import org.example.catch_line.user.member.model.dto.MemberDeleteResponse;
 import org.example.catch_line.user.member.model.dto.MemberResponse;
 import org.example.catch_line.user.member.model.dto.MemberUpdateRequest;
@@ -16,6 +18,8 @@ import org.example.catch_line.user.member.model.provider.validation.PasswordVali
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,6 +29,7 @@ public class MemberProfileService {
     private final PasswordEncoder passwordEncoder;
     private final MemberDataProvider memberDataProvider;
     private final MemberResponseMapper memberResponseMapper;
+    private final ScrapRepository scrapRepository;  // ScrapRepository 추가
 
 
     // 회원 정보 조회
@@ -57,6 +62,10 @@ public class MemberProfileService {
     public MemberDeleteResponse deleteMember(Long memberId) {
 
         MemberEntity member = memberDataProvider.provideMemberByMemberId(memberId);
+
+        List<ScrapEntity> scraps = member.getScraps();
+        scrapRepository.deleteAll(scraps);
+
         member.doWithdrawal();
         return memberResponseMapper.entityToMemberDeleteResponse(member);
     }

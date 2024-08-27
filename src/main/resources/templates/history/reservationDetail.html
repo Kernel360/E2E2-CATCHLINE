@@ -87,18 +87,18 @@
                     <!-- 이용 상태 -->
                     <p><strong>이용 상태:</strong> <span th:text="${historyResponse.status.description}">예약 완료</span></p>
                 </div>
-<!--                <div class="col-md-6">-->
-                    <h5>추가 정보</h5>
-<!--                    &lt;!&ndash; 예약 ID &ndash;&gt;-->
-                    <p><strong>예약 등록 ID:</strong> <span id="reservationId" th:text="${historyResponse.reservationId}">123456</span></p>
-<!--                </div>-->
+                <!--                <div class="col-md-6">-->
+                <h5>추가 정보</h5>
+                <!--                    &lt;!&ndash; 예약 ID &ndash;&gt;-->
+                <p><strong>예약 등록 ID:</strong> <span id="reservationId" th:text="${historyResponse.reservationId}">123456</span></p>
+                <!--                </div>-->
             </div>
             <div class="row">
                 <div class="col text-right">
                     <!-- 예약 취소 버튼 -->
                     <button type="button" class="btn btn-cancel"
                             th:if="${historyResponse.status.name() == 'SCHEDULED'}"
-                            th:onclick="cancelReservation()">취소하기</button>
+                            th:onclick="deleteReservation()">취소하기</button>
                     <!-- 예약 수정 버튼 -->
                     <button type="button" class="btn btn-primary ml-2"
                             th:if="${historyResponse.status.name() == 'SCHEDULED'}"
@@ -110,27 +110,50 @@
 </div>
 
 <script>
-    function cancelReservation() {
+    function deleteReservation() {
         const reservationId = document.getElementById('reservationId').innerText;
-        const url = `/history/reservation/${reservationId}`;
+        const url = `/history/reservation/${reservationId}`; // 새로운 경로로 수정
 
         fetch(url, {
             method: 'POST'
         })
-            .finally(() => {
-                window.location.href = '/history'; // 취소 후 history 페이지로 리디렉션
+            .then(response => {
+                if (response.ok || response.status === 302) {
+                    alert("예약이 취소되었습니다."); // 성공 메시지 표시
+                    window.location.href = '/history'; // 취소 후 history 페이지로 리디렉션
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+            })
+            .catch(error => {
+                alert("예약 취소 중 오류가 발생했습니다: " + error.message); // 에러 메시지 표시
             });
     }
 
     function editReservation() {
-        // 예약 ID를 HTML 요소에서 가져옴
         const reservationId = document.getElementById('reservationId').innerText;
         const url = `/history/reservation/${reservationId}/edit`;
 
-        // 수정 페이지로 리디렉션
-        window.location.href = url;
+        fetch(url, {
+            method: 'GET'
+        })
+            .then(response => {
+                if (response.ok || response.status === 302) {
+                    alert("수정 페이지로 이동합니다."); // 성공 메시지 표시
+                    window.location.href = url; // 수정 페이지로 리디렉션
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+            })
+            .catch(error => {
+                alert("예약 수정 중 오류가 발생했습니다: " + error.message); // 에러 메시지 표시
+            });
     }
-
 </script>
+
 </body>
 </html>

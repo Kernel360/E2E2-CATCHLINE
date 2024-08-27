@@ -26,7 +26,7 @@ public class RestaurantPreviewController {
     @GetMapping("/restaurants")
     public String getRestaurantPreviewList(
             @RequestParam(required = false, defaultValue = "reviewCount") String criteria,
-            @PageableDefault(page=0, size = 2) Pageable pageable,
+            @PageableDefault(page=0, size = 5) Pageable pageable,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String keyword,
             Model model,

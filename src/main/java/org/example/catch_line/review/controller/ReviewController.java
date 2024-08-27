@@ -30,7 +30,11 @@ public class ReviewController {
 
 	@GetMapping
 	public String getRestaurantReviews(@PathVariable Long restaurantId, Model model, @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
-		Long memberId = memberUserDetails.getMember().getMemberId();
+		Long memberId;
+		if(Objects.isNull(memberUserDetails)) {
+			 memberId= null;
+		} else memberId = memberUserDetails.getMember().getMemberId();
+
 		List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurantId);
 		BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
 		model.addAttribute("averageRating", averageRating);
@@ -41,12 +45,8 @@ public class ReviewController {
 	}
 
 	@GetMapping("/create")
-	public String showReviewForm(@PathVariable Long restaurantId, RedirectAttributes redirectAttributes, Model model,
-								 @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
-		if(Objects.isNull(memberUserDetails)) {
-			redirectAttributes.addFlashAttribute("errorMessage", "로그인하지 않은 사용자입니다. 로그인 후 이용 부탁드립니다.");
-			return String.format("redirect:/restaurants/%d/reviews", restaurantId);
-		}
+	public String showReviewForm(@PathVariable Long restaurantId, Model model
+								 ) {
 
 		model.addAttribute("restaurantId", restaurantId);
 		model.addAttribute("reviewCreateRequest", new ReviewCreateRequest(null, null));

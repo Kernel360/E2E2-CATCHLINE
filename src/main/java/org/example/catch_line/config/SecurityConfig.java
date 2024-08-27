@@ -72,8 +72,11 @@ public class SecurityConfig{
                 .httpBasic(AbstractHttpConfigurer::disable)  // HTTP Basic 인증 비활성화
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))  // frameOptions 설정
                 .authorizeHttpRequests(requests -> requests
-                                .requestMatchers("/**", "/static/**", "/images/**", "/signup", "/login", "/restaurants/**", "/owner/**").permitAll()
+                                // TODO: url 정확하게 작성
                                 .requestMatchers("/members/**", "/history/**").hasRole("USER")
+                                .requestMatchers("/reviews/create").hasRole("USER")
+                                .requestMatchers(("/reservation")).hasRole("USER")
+                                .requestMatchers(("/waiting")).hasRole("USER")
 //                        .requestMatchers("/owner/restaurants/**").hasRole("OWNER")
                                 .anyRequest().permitAll() // 그 외의 요청은 권한 없이 접속 가능
                 )

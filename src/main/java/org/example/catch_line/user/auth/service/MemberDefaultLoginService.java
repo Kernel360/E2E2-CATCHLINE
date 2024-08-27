@@ -1,6 +1,7 @@
 package org.example.catch_line.user.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 // http://localhost:8080/login 로그인 요청이 올 때 동작을 한다.
 // Spring Security 기본
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberDefaultLoginService implements UserDetailsService {
@@ -24,6 +26,7 @@ public class MemberDefaultLoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("! MemberDefaultLoginService 실행");
         MemberEntity member = memberDataProvider.provideMemberByEmail(new Email(username));
         return new MemberUserDetails(member);
     }

@@ -98,6 +98,7 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
                 if(username.contains("kakao")) {
                     memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByKakaoMemberId(username));
                 } else {
+                    log.info("MemberJwtAuthorization Filter에서 member 조회 실행");
                     memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByEmail(new Email(username)));
                 }
 

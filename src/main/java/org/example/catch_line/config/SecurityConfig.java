@@ -8,8 +8,10 @@ import org.example.catch_line.user.auth.service.OAuth2LoginService;
 import org.example.catch_line.user.auth.service.OwnerLoginService;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.example.catch_line.user.auth.token.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -43,14 +45,18 @@ public class SecurityConfig{
     private final OwnerLoginService ownerLoginService;
 
 
-
     @Bean
     public static BCryptPasswordEncoder bCryptPasswordEncoder() {   // for hash encrypt
         return new BCryptPasswordEncoder();
     }
 
+
+
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    // Primary 지정해버리면 다른 config 파일이더라도 무조건 이것만 사용
+    // bean의 이름
+    @Primary
+    public AuthenticationManager memberAuthenticationManager(HttpSecurity http) throws Exception {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(memberDefaultLoginService);
         provider.setPasswordEncoder(bCryptPasswordEncoder());
@@ -58,15 +64,26 @@ public class SecurityConfig{
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+    public AuthenticationManager ownerAuthenticationManager(HttpSecurity http) throws Exception {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(ownerLoginService);
+        provider.setPasswordEncoder(bCryptPasswordEncoder());
+        return new ProviderManager(provider);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   @Qualifier("memberAuthenticationManager") AuthenticationManager memberAuthenticationManager,
+                                                   @Qualifier("ownerAuthenticationManager") AuthenticationManager ownerAuthenticationManager) throws Exception {
 
         // form Login disable -> 해당 필터 사용할 수 있도록 추가, AuthenticationManager 넣어줘야 한다.
 
-        MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
-        MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, memberDataProvider);
+        MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(memberAuthenticationManager, jwtTokenUtil);
+        MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(memberAuthenticationManager, jwtTokenUtil, memberDataProvider);
 
-        OwnerJwtAuthenticationFilter ownerJwtAuthenticationFilter = new OwnerJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
-        OwnerJwtAuthorizationFilter ownerJwtAuthorizationFilter = new OwnerJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, ownerLoginService);
+        OwnerJwtAuthenticationFilter ownerJwtAuthenticationFilter = new OwnerJwtAuthenticationFilter(ownerAuthenticationManager, jwtTokenUtil);
+        OwnerJwtAuthorizationFilter ownerJwtAuthorizationFilter = new OwnerJwtAuthorizationFilter(ownerAuthenticationManager, jwtTokenUtil, ownerLoginService);
+        ownerJwtAuthenticationFilter.setFilterProcessesUrl("/owner/login-process");
 
         RestaurantPreviewFilter restaurantPreviewFilter = new RestaurantPreviewFilter(jwtTokenUtil, memberDataProvider);
 
@@ -105,11 +122,10 @@ public class SecurityConfig{
                         .userInfoEndpoint()
                         .userService(oauth2LoginService) // OAuth 사용자 로그인 처리
                 )
-                .userDetailsService(memberDefaultLoginService); // 일반 사용자 로그인 처리
+                .userDetailsService(memberDefaultLoginService) // 일반 사용자 로그인 처리
+                .userDetailsService(ownerLoginService);
 //                .userDetailsService(ownerLoginService); // 식당 사장님 로그인 처리
-
 //                .logout(AbstractHttpConfigurer::disable);  // Spring Security 로그아웃 비활성화
-
         return http.build();
     }
     // CORS config

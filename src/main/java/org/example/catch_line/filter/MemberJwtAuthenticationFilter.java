@@ -79,12 +79,8 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
             // PrincipalDetailsService의 loadUserByUsername() 함수가 실행됨
             // 정상이면 authentication이 리턴됨.
             // DB에 있는 username과 password가 일치한다.
-            log.info("authentication manager 호출");
-            // TODO: 무한루프
             Authentication authentication =
                     authenticationManager.authenticate(authenticationToken);
-
-            log.info("authentication manager 완료");
 
 
             MemberUserDetails principalDetail = (MemberUserDetails) authentication.getPrincipal();
@@ -120,8 +116,6 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
         // 4. JWT 토큰을 만들어서 응답해주면 된다.
     }
 
-
-
     // attemptAuthentication 실행 후 인증이 정상적으로 되었다면 successfulAuthentication 함수가 실행된다.
     // JWT 토큰을 만들어서 request 요청한 사용자에게 JWT 토큰을 response 해주면 된다.
     @Override
@@ -146,9 +140,6 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
         jwtCookie.setMaxAge(600); // 쿠키의 유효기간을 1시간으로 설정 (필요에 따라 조정 가능)
 
         response.addCookie(jwtCookie);
-
-
-//        response.sendRedirect("http://localhost:8080/restaurants" + "?token=Bearer "+ jwtToken);
 
         super.successfulAuthentication(request, response, chain, authResult);
     }

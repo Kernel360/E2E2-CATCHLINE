@@ -27,8 +27,23 @@ public class OwnerJwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final List<String> WHITELIST_URLS = Arrays.asList(
             "/owner/login",
-            "/owner/signup"
+            "/owner/signup",
+            "/templates",
+            "/static",
+            "/css",
+            "/js"
     );
+
+    // TODO: 수정
+//    private final String[] excludePath
+
+//    @Override
+//    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+//
+//        String path = request.getRequestURI();
+//        return Arrays.stream(excludePath).anyMatch(path::startsWith);
+//        return super.shouldNotFilter(request);
+//    }
 
     public OwnerJwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, OwnerLoginService ownerLoginService) {
         super(authenticationManager);
@@ -85,7 +100,9 @@ public class OwnerJwtAuthorizationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
+
     private boolean isWhitelisted(String requestURI) {
-        return WHITELIST_URLS.stream().anyMatch(url -> requestURI.equals(url));
+        return WHITELIST_URLS.stream().anyMatch(url ->  requestURI.startsWith(url));
     }
+
 }

@@ -1,12 +1,11 @@
 package org.example.catch_line.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.filter.RestaurantPreviewFilter;
+import org.example.catch_line.filter.*;
 import org.example.catch_line.user.auth.handler.OAuth2SuccessHandler;
 import org.example.catch_line.user.auth.service.MemberDefaultLoginService;
 import org.example.catch_line.user.auth.service.OAuth2LoginService;
-import org.example.catch_line.filter.MemberJwtAuthenticationFilter;
-import org.example.catch_line.filter.MemberJwtAuthorizationFilter;
+import org.example.catch_line.user.auth.service.OwnerLoginService;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.example.catch_line.user.auth.token.JwtTokenUtil;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +40,7 @@ public class SecurityConfig{
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtTokenUtil jwtTokenUtil;
     private final MemberDataProvider memberDataProvider;
+    private final OwnerLoginService ownerLoginService;
 
 
 
@@ -64,6 +64,10 @@ public class SecurityConfig{
 
         MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
         MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, memberDataProvider);
+
+        OwnerJwtAuthenticationFilter ownerJwtAuthenticationFilter = new OwnerJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
+        OwnerJwtAuthorizationFilter ownerJwtAuthorizationFilter = new OwnerJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, ownerLoginService);
+
         RestaurantPreviewFilter restaurantPreviewFilter = new RestaurantPreviewFilter(jwtTokenUtil, memberDataProvider);
 
         http
@@ -78,15 +82,14 @@ public class SecurityConfig{
                                 .requestMatchers("/reviews/create").hasRole("USER")
                                 .requestMatchers(("/reservation")).hasRole("USER")
                                 .requestMatchers(("/waiting")).hasRole("USER")
-//                        .requestMatchers("/owner/restaurants/**").hasRole("OWNER")
+                                .requestMatchers("/owner/restaurants/**").hasRole("OWNER")
                                 .anyRequest().permitAll() // 그 외의 요청은 권한 없이 접속 가능
                 )
-
                 .addFilter(memberJwtAuthenticationFilter)
                 .addFilter(memberJwtAuthorizationFilter)
                 .addFilterAfter(restaurantPreviewFilter, memberJwtAuthorizationFilter.getClass())
-//                .addFilter(ownerJwtAuthenticationFilter)
-//                .addFilter(ownerJwtAuthorizationFilter)
+                .addFilter(ownerJwtAuthenticationFilter)
+                .addFilter(ownerJwtAuthorizationFilter)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 비활성화
                 .logout(logout -> logout
                         .logoutUrl("/logout")  // 로그아웃 URL 설정

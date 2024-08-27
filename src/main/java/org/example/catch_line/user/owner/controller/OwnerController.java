@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.validation.Valid;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
@@ -34,6 +35,7 @@ import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.booking.BookingErrorException;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
+import org.example.catch_line.exception.session.InvalidSessionException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
 import org.example.catch_line.review.model.dto.ReviewResponse;
@@ -124,11 +126,31 @@ public class OwnerController {
 
 	@GetMapping("/restaurants/listHistory")
 	public String showRestaurantListPage2(HttpSession session, Model model) {
-		List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
-		model.addAttribute("restaurantList", restaurantResponseList);
+		try {
+			List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
+			model.addAttribute("restaurantList", restaurantResponseList);
 
-		return "owner/restaurantListHistory";
+			return "owner/restaurantListHistory";
+		} catch (InvalidSessionException e) {
+			model.addAttribute("errorMessage", e.getMessage());
+			return "redirect:/owner";
+		}
 	}
+
+	@GetMapping("/restaurants/list")
+	public String showRestaurantListPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+		try {
+			List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
+			model.addAttribute("restaurantList", restaurantResponseList);
+
+			return "owner/restaurantList";
+		} catch (InvalidSessionException e) {
+			log.info("error : {}", e.getClass());
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+			return "redirect:/owner";
+		}
+	}
+
 
 	@GetMapping("/restaurants/{restaurantId}/history")
 	public String showHistory(@PathVariable Long restaurantId, @RequestParam(defaultValue = "SCHEDULED") Status status ,Model model, HttpSession session) {
@@ -141,7 +163,7 @@ public class OwnerController {
 
 	}
 	@GetMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
-	public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId, HttpSession session, Model model) {
+	public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
 		model.addAttribute("restaurantId", restaurantId);
 
@@ -152,21 +174,21 @@ public class OwnerController {
 				model.addAttribute("restaurantId",restaurantId);
 				return "owner/waitingDetail";
 			} catch (HistoryException e) {
-				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
-				return "redirect:/owner/waitingDetail";
+				redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+				return "redirect:/owner";
 			}
 		}
 
 		return "redirect:/owner";
 	}
 	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
-	public String deleteReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model) {
+	public String deleteReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model,	RedirectAttributes redirectAttributes) {
 		try {
 			ReservationEntity reservation = reservationService.findReservationById(reservationId);
 			Long memberId = reservation.getMember().getMemberId();
 			reservationService.cancelReservation(memberId, reservationId);
 		} catch (BookingErrorException e) {
-			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 			return "redirect:/owner"; // 오류 페이지로 리다이렉트
 		}
 
@@ -174,11 +196,11 @@ public class OwnerController {
 	}
 
 	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}/completed")
-	public String completedReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model) {
+	public String completedReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			reservationService.completedReservation(reservationId);
 		} catch (BookingErrorException e) {
-			model.addAttribute("errorMessage", "예약 삭제 중 오류가 발생했습니다.");
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 			return "redirect:/owner"; // 오류 페이지로 리다이렉트
 		}
 
@@ -186,13 +208,13 @@ public class OwnerController {
 	}
 
 	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
-	public String deleteWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model) {
+	public String deleteWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model,RedirectAttributes redirectAttributes) {
 		try {
 			WaitingEntity waiting = waitingService.getWaitingEntity(waitingId);
 			Long memberId = waiting.getMember().getMemberId();
 			waitingService.cancelWaiting(memberId, waitingId);
 		} catch (BookingErrorException e) {
-			model.addAttribute("errorMessage", "웨이팅 삭제 중 오류가 발생했습니다.");
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 			return "redirect:/owner"; // 오류 페이지로 리다이렉트
 		}
 
@@ -200,11 +222,11 @@ public class OwnerController {
 	}
 
 	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}/completed")
-	public String completeWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model) {
+	public String completeWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			waitingService.completedWaiting(waitingId);
 		} catch (BookingErrorException e) {
-			model.addAttribute("errorMessage", "웨이팅 완료 중 오류가 발생했습니다.");
+			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 			return "redirect:/owner"; // 오류 페이지로 리다이렉트
 		}
 
@@ -213,7 +235,7 @@ public class OwnerController {
 
 	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
 	public String getReservationDetails(@PathVariable Long restaurantId, @PathVariable Long reservationId,
-										Model model, HttpSession session) {
+										Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 		List<HistoryResponse> historyList = (List<HistoryResponse>) session.getAttribute("historyList");
 
 		if (historyList != null) {
@@ -224,7 +246,7 @@ public class OwnerController {
 
 				return "owner/reservationDetail";
 			} catch (HistoryException e) {
-				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
+				redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 				return "redirect:/owner/reservationDetail";
 			}
 		}
@@ -240,13 +262,7 @@ public class OwnerController {
 		return "owner/reviews";
 	}
 
-	@GetMapping("/restaurants/list")
-	public String showRestaurantListPage(HttpSession session, Model model) {
-		List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
-		model.addAttribute("restaurantList", restaurantResponseList);
 
-		return "owner/restaurantList";
-	}
 
 	@GetMapping("/restaurants/list/{restaurantId}")
 	public String showRestaurant(@PathVariable Long restaurantId, Model model) {
@@ -291,15 +307,15 @@ public class OwnerController {
 										@Valid @ModelAttribute RestaurantHourRequest request, BindingResult bindingResult, Model model,
 										RedirectAttributes redirectAttributes) {
 		if (bindingResult.hasErrors()) {
-			redirectAttributes.addFlashAttribute("error", "영업 시간 업데이트 중 오류가 발생했습니다.");
+			redirectAttributes.addFlashAttribute("errorMessage", "영업 시간 업데이트 중 오류가 발생했습니다.");
 			return "redirect:/owner/restaurants/list/" + restaurantId;
 		}
 
 		try {
 			restaurantHourService.updateRestaurantHour(hourId, request);
-			redirectAttributes.addFlashAttribute("message", "영업 시간이 성공적으로 업데이트");
+			redirectAttributes.addFlashAttribute("errorMessage", "영업 시간이 성공적으로 업데이트");
 		} catch (CatchLineException e) {
-			redirectAttributes.addFlashAttribute("error", "영업 시간 업데이트 중 오류가 발생했습니다.");
+			redirectAttributes.addFlashAttribute("errorMessage", "영업 시간 업데이트 중 오류가 발생했습니다.");
 		}
 		return "redirect:/owner/restaurants/list/" + restaurantId;
 	}

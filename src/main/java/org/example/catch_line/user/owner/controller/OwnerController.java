@@ -73,7 +73,7 @@ public class OwnerController {
 
 	@GetMapping
 	public String viewOwnerPage(HttpSession httpSession, Model model) {
-		boolean isLoggedIn = httpSession.getAttribute(SessionConst.OWNER_ID) != null; // "user" 세션 속성으로 로그인 상태 확인
+		boolean isLoggedIn = Objects.nonNull(httpSession.getAttribute(SessionConst.OWNER_ID)); // "user" 세션 속성으로 로그인 상태 확인
 		model.addAttribute("isLoggedIn", isLoggedIn);
 
 		return "owner/owner";

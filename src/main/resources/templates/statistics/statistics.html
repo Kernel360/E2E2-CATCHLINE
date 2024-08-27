@@ -85,7 +85,7 @@
 
     $('#restaurantSelect').change(function() {
         var restaurantId = $(this).val();
-        $.get('/statistics/data/' + restaurantId, function(data) {
+        $.get('/owner/statistics/' + restaurantId, function(data) {
             console.log(data); // 데이터 확인
             drawChart(data);
         });

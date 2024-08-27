@@ -71,17 +71,6 @@ public class WaitingService {
 		waitingRepository.save(entity);
 	}
 
-	@Transactional
-	@Scheduled(cron = "0 0 0 * * ?")
-	public void updateScheduledWaiting() {
-		List<WaitingEntity> waitingEntities = waitingRepository.findAllByStatus(Status.SCHEDULED);
-
-		for (WaitingEntity waitingEntity : waitingEntities) {
-			waitingEntity.changeWaitingStatus(Status.CANCELED);
-		}
-
-		waitingRepository.saveAll(waitingEntities);
-	}
 
 	public boolean isExistingWaiting(Long memberId, Status status) {
 		return waitingRepository.existsByMemberMemberIdAndStatus(memberId, status);

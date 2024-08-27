@@ -1,24 +1,18 @@
 package org.example.catch_line.history.service;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
-import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.exception.CatchLineException;
-import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.model.mapper.HistoryMapper;
-import org.example.catch_line.history.validation.HistoryValidator;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;

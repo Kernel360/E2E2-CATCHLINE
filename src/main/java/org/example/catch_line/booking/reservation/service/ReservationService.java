@@ -76,17 +76,6 @@ public class ReservationService {
 		return historyMapper.reservationToHistoryResponse(savedEntity);
 	}
 
-	@Scheduled(cron = "0 0 0 * * ?")
-	public void updateScheduledReservation() {
-		List<ReservationEntity> reservationEntities = reservationRepository.findAllByStatus(Status.SCHEDULED);
-
-		for (ReservationEntity reservationEntity : reservationEntities) {
-			if(LocalDateTime.now().isAfter(reservationEntity.getReservationDate())){
-				reservationEntity.changeReservationStatus(Status.CANCELED);
-			}
-		}
-		reservationRepository.saveAll(reservationEntities);
-	}
 
 	public void completedReservation(Long reservationId) {
 		ReservationEntity reservationEntity = historyValidator.checkIfReservationPresent(reservationId);

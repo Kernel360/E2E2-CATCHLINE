@@ -1,5 +1,7 @@
 package org.example.catch_line.dining.restaurant.model.entity.constant;
 
+import java.util.Objects;
+
 public enum FoodType {
 
     KOREAN("한식"),
@@ -19,7 +21,7 @@ public enum FoodType {
 
     public static FoodType fromKoreanName(String description) {
         for (FoodType type : values()) {
-            if (type.getDescription().equals(description)) {
+            if (Objects.equals(type.getDescription(), description)) {
                 return type;
             }
         }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Objects;
+
 @Component
 @RequiredArgsConstructor
 public class HistoryValidator {
@@ -31,7 +33,7 @@ public class HistoryValidator {
 		WaitingEntity waitingEntity = waitingRepository.findByWaitingId(waitingId)
 				.orElseThrow(() -> new CatchLineException("해당 웨이팅은 존재하지 않습니다"));
 
-		if (!waitingEntity.getMember().getMemberId().equals(memberId)) {
+		if (!Objects.equals(waitingEntity.getMember().getMemberId(), memberId)) {
 			throw new CatchLineException("해당 대기를 삭제할 권한이 없습니다");
 		}
 	}
@@ -40,7 +42,7 @@ public class HistoryValidator {
 		ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId)
 				.orElseThrow(() -> new CatchLineException("해당 예약은 존재하지 않습니다"));
 
-		if (!reservationEntity.getMember().getMemberId().equals(memberId)) {
+		if (!Objects.equals(reservationEntity.getMember().getMemberId(), memberId)) {
 			throw new CatchLineException("해당 예약을 삭제할 권한이 없습니다");
 		}
 	}

@@ -11,13 +11,7 @@ import org.springframework.stereotype.Component;
 public class MemberEntityMapper {
 
     public MemberEntity toMemberEntity(SignUpRequest signUpRequest, String encodedPassword) {
-        return MemberEntity.builder()
-                .email(new Email(signUpRequest.getEmail()))
-                .name(signUpRequest.getName())
-                .nickname(signUpRequest.getNickname())
-                .password(new Password(encodedPassword))
-                .phoneNumber(new PhoneNumber(signUpRequest.getPhoneNumber()))
-                .build();
+        return new MemberEntity(new Email(signUpRequest.getEmail()), signUpRequest.getName(), signUpRequest.getNickname(), new Password(encodedPassword), new PhoneNumber(signUpRequest.getPhoneNumber()));
     }
 
 }

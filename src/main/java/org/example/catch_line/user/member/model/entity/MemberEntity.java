@@ -63,16 +63,23 @@ public class MemberEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "member")
     private List<ScrapEntity> scraps = new ArrayList<>();
 
-    @Builder
-    public MemberEntity(Email email, String name, String nickname, Password password, PhoneNumber phoneNumber, String kakaoMemberId) {
+    public MemberEntity(Email email, String name, String nickname, Password password, PhoneNumber phoneNumber) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.kakaoMemberId = kakaoMemberId;
         this.isMemberDeleted = false;
     }
+
+    public MemberEntity(String KakaoMemberId, Email email, String name, String nickname) {
+        this.kakaoMemberId = KakaoMemberId;
+        this.email = email;
+        this.name = name;
+        this.nickname = nickname;
+        this.isMemberDeleted = false;
+    }
+
 
     // 회원 정보 수정 -> @Setter 사용 대신 메서드를 따로 추가
     public void updateMember(String name, String nickname, Password password, PhoneNumber phoneNumber) {

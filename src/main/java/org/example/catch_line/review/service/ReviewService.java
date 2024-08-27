@@ -1,6 +1,7 @@
 package org.example.catch_line.review.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.example.catch_line.common.model.vo.Rating;
@@ -84,7 +85,7 @@ public class ReviewService {
 	}
 
 	private void isMemberOfReview(ReviewEntity reviewEntity, Long memberId) {
-		if (!reviewEntity.getMember().getMemberId().equals(memberId)) {
+		if (!Objects.equals(reviewEntity.getMember().getMemberId(), memberId)) {
 			throw new UnauthorizedException();
 		}
 	}

@@ -1,15 +1,15 @@
-package org.example.catch_line.user.member.controller.thymeleaf;
+package org.example.catch_line.user.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.config.auth.MemberUserDetails;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.member.model.dto.MemberResponse;
 import org.example.catch_line.user.member.model.dto.MemberUpdateRequest;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.model.mapper.MemberResponseMapper;
-import org.example.catch_line.user.member.service.MemberService;
+import org.example.catch_line.user.member.service.MemberProfileService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/members")
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberProfileService memberProfileService;
     private final MemberResponseMapper memberResponseMapper;
 
     @GetMapping
@@ -60,11 +60,11 @@ public class MemberController {
         }
 
         try {
-            memberService.updateMember(memberUpdateRequest, memberUserDetails.getMember().getMemberId());
+            memberProfileService.updateMember(memberUpdateRequest, memberUserDetails.getMember().getMemberId());
         } catch (CatchLineException e) {
             log.info("error : {}", e.getMessage());
 
-            MemberResponse memberResponse = memberService.findMember(memberUserDetails.getMember().getMemberId());
+            MemberResponse memberResponse = memberProfileService.findMember(memberUserDetails.getMember().getMemberId());
             model.addAttribute("member", memberResponse);
 
             model.addAttribute("exception", e.getMessage());
@@ -76,7 +76,7 @@ public class MemberController {
 
     @PostMapping("/delete")
     public String deleteMember(@AuthenticationPrincipal MemberUserDetails memberUserDetails) {
-        memberService.deleteMember(memberUserDetails.getMember().getMemberId());
+        memberProfileService.deleteMember(memberUserDetails.getMember().getMemberId());
         return "redirect:/logout";
     }
 }

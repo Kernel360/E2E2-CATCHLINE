@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.config.auth.MemberUserDetails;
-import org.example.catch_line.user.token.JwtTokenUtil;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
+import org.example.catch_line.user.auth.token.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Objects;
 
 
 // 스프링 시큐리티의 필터
@@ -61,9 +62,9 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
                 if (keyValue.length == 2) {
                     String key = keyValue[0];
                     String value = java.net.URLDecoder.decode(keyValue[1], "UTF-8");
-                    if ("username".equals(key)) {
+                    if (Objects.equals("username", key)) {
                         username = value;
-                    } else if ("password".equals(key)) {
+                    } else if (Objects.equals("password", key)) {
                         password = value;
                     }
                 }
@@ -127,8 +128,8 @@ public class MemberJwtAuthenticationFilter extends UsernamePasswordAuthenticatio
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         log.info("successfulAuthentication 실행, 인증 완료 !!!");
 
-        MemberUserDetails principalDetail = (MemberUserDetails) authResult.getPrincipal();
-        String jwtToken = jwtTokenUtil.generateToken(principalDetail.getUsername());
+        MemberUserDetails memberUserDetails = (MemberUserDetails) authResult.getPrincipal();
+        String jwtToken = jwtTokenUtil.generateToken(memberUserDetails.getUsername());
 
         response.addHeader("Authorization", "Bearer " + jwtToken);
 

@@ -4,7 +4,7 @@ import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.config.auth.MemberUserDetails;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.exception.booking.WaitingException;
 import org.example.catch_line.exception.session.InvalidSessionException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,22 +28,20 @@ public class WaitingController {
 		return "waiting/waiting";
 	}
 
-	//@RequestParam으로 변경
 	@PostMapping("/restaurants/{restaurantId}/waiting")
 	public String addWaiting(
 		@PathVariable Long restaurantId,
 		@ModelAttribute WaitingRequest waitingRequest,
-		Model model,
-		@AuthenticationPrincipal MemberUserDetails userDetails
+		@AuthenticationPrincipal MemberUserDetails userDetails,
+		Model model
 	) {
 		try {
 			Long memberId = userDetails.getMember().getMemberId();
 
 			boolean isExisting = waitingService.isExistingWaiting(memberId, Status.SCHEDULED);
 			if (isExisting) {
-				// 오류 메시지를 추가하고 현재 페이지로 리디렉션
 				model.addAttribute("error", "이미 예약이 존재합니다");
-				return "waiting/waiting"; // 현재 페이지를 보여주는 템플릿 이름으로 수정
+				return "waiting/waiting";
 			}
 
 			WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, memberId);
@@ -52,9 +50,8 @@ public class WaitingController {
 			model.addAttribute("waitingResponse", waitingResponse);
 			return "redirect:/history";
 		} catch (InvalidSessionException | WaitingException e) {
-			// 오류 메시지를 추가하고 현재 페이지로 리디렉션
 			model.addAttribute("error", "Waiting failed: " + e.getMessage());
-			return "waiting/waiting"; // 현재 페이지를 보여주는 템플릿 이름으로 수정
+			return "waiting/waiting";
 		}
 	}
 

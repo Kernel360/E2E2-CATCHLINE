@@ -53,7 +53,7 @@ public class WaitingEntity extends BaseTimeEntity {
 	@JoinColumn(name = "restaurant_id")
 	private RestaurantEntity restaurant;
 
-	@Builder
+
 	public WaitingEntity(int memberCount, Status status, WaitingType waitingType, MemberEntity member,
 		RestaurantEntity restaurant) {
 		this.memberCount = memberCount;

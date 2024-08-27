@@ -1,6 +1,7 @@
 package org.example.catch_line.history.controller;
 
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.validation.Valid;
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
@@ -10,7 +11,7 @@ import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.config.auth.MemberUserDetails;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.exception.booking.BookingErrorException;
 import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
 import org.example.catch_line.exception.booking.HistoryException;
@@ -61,7 +62,7 @@ public class HistoryController {
 
 		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId, waitingRepository.findByWaitingId(waitingId).get().getStatus());
 
-		if (allHistory != null) {
+		if (Objects.nonNull(allHistory)) {
 			try {
 				HistoryResponse historyResponse = historyService.findWaitingDetailById(allHistory, waitingId);
 				model.addAttribute("historyResponse", historyResponse);
@@ -85,7 +86,7 @@ public class HistoryController {
 
 		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId, reservationRepository.findByReservationId(reservationId).get().getStatus());
 
-		if (allHistory != null) {
+		if (Objects.nonNull(allHistory)) {
 			try {
 				HistoryResponse historyResponse = historyService.findReservationDetailById(allHistory, reservationId);
 				model.addAttribute("historyResponse", historyResponse);

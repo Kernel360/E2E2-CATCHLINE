@@ -4,7 +4,7 @@ import org.example.catch_line.user.member.model.dto.MemberUpdateRequest;
 import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.common.model.vo.Password;
 import org.example.catch_line.common.model.vo.PhoneNumber;
-import org.example.catch_line.user.member.service.MemberService;
+import org.example.catch_line.user.member.service.MemberProfileService;
 import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class MemberServiceTest {
+class MemberProfileServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
@@ -37,7 +37,7 @@ class MemberServiceTest {
     private MemberValidator memberValidator;  // MemberValidator를 Mock으로 주입
 
     @InjectMocks
-    private MemberService memberService;
+    private MemberProfileService memberProfileService;
 
     private MemberEntity defaultMember;
 
@@ -73,7 +73,7 @@ class MemberServiceTest {
                         .phoneNumber("010-2121-4343")
                         .build();
 
-        memberService.updateMember(memberUpdateRequest, 1L);
+        memberProfileService.updateMember(memberUpdateRequest, 1L);
 
         // 검증
         assertEquals("update test name", defaultMember.getName());

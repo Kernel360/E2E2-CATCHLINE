@@ -12,8 +12,6 @@ import org.example.catch_line.user.member.model.mapper.MemberResponseMapper;
 import org.example.catch_line.common.model.vo.Password;
 import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
-import org.example.catch_line.user.member.repository.MemberRepository;
-import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
 import org.example.catch_line.user.member.model.provider.validation.PasswordValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,11 +20,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class MemberService {
+public class MemberProfileService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberDataProvider memberDataProvider;
-
     private final MemberResponseMapper memberResponseMapper;
 
 

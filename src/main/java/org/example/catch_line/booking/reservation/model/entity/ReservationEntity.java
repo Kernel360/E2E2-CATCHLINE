@@ -54,9 +54,7 @@ public class ReservationEntity extends BaseTimeEntity {
 	@JoinColumn(name = "restaurant_id")
 	private RestaurantEntity restaurant;
 
-	@Builder
-	public ReservationEntity(int memberCount, Status status, LocalDateTime reservationDate, MemberEntity member,
-		RestaurantEntity restaurant) {
+	public ReservationEntity(int memberCount, Status status, LocalDateTime reservationDate, MemberEntity member,RestaurantEntity restaurant) {
 		this.memberCount = memberCount;
 		this.status = status;
 		this.reservationDate = reservationDate;

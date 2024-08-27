@@ -95,8 +95,9 @@ public class OwnerController {
 
 		return "redirect:/owner";
 	}
-
+ 
 	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
+	@ResponseBody
 	public String deleteReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model,	RedirectAttributes redirectAttributes) {
 		try {
 			ReservationEntity reservation = reservationService.findReservationById(reservationId);
@@ -107,10 +108,11 @@ public class OwnerController {
 			return "redirect:/owner";
 		}
 
-		return "redirect:/owner";
+		return "ok";
 	}
 
 	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}/completed")
+	@ResponseBody
 	public String completedReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			reservationService.completedReservation(reservationId);
@@ -119,10 +121,11 @@ public class OwnerController {
 			return "redirect:/owner";
 		}
 
-		return "redirect:/owner";
+		return "ok";
 	}
 
 	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
+	@ResponseBody
 	public String deleteWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model,RedirectAttributes redirectAttributes) {
 		try {
 			WaitingEntity waiting = waitingService.getWaitingEntity(waitingId);
@@ -133,10 +136,11 @@ public class OwnerController {
 			return "redirect:/owner";
 		}
 
-		return "redirect:/owner";
+		return "ok";
 	}
 
 	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}/completed")
+	@ResponseBody
 	public String completeWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			waitingService.completedWaiting(waitingId);
@@ -145,7 +149,7 @@ public class OwnerController {
 			return "redirect:/owner";
 		}
 
-		return "redirect:/owner";
+		return "ok";
 	}
 
 	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")

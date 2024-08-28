@@ -1,6 +1,5 @@
 package org.example.catch_line.user.owner.controller;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +7,6 @@ import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
 import org.example.catch_line.common.kakao.service.KakaoAddressService;
-import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.dining.restaurant.model.dto.*;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantImageEntity;
 import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
@@ -19,8 +17,10 @@ import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.service.ReviewService;
+import org.example.catch_line.user.auth.details.OwnerUserDetails;
 import org.example.catch_line.user.owner.service.OwnerService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,8 +57,8 @@ public class OwnerRestaurantController {
 
     @PostMapping("/restaurants")
     public String createRestaurant(@Valid @ModelAttribute("request") RestaurantCreateRequest request,
-                                   BindingResult bindingResult, HttpSession session) {
-        Long ownerId = SessionUtils.getOwnerId(session);
+                                   BindingResult bindingResult, @AuthenticationPrincipal OwnerUserDetails ownerUserDetails) {
+        Long ownerId = ownerUserDetails.getOwner().getOwnerId();
         if (bindingResult.hasErrors()) {
             log.info("error = {}", bindingResult);
             return "owner/createRestaurant";
@@ -81,12 +81,13 @@ public class OwnerRestaurantController {
     }
 
     @PostMapping("/restaurants/{restaurantId}")
-    public String updateRestaurant(@PathVariable Long restaurantId, HttpSession session,
+    public String updateRestaurant(@PathVariable Long restaurantId, @AuthenticationPrincipal OwnerUserDetails ownerUserDetails,
                                    @Valid @ModelAttribute("restaurant") RestaurantUpdateRequest request, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "owner/updateRestaurant";
         }
-        Long ownerId = SessionUtils.getOwnerId(session);
+        Long ownerId = ownerUserDetails.getOwner().getOwnerId();
+
         restaurantService.updateRestaurant(ownerId, restaurantId, request);
 
         return "redirect:/owner/restaurants/list/" + restaurantId;

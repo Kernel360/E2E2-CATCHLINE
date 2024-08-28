@@ -79,9 +79,9 @@
     </div>
     <!-- 상단 로그인, 회원가입 및 로그아웃 버튼 -->
     <div class="header-buttons">
-        <button type="button" class="btn btn-outline-lilac" th:if="${param.message == null}" th:onclick="|location.href='@{/owner/login}'|">로그인</button>
-        <button type="button" class="btn btn-outline-lilac" th:if="${param.message == null}" th:onclick="|location.href='@{/owner/signup}'|">회원가입</button>
-        <form th:action="@{/owner/logout}" method="post" th:if="${param.message != null}">
+        <button type="button" class="btn btn-outline-lilac" th:if="${!isLoggedIn}" th:onclick="|location.href='@{/owner/login}'|">로그인</button>
+        <button type="button" class="btn btn-outline-lilac" th:if="${!isLoggedIn}" th:onclick="|location.href='@{/owner/signup}'|">회원가입</button>
+        <form th:action="@{/owner/logout}" method="post" th:if="${isLoggedIn}">
             <button type="submit" class="btn btn-outline-lilac">로그아웃</button>
         </form>
     </div>

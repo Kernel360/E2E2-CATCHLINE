@@ -1,8 +1,8 @@
 insert into owner (name,login_id,password,phone_number)
 values
-    ('김철수','abc@gmail.com','$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2','010-1234-1234'),
-    ('김미영','qwer@gmail.com','$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2','010-1234-1234'),
-    ('김짱구','abcd@gmail.com','$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2','010-1234-1234');
+    ('김철수','abcd1111','$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2','010-1234-1234'),
+    ('김미영','qwer1111','$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2','010-1234-1234'),
+    ('김짱구','abcd1234','$2a$10$TImMaw61Jx7JBf1m0ZPl2u/ZwJiXDIv72JIO7C8QaE8CfeOje5AJ2','010-1234-1234');
 
 insert into member (name, nickname, password, email, phone_number, is_member_deleted, created_at, modified_at)
 values

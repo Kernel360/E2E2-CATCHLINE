@@ -6,13 +6,14 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.model.vo.Email;
 import org.example.catch_line.user.auth.details.MemberUserDetails;
+import org.example.catch_line.user.auth.service.MemberDefaultLoginService;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.example.catch_line.user.auth.token.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.Objects;
 @Slf4j
 public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
 
+    private final MemberDefaultLoginService memberDefaultLoginService;
     private final MemberDataProvider memberDataProvider;
     private final JwtTokenUtil jwtTokenUtil;
 
@@ -37,7 +39,7 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
             "/css/**",
             "/js/**",
             "/images/**",
-            "/restaurant/**",
+            "/restaurants/**",
             // TODO: 수정 필요
             "/owner/**",
             "/"
@@ -50,10 +52,11 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
             "/reservation"
     );
 
-    public MemberJwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, MemberDataProvider memberDataProvider) {
+    public MemberJwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, MemberDataProvider memberDataProvider, MemberDefaultLoginService memberDefaultLoginService) {
         super(authenticationManager);
         this.jwtTokenUtil = jwtTokenUtil;
         this.memberDataProvider = memberDataProvider;
+        this.memberDefaultLoginService = memberDefaultLoginService;
     }
 
     @Override
@@ -64,13 +67,12 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
         log.info("MemberJwtAuthorizationFilter 진입");
 
         if (isWhitelisted(requestURI) && !isBlacklisted(requestURI)) {
-            log.info("isWhitelisted : {}", isWhitelisted(requestURI));
-            log.info("isBlacklisted : {}", isBlacklisted(requestURI));
             chain.doFilter(request, response);
             return;
         }
 
-        System.out.println("인증이나 권한이 필요한 주소 요청이 됨.");
+
+        System.out.println("일반 사용자 인증이나 권한이 필요한 주소 요청이 됨.");
 
         String jwtToken = null;
 
@@ -94,12 +96,16 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             if (Objects.nonNull(username) && jwtTokenUtil.validateToken(jwtToken, username)) {
 
-                MemberUserDetails memberUserDetails;
+                MemberUserDetails memberUserDetails = null;
                 if(username.contains("kakao")) {
                     memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByKakaoMemberId(username));
                 } else {
-                    log.info("MemberJwtAuthorization Filter에서 member 조회 실행");
-                    memberUserDetails = new MemberUserDetails(memberDataProvider.provideMemberByEmail(new Email(username)));
+                    try {
+                        memberUserDetails = (MemberUserDetails) memberDefaultLoginService.loadUserByUsername(username);
+                    } catch (UsernameNotFoundException e) {
+                        response.sendRedirect("/restaurants?authentication-error=" + URLEncoder.encode(e.getMessage(), "UTF-8"));
+                        return;
+                    }
                 }
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(memberUserDetails, null, memberUserDetails.getAuthorities());
@@ -113,8 +119,6 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
     private boolean isBlacklisted(String requestURI) {
 
         return BLACKLIST_URLS.stream().anyMatch(url -> {
-            log.info("url: {}", url);
-            log.info("requestURI: {}", requestURI);
             if(requestURI.endsWith(url)) return true;
             return false;
         });

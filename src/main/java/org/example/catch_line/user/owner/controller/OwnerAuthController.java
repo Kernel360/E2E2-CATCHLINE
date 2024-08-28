@@ -30,7 +30,7 @@ public class OwnerAuthController {
 
     @GetMapping("/signup")
     public String showOwnerSignUpForm(Model model) {
-        model.addAttribute("ownerSignUpRequest", new OwnerSignUpRequest());
+        model.addAttribute("ownerSignUpRequest", new OwnerSignUpRequest(null, null, null, null));
         return "owner/ownerSignup";
     }
 
@@ -58,9 +58,8 @@ public class OwnerAuthController {
     }
 
     @PostMapping("/logout")
-    public String logout(HttpSession httpSession) {
-        httpSession.invalidate();
-        return "redirect:/owner";
+    public String logout() {
+        return "redirect:/logout";
     }
 
 }

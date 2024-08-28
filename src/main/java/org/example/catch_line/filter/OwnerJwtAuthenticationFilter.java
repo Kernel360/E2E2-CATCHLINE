@@ -6,7 +6,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.constant.Const;
 import org.example.catch_line.user.auth.details.OwnerUserDetails;
 import org.example.catch_line.user.auth.token.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +32,6 @@ public class OwnerJwtAuthenticationFilter extends UsernamePasswordAuthentication
     public OwnerJwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
-//        setFilterProcessesUrl("/owner/login");
     }
 
 
@@ -138,12 +136,12 @@ public class OwnerJwtAuthenticationFilter extends UsernamePasswordAuthentication
         Cookie jwtCookie = new Cookie("JWT_TOKEN", jwtToken);
         jwtCookie.setHttpOnly(true);  // XSS 공격 방지
         jwtCookie.setSecure(true);    // HTTPS에서만 사용
-        jwtCookie.setPath("/owner");       // 애플리케이션의 모든 경로에서 사용 가능
+        jwtCookie.setPath("/owner");       // /owner 아래 모든 경로에서 사용 가능
         jwtCookie.setMaxAge(600); // 쿠키의 유효기간을 1시간으로 설정 (필요에 따라 조정 가능)
 
         response.addCookie(jwtCookie);
 
-        response.sendRedirect("/owner?message=" + Const.LOGIN_COMPLETED);
+        response.sendRedirect("/owner");
 //        super.successfulAuthentication(request, response, chain, authResult);
 
     }

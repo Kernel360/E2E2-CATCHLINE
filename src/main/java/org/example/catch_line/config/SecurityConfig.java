@@ -2,12 +2,14 @@ package org.example.catch_line.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.filter.*;
+import org.example.catch_line.user.auth.handler.CustomLogoutSuccessHandler;
 import org.example.catch_line.user.auth.handler.OAuth2SuccessHandler;
 import org.example.catch_line.user.auth.service.MemberDefaultLoginService;
 import org.example.catch_line.user.auth.service.OAuth2LoginService;
 import org.example.catch_line.user.auth.service.OwnerLoginService;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.example.catch_line.user.auth.token.JwtTokenUtil;
+import org.example.catch_line.user.owner.repository.OwnerRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +45,7 @@ public class SecurityConfig{
     private final JwtTokenUtil jwtTokenUtil;
     private final MemberDataProvider memberDataProvider;
     private final OwnerLoginService ownerLoginService;
+    private final OwnerRepository ownerRepository;
 
 
     @Bean
@@ -79,13 +82,17 @@ public class SecurityConfig{
         // form Login disable -> 해당 필터 사용할 수 있도록 추가, AuthenticationManager 넣어줘야 한다.
 
         MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(memberAuthenticationManager, jwtTokenUtil);
-        MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(memberAuthenticationManager, jwtTokenUtil, memberDataProvider);
+        MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(memberAuthenticationManager, jwtTokenUtil, memberDataProvider, memberDefaultLoginService);
 
         OwnerJwtAuthenticationFilter ownerJwtAuthenticationFilter = new OwnerJwtAuthenticationFilter(ownerAuthenticationManager, jwtTokenUtil);
         OwnerJwtAuthorizationFilter ownerJwtAuthorizationFilter = new OwnerJwtAuthorizationFilter(ownerAuthenticationManager, jwtTokenUtil, ownerLoginService);
         ownerJwtAuthenticationFilter.setFilterProcessesUrl("/owner/login-process");
 
         RestaurantPreviewFilter restaurantPreviewFilter = new RestaurantPreviewFilter(jwtTokenUtil, memberDataProvider);
+        OwnerPreviewFilter ownerPreviewFilter = new OwnerPreviewFilter(jwtTokenUtil, ownerRepository);
+
+        CustomLogoutSuccessHandler customLogoutSuccessHandler = new CustomLogoutSuccessHandler(jwtTokenUtil);
+
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정을 최신 방식으로 변경
@@ -94,24 +101,25 @@ public class SecurityConfig{
                 .httpBasic(AbstractHttpConfigurer::disable)  // HTTP Basic 인증 비활성화
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))  // frameOptions 설정
                 .authorizeHttpRequests(requests -> requests
-                                // TODO: url 정확하게 작성
-                                .requestMatchers("/members/**", "/history/**").hasRole("USER")
-                                .requestMatchers("/reviews/create").hasRole("USER")
-                                .requestMatchers(("/reservation")).hasRole("USER")
-                                .requestMatchers(("/waiting")).hasRole("USER")
-                                .requestMatchers("/owner/restaurants/**").hasRole("OWNER")
-                                .anyRequest().permitAll() // 그 외의 요청은 권한 없이 접속 가능
+                        // TODO: url 정확하게 작성
+                        .requestMatchers("/members/**", "/history/**").hasRole("USER")
+                        .requestMatchers("/reviews/create").hasRole("USER")
+                        .requestMatchers(("/reservation")).hasRole("USER")
+                        .requestMatchers(("/waiting")).hasRole("USER")
+                        .requestMatchers("/owner/restaurants/**").hasRole("OWNER")
+                        .anyRequest().permitAll() // 그 외의 요청은 권한 없이 접속 가능
                 )
                 .addFilter(memberJwtAuthenticationFilter)
                 .addFilter(memberJwtAuthorizationFilter)
                 .addFilterAfter(restaurantPreviewFilter, memberJwtAuthorizationFilter.getClass())
                 .addFilter(ownerJwtAuthenticationFilter)
                 .addFilter(ownerJwtAuthorizationFilter)
+                .addFilterAfter(ownerPreviewFilter, ownerJwtAuthorizationFilter.getClass())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 비활성화
                 .logout(logout -> logout
                         .logoutUrl("/logout")  // 로그아웃 URL 설정
-                        .logoutSuccessUrl("/")
-                        .deleteCookies("JWT_TOKEN")// 로그아웃 후 이동할 URL 설정
+                        .logoutSuccessUrl("/") // 로그아웃 후 이동할 URL 설정
+                        .deleteCookies("JWT_TOKEN")
                         .permitAll()
                 )
                 // Oauth 로그인

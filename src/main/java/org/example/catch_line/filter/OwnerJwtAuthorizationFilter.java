@@ -12,12 +12,16 @@ import org.example.catch_line.user.auth.token.JwtTokenUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class OwnerJwtAuthorizationFilter extends BasicAuthenticationFilter {
@@ -34,25 +38,15 @@ public class OwnerJwtAuthorizationFilter extends BasicAuthenticationFilter {
             "/js"
     );
 
-    // TODO: 수정
-//    private final String[] excludePath
 
-//    @Override
-//    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-//
-//        String path = request.getRequestURI();
-//        return Arrays.stream(excludePath).anyMatch(path::startsWith);
-//        return super.shouldNotFilter(request);
-//    }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String requestURI = request.getRequestURI();
+        return WHITELIST_URLS.stream().anyMatch(requestURI::startsWith);
+    }
 
     public OwnerJwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, OwnerLoginService ownerLoginService) {
         super(authenticationManager);
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.ownerLoginService = ownerLoginService;
-    }
-
-    public OwnerJwtAuthorizationFilter(AuthenticationManager authenticationManager, AuthenticationEntryPoint authenticationEntryPoint, JwtTokenUtil jwtTokenUtil, OwnerLoginService ownerLoginService) {
-        super(authenticationManager, authenticationEntryPoint);
         this.jwtTokenUtil = jwtTokenUtil;
         this.ownerLoginService = ownerLoginService;
     }
@@ -61,21 +55,14 @@ public class OwnerJwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String requestURI = request.getRequestURI();
 
-        log.info("OwnerJwtAuthorizationFilter 동작");
-        // Skip the filter for /owner/login and /owner/signup
-        if (isWhitelisted(requestURI)) {
-            chain.doFilter(request, response);
-            return;
-        }
-
         // Skip the filter for URLs not starting with /owner
-        if (!requestURI.startsWith("/owner")) {
+        if (!requestURI.startsWith("/owner") || requestURI.equals("/owner")) {
             chain.doFilter(request, response);
             return;
         }
 
-        log.info("OwnerJwtAuthorizationFilter 진입");
-        System.out.println("인증이나 권한이 필요한 주소 요청이 됨.");
+
+        log.info("사장님 인증이나 권한이 필요한 주소 요청이 됨.");
 
         String jwtToken = null;
 
@@ -88,11 +75,25 @@ public class OwnerJwtAuthorizationFilter extends BasicAuthenticationFilter {
             }
         }
 
+        if(Objects.isNull(jwtToken)) {
+            String encodedMessage = URLEncoder.encode("식당 사장님 로그인이 필요합니다", StandardCharsets.UTF_8.toString());
+            response.sendRedirect("/owner/login?message=" + encodedMessage);
+            return; // 필터 체인 진행 중단
+        }
+
         if (jwtToken != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 
             if (username != null && jwtTokenUtil.validateToken(jwtToken, username)) {
-                OwnerUserDetails ownerUserDetails = (OwnerUserDetails) ownerLoginService.loadUserByUsername(username);
+                OwnerUserDetails ownerUserDetails = null;
+                try {
+                    ownerUserDetails = (OwnerUserDetails) ownerLoginService.loadUserByUsername(username);
+
+                } catch (UsernameNotFoundException e) {
+                    response.sendRedirect("/restaurants?authentication-error=" + URLEncoder.encode(e.getMessage(), "UTF-8"));
+                    return;
+                }
+
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(ownerUserDetails, null, ownerUserDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
@@ -101,8 +102,6 @@ public class OwnerJwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
 
-    private boolean isWhitelisted(String requestURI) {
-        return WHITELIST_URLS.stream().anyMatch(url ->  requestURI.startsWith(url));
-    }
+
 
 }

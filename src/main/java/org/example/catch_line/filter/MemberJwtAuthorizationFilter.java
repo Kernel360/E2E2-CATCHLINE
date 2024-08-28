@@ -39,7 +39,8 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
             "/css",
             "/js",
             "/images",
-            "/owner"
+            "/owner",
+            "/check-email"
     );
 
     private static final List<String> BLACKLIST_URLS = Arrays.asList(

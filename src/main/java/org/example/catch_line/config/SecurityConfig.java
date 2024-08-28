@@ -89,7 +89,7 @@ public class SecurityConfig{
         ownerJwtAuthenticationFilter.setFilterProcessesUrl("/owner/login-process");
 
         RestaurantPreviewFilter restaurantPreviewFilter = new RestaurantPreviewFilter(jwtTokenUtil, memberDataProvider);
-        OwnerPreviewFilter ownerPreviewFilter = new OwnerPreviewFilter(jwtTokenUtil, ownerRepository);
+        OwnerPreviewFilter ownerPreviewFilter = new OwnerPreviewFilter(jwtTokenUtil, ownerRepository, ownerLoginService);
 
         CustomLogoutSuccessHandler customLogoutSuccessHandler = new CustomLogoutSuccessHandler(jwtTokenUtil);
 

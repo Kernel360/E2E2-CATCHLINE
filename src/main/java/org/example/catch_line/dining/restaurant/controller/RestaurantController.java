@@ -69,8 +69,6 @@ public class RestaurantController {
 
         List<RestaurantImageEntity> imageList = restaurantImageService.getImageList(restaurantId);
 
-        log.info("dto : {}", restaurant.isHasScrapped());
-
         model.addAttribute("restaurant", restaurant);
         model.addAttribute("restaurantHours", restaurantHours);
         model.addAttribute("hourResponse", hourResponse);

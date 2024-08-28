@@ -3,13 +3,9 @@ package org.example.catch_line.user.owner.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.common.constant.Role;
 import org.example.catch_line.exception.CatchLineException;
-import org.example.catch_line.user.owner.model.dto.OwnerLoginRequest;
-import org.example.catch_line.user.owner.model.dto.OwnerResponse;
 import org.example.catch_line.user.owner.model.dto.OwnerSignUpRequest;
 import org.example.catch_line.user.owner.service.OwnerAuthService;
 import org.springframework.stereotype.Controller;
@@ -17,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import static org.example.catch_line.common.session.SessionConst.*;
 
 @Controller
 @RequestMapping("/owner")

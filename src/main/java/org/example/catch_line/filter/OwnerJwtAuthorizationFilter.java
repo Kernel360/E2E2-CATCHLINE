@@ -31,6 +31,7 @@ public class OwnerJwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private static final List<String> WHITELIST_URLS = Arrays.asList(
             "/owner/login",
+            "/owner/logout",
             "/owner/signup",
             "/templates",
             "/static",

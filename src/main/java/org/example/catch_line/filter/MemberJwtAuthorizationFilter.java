@@ -31,18 +31,15 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
     private final JwtTokenUtil jwtTokenUtil;
 
     private static final List<String> WHITELIST_URLS = Arrays.asList(
-            "/login/**",
-            "/logout/**",
+            "/login",
+            "/logout",
             "/signup",
-            "/public/**",
-            "/static/**",
-            "/css/**",
-            "/js/**",
-            "/images/**",
-            "/restaurants/**",
-            // TODO: 수정 필요
-            "/owner/**",
-            "/"
+            "/public",
+            "/static",
+            "/css",
+            "/js",
+            "/images",
+            "/owner"
     );
 
     private static final List<String> BLACKLIST_URLS = Arrays.asList(
@@ -51,6 +48,12 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
             "/waiting",
             "/reservation"
     );
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String requestURI = request.getRequestURI();
+        return WHITELIST_URLS.stream().anyMatch(requestURI::startsWith);
+    }
 
     public MemberJwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil, MemberDataProvider memberDataProvider, MemberDefaultLoginService memberDefaultLoginService) {
         super(authenticationManager);
@@ -64,13 +67,10 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
         String requestURI = request.getRequestURI();
 
 
-        log.info("MemberJwtAuthorizationFilter 진입");
-
-        if (isWhitelisted(requestURI) && !isBlacklisted(requestURI)) {
+        if (requestURI.startsWith("/restaurants") && !isBlacklisted(requestURI)) {
             chain.doFilter(request, response);
             return;
         }
-
 
         System.out.println("일반 사용자 인증이나 권한이 필요한 주소 요청이 됨.");
 
@@ -119,17 +119,8 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
     private boolean isBlacklisted(String requestURI) {
 
         return BLACKLIST_URLS.stream().anyMatch(url -> {
-            if(requestURI.endsWith(url)) return true;
+            if (requestURI.endsWith(url)) return true;
             return false;
-        });
-    }
-
-    private boolean isWhitelisted(String requestURI) {
-        return WHITELIST_URLS.stream().anyMatch(url -> {
-            if (url.endsWith("/**")) {
-                return requestURI.startsWith(url.substring(0, url.length() - 3));
-            }
-            return Objects.equals(requestURI, url);
         });
     }
 

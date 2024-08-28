@@ -38,8 +38,7 @@ public class StatisticsService {
 
 
     public List<StatisticsResponse> getStatisticsList() {
-        List<StatisticsEntity> statisticsList = statisticsRepository.findAll();
-
+        List<RestaurantEntity> statisticsList = statisticsRepository.findDistinctRestaurants();
         return statisticsList.stream()
                 .map(statisticsMapper::entityToResponse)
                 .toList();
@@ -47,7 +46,7 @@ public class StatisticsService {
 
     public StatisticsGraphResponse getStatisticsByRestaurantId(Long restaurantId) {
         RestaurantEntity restaurantEntity = restaurantValidator.checkIfRestaurantPresent(restaurantId);
-        List<StatisticsEntity> statisticsList = statisticsRepository.findByRestaurant_restaurantId(restaurantId);
+        List<StatisticsEntity> statisticsList = statisticsRepository.findByRestaurantRestaurantId(restaurantId);
 
         List<String> dates = statisticsList.stream()
                 .map(date -> date.getStatisticsDate().toString())
@@ -68,27 +67,20 @@ public class StatisticsService {
     public void updateScheduledReservation() {
         List<ReservationEntity> reservationEntities = reservationRepository.findAllByStatus(Status.SCHEDULED);
 
-        for (ReservationEntity reservationEntity : reservationEntities) {
-            if(LocalDateTime.now().isAfter(reservationEntity.getReservationDate())){
-                reservationEntity.changeReservationStatus(Status.CANCELED);
-            }
-        }
+        LocalDateTime now = LocalDateTime.now();
+        reservationEntities.stream()
+                .filter(reservationEntity -> now.isAfter(reservationEntity.getReservationDate()))
+                .forEach(ReservationEntity::canceled);
         reservationRepository.saveAll(reservationEntities);
     }
 
-    @Transactional
     @Scheduled(cron = "0 0 0 * * ?")
     public void updateScheduledWaiting() {
         List<WaitingEntity> waitingEntities = waitingRepository.findAllByStatus(Status.SCHEDULED);
-
-        for (WaitingEntity waitingEntity : waitingEntities) {
-            waitingEntity.changeWaitingStatus(Status.CANCELED);
-        }
-
+        waitingEntities.forEach(WaitingEntity::canceled);
         waitingRepository.saveAll(waitingEntities);
     }
 
-    @Transactional
     @Scheduled(cron = "0 0 0 * * ?")
     public void recordDailyStatistics() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
@@ -107,13 +99,8 @@ public class StatisticsService {
                 waitingCount = waitingRepository.countByRestaurantAndModifiedAtBetween(restaurant, startOfDay, endOfDay);
             }
 
-            StatisticsEntity statistics = new StatisticsEntity(1, 0, yesterday, restaurant);
+            StatisticsEntity statistics = new StatisticsEntity(waitingCount, reservationCount, yesterday, restaurant);
             statisticsRepository.save(statistics);
-
-            log.info("waiting : {}", waitingCount);
-            log.info("reservation : {}", reservationCount);
-            log.info("yesterday : {}", yesterday);
-            log.info("restaurant : {},{}", restaurant.getRestaurantId(), restaurant.getName());
         }
     }
 

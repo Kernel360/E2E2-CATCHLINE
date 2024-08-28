@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class HistoryController {
 
 	private final ReservationService reservationService;
@@ -64,8 +66,9 @@ public class HistoryController {
 				model.addAttribute("historyResponse", historyResponse);
 				return "history/waitingDetail";
 			} catch (HistoryException e) {
+				log.info("log :{}",e.getMessage());
 				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
-				return "redirect:/history/history";
+				return "/history/waiting/" + waitingId;
 			}
 		}
 
@@ -88,8 +91,10 @@ public class HistoryController {
 				model.addAttribute("historyResponse", historyResponse);
 				return "history/reservationDetail";
 			} catch (HistoryException e) {
+				log.info("log :{}",e.getMessage());
+
 				model.addAttribute("errorMessage", e.getMessage());
-				return "redirect:/history/history";
+				return "/history/reservation/" + reservationId;
 			}
 		}
 		return "redirect:/history";

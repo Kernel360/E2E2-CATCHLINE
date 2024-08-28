@@ -87,6 +87,7 @@
             th:data-service-type="${history.serviceType}"
             th:data-waiting-id="${history.waitingId}"
             th:data-reservation-id="${history.reservationId}"
+            th:data-status="${history.status}"
             th:onclick="'redirectBasedOnServiceType(this, ' + ${restaurantId} + ')'">
 
         <td th:text="${history.restaurantName}"></td>
@@ -110,11 +111,13 @@
         const serviceType = row.getAttribute('data-service-type');
         const waitingId = row.getAttribute('data-waiting-id');
         const reservationId = row.getAttribute('data-reservation-id');
+        const status = row.getAttribute('data-status')
+
 
         if (serviceType === 'WAITING') {
-            location.href = '/owner/restaurants/' + restaurantId + '/history/waiting/' + waitingId;
+            location.href = `/owner/restaurants/${restaurantId}/history/waiting/${waitingId}?status=${status}`;
         } else {
-            location.href = '/owner/restaurants/' + restaurantId + '/history/reservation/' + reservationId;
+            location.href = `/owner/restaurants/${restaurantId}/history/reservation/${reservationId}?status=${status}`;
         }
     }
 </script>

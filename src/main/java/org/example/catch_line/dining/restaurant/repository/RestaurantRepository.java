@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
+public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long>, RestaurantRepositoryCustom {
 
     Optional<RestaurantEntity> findByName(String name);
 

@@ -122,18 +122,14 @@ public class SecurityConfig{
                         .deleteCookies("JWT_TOKEN")
                         .permitAll()
                 )
-                // Oauth 로그인
                 .oauth2Login(login -> login
                         .loginPage("/login/oauth")
                         .defaultSuccessUrl("/loginSuccess")
                         .successHandler(oAuth2SuccessHandler) // OAuth2 성공 핸들러 설정
-                        .userInfoEndpoint()
-                        .userService(oauth2LoginService) // OAuth 사용자 로그인 처리
+                        .userInfoEndpoint(userInfo->userInfo.userService(oauth2LoginService))
                 )
                 .userDetailsService(memberDefaultLoginService) // 일반 사용자 로그인 처리
                 .userDetailsService(ownerLoginService);
-//                .userDetailsService(ownerLoginService); // 식당 사장님 로그인 처리
-//                .logout(AbstractHttpConfigurer::disable);  // Spring Security 로그아웃 비활성화
         return http.build();
     }
     // CORS config

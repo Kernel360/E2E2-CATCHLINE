@@ -66,12 +66,12 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String requestURI = request.getRequestURI();
 
-        if (requestURI.equals("/") || requestURI.startsWith("/restaurants") && !isBlacklisted(requestURI)) {
+        if (requestURI.equals("/") || (requestURI.startsWith("/restaurants") && !isBlacklisted(requestURI))) {
             chain.doFilter(request, response);
             return;
         }
 
-        System.out.println("일반 사용자 인증이나 권한이 필요한 주소 요청이 됨.");
+        log.info("일반 사용자 인증이나 권한이 필요한 주소 요청이 됨.");
 
         String jwtToken = null;
 

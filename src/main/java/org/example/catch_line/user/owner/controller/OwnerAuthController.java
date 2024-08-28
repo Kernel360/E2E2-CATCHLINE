@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.owner.model.dto.OwnerSignUpRequest;
 import org.example.catch_line.user.owner.service.OwnerAuthService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -60,12 +61,18 @@ public class OwnerAuthController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                cookie.setValue("");
-                cookie.setPath("/");
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
+                if ("JWT_TOKEN".equals(cookie.getName())) {
+                    Cookie jwtCookie = new Cookie(cookie.getName(), "");
+                    jwtCookie.setPath("/owner"); // 쿠키가 설정된 경로와 동일하게 설정
+                    jwtCookie.setMaxAge(0); // 쿠키의 유효기간을 0으로 설정하여 삭제
+                    jwtCookie.setHttpOnly(cookie.isHttpOnly()); // 원래 쿠키의 HttpOnly 속성 유지
+                    jwtCookie.setSecure(cookie.getSecure()); // 원래 쿠키의 Secure 속성 유지
+                    response.addCookie(jwtCookie);
+                }
             }
         }
+
+        SecurityContextHolder.clearContext();
         return "redirect:/owner";
     }
 

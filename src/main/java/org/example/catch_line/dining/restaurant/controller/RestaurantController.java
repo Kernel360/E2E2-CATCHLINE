@@ -49,6 +49,9 @@ public class RestaurantController {
         DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
         DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
 
+
+        log.info("memberUserDetails : {}", memberUserDetails);
+
         Long memberId = Optional.ofNullable(memberUserDetails)
                 .map(MemberUserDetails::getMember)
                 .map(MemberEntity::getMemberId)

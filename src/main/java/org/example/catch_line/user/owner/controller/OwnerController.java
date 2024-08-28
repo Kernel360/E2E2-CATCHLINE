@@ -1,9 +1,6 @@
 package org.example.catch_line.user.owner.controller;
 
 
-import java.math.BigDecimal;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import jakarta.servlet.http.HttpSession;
@@ -14,27 +11,20 @@ import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.common.kakao.service.KakaoAddressService;
-import org.example.catch_line.common.session.SessionConst;
-import org.example.catch_line.common.session.SessionUtils;
-import org.example.catch_line.dining.menu.service.MenuService;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
-import org.example.catch_line.dining.restaurant.service.RestaurantHourService;
-import org.example.catch_line.dining.restaurant.service.RestaurantImageService;
-import org.example.catch_line.dining.restaurant.service.RestaurantService;
 import org.example.catch_line.exception.booking.BookingErrorException;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.exception.session.InvalidSessionException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
-import org.example.catch_line.review.service.ReviewService;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
+import org.example.catch_line.user.auth.details.OwnerUserDetails;
 import org.example.catch_line.user.owner.service.OwnerService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -51,28 +41,25 @@ public class OwnerController {
 
 
 	@GetMapping
-	public String viewOwnerPage(HttpSession httpSession, Model model) {
-
-		boolean isLoggedIn = Objects.nonNull(httpSession.getAttribute(SessionConst.OWNER_ID)); // "user" 세션 속성으로 로그인 상태 확인
-
+	public String viewOwnerPage(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model) {
+		boolean isLoggedIn = Objects.nonNull(ownerUserDetails); // "user" 세션 속성으로 로그인 상태 확인
 		model.addAttribute("isLoggedIn", isLoggedIn);
-
 		return "owner/owner";
 	}
 
 	@GetMapping("/restaurants/listHistory")
-	public String showRestaurantListPage2(HttpSession session, Model model) {
+	public String showRestaurantListPage2(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model) {
 		try {
-			List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
+			List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(ownerUserDetails.getOwner().getOwnerId());
 			model.addAttribute("restaurantList", restaurantResponseList);
-
 			return "owner/restaurantListHistory";
-		} catch (InvalidSessionException e) {
+		} catch (NullPointerException e) {
 			model.addAttribute("errorMessage", e.getMessage());
 			return "redirect:/owner";
 		}
 	}
 
+	// TODO: session 삭제 필요
 	@GetMapping("/restaurants/{restaurantId}/history")
 	public String showHistory(@PathVariable Long restaurantId, @RequestParam(defaultValue = "SCHEDULED") Status status ,Model model, HttpSession session) {
 		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,status);
@@ -180,9 +167,9 @@ public class OwnerController {
 	}
 
 	@GetMapping("/restaurants/list")
-	public String showRestaurantListPage(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+	public String showRestaurantListPage(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model, RedirectAttributes redirectAttributes) {
 		try {
-			List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(session);
+			List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(ownerUserDetails.getOwner().getOwnerId());
 			model.addAttribute("restaurantList", restaurantResponseList);
 
 			return "owner/restaurantList";
@@ -193,8 +180,7 @@ public class OwnerController {
 		}
 	}
 
-	private List<RestaurantResponse> getRestaurantResponseList(HttpSession session) {
-		Long ownerId = SessionUtils.getOwnerId(session);
+	private List<RestaurantResponse> getRestaurantResponseList(Long ownerId) {
 		return ownerService.findAllRestaurantByOwnerId(ownerId);
 	}
 

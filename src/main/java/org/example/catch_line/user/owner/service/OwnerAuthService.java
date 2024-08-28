@@ -46,15 +46,15 @@ public class OwnerAuthService {
     }
 
 
-    // 로그인
-    public OwnerResponse login(OwnerLoginRequest ownerLoginRequest) {
-
-        return ownerRepository.findByLoginId(ownerLoginRequest.getLoginId())
-                .filter(owner -> passwordEncoder.matches(ownerLoginRequest.getPassword(), owner.getPassword().getEncodedPassword())) // 비밀번호 비교
-                .map(ownerResponseMapper::entityToResponse)
-                .orElseThrow(() -> new CatchLineException("로그인에 실패하였습니다."));
-
-    }
+//    // 로그인
+//    public OwnerResponse login(OwnerLoginRequest ownerLoginRequest) {
+//
+//        return ownerRepository.findByLoginId(ownerLoginRequest.getLoginId())
+//                .filter(owner -> passwordEncoder.matches(ownerLoginRequest.getPassword(), owner.getPassword().getEncodedPassword())) // 비밀번호 비교
+//                .map(ownerResponseMapper::entityToResponse)
+//                .orElseThrow(() -> new CatchLineException("로그인에 실패하였습니다."));
+//
+//    }
 
 
 }

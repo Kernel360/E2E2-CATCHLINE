@@ -1,16 +1,19 @@
 package org.example.catch_line.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.filter.RestaurantPreviewFilter;
+import org.example.catch_line.filter.*;
+import org.example.catch_line.user.auth.handler.CustomLogoutSuccessHandler;
 import org.example.catch_line.user.auth.handler.OAuth2SuccessHandler;
 import org.example.catch_line.user.auth.service.MemberDefaultLoginService;
 import org.example.catch_line.user.auth.service.OAuth2LoginService;
-import org.example.catch_line.filter.MemberJwtAuthenticationFilter;
-import org.example.catch_line.filter.MemberJwtAuthorizationFilter;
+import org.example.catch_line.user.auth.service.OwnerLoginService;
 import org.example.catch_line.user.member.model.provider.MemberDataProvider;
 import org.example.catch_line.user.auth.token.JwtTokenUtil;
+import org.example.catch_line.user.owner.repository.OwnerRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -41,7 +44,8 @@ public class SecurityConfig{
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JwtTokenUtil jwtTokenUtil;
     private final MemberDataProvider memberDataProvider;
-
+    private final OwnerLoginService ownerLoginService;
+    private final OwnerRepository ownerRepository;
 
 
     @Bean
@@ -49,8 +53,13 @@ public class SecurityConfig{
         return new BCryptPasswordEncoder();
     }
 
+
+
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+    // Primary 지정해버리면 다른 config 파일이더라도 무조건 이것만 사용
+    // bean의 이름
+    @Primary
+    public AuthenticationManager memberAuthenticationManager(HttpSecurity http) throws Exception {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(memberDefaultLoginService);
         provider.setPasswordEncoder(bCryptPasswordEncoder());
@@ -58,13 +67,32 @@ public class SecurityConfig{
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
+    public AuthenticationManager ownerAuthenticationManager(HttpSecurity http) throws Exception {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(ownerLoginService);
+        provider.setPasswordEncoder(bCryptPasswordEncoder());
+        return new ProviderManager(provider);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   @Qualifier("memberAuthenticationManager") AuthenticationManager memberAuthenticationManager,
+                                                   @Qualifier("ownerAuthenticationManager") AuthenticationManager ownerAuthenticationManager) throws Exception {
 
         // form Login disable -> 해당 필터 사용할 수 있도록 추가, AuthenticationManager 넣어줘야 한다.
 
-        MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(authenticationManager, jwtTokenUtil);
-        MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(authenticationManager, jwtTokenUtil, memberDataProvider);
+        MemberJwtAuthenticationFilter memberJwtAuthenticationFilter = new MemberJwtAuthenticationFilter(memberAuthenticationManager, jwtTokenUtil);
+        MemberJwtAuthorizationFilter memberJwtAuthorizationFilter = new MemberJwtAuthorizationFilter(memberAuthenticationManager, jwtTokenUtil, memberDataProvider, memberDefaultLoginService);
+
+        OwnerJwtAuthenticationFilter ownerJwtAuthenticationFilter = new OwnerJwtAuthenticationFilter(ownerAuthenticationManager, jwtTokenUtil);
+        OwnerJwtAuthorizationFilter ownerJwtAuthorizationFilter = new OwnerJwtAuthorizationFilter(ownerAuthenticationManager, jwtTokenUtil, ownerLoginService);
+        ownerJwtAuthenticationFilter.setFilterProcessesUrl("/owner/login-process");
+
         RestaurantPreviewFilter restaurantPreviewFilter = new RestaurantPreviewFilter(jwtTokenUtil, memberDataProvider);
+        OwnerPreviewFilter ownerPreviewFilter = new OwnerPreviewFilter(jwtTokenUtil, ownerRepository);
+
+        CustomLogoutSuccessHandler customLogoutSuccessHandler = new CustomLogoutSuccessHandler(jwtTokenUtil);
+
 
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // CORS 설정을 최신 방식으로 변경
@@ -73,25 +101,25 @@ public class SecurityConfig{
                 .httpBasic(AbstractHttpConfigurer::disable)  // HTTP Basic 인증 비활성화
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))  // frameOptions 설정
                 .authorizeHttpRequests(requests -> requests
-                                // TODO: url 정확하게 작성
-                                .requestMatchers("/members/**", "/history/**").hasRole("USER")
-                                .requestMatchers("/reviews/create").hasRole("USER")
-                                .requestMatchers(("/reservation")).hasRole("USER")
-                                .requestMatchers(("/waiting")).hasRole("USER")
-//                        .requestMatchers("/owner/restaurants/**").hasRole("OWNER")
-                                .anyRequest().permitAll() // 그 외의 요청은 권한 없이 접속 가능
+                        // TODO: url 정확하게 작성
+                        .requestMatchers("/members/**", "/history/**").hasRole("USER")
+                        .requestMatchers("/reviews/create").hasRole("USER")
+                        .requestMatchers(("/reservation")).hasRole("USER")
+                        .requestMatchers(("/waiting")).hasRole("USER")
+                        .requestMatchers("/owner/restaurants/**").hasRole("OWNER")
+                        .anyRequest().permitAll() // 그 외의 요청은 권한 없이 접속 가능
                 )
-
                 .addFilter(memberJwtAuthenticationFilter)
                 .addFilter(memberJwtAuthorizationFilter)
                 .addFilterAfter(restaurantPreviewFilter, memberJwtAuthorizationFilter.getClass())
-//                .addFilter(ownerJwtAuthenticationFilter)
-//                .addFilter(ownerJwtAuthorizationFilter)
+                .addFilter(ownerJwtAuthenticationFilter)
+                .addFilter(ownerJwtAuthorizationFilter)
+                .addFilterAfter(ownerPreviewFilter, ownerJwtAuthorizationFilter.getClass())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 비활성화
                 .logout(logout -> logout
                         .logoutUrl("/logout")  // 로그아웃 URL 설정
-                        .logoutSuccessUrl("/")
-                        .deleteCookies("JWT_TOKEN")// 로그아웃 후 이동할 URL 설정
+                        .logoutSuccessUrl("/") // 로그아웃 후 이동할 URL 설정
+                        .deleteCookies("JWT_TOKEN")
                         .permitAll()
                 )
                 // Oauth 로그인
@@ -102,11 +130,10 @@ public class SecurityConfig{
                         .userInfoEndpoint()
                         .userService(oauth2LoginService) // OAuth 사용자 로그인 처리
                 )
-                .userDetailsService(memberDefaultLoginService); // 일반 사용자 로그인 처리
+                .userDetailsService(memberDefaultLoginService) // 일반 사용자 로그인 처리
+                .userDetailsService(ownerLoginService);
 //                .userDetailsService(ownerLoginService); // 식당 사장님 로그인 처리
-
 //                .logout(AbstractHttpConfigurer::disable);  // Spring Security 로그아웃 비활성화
-
         return http.build();
     }
     // CORS config

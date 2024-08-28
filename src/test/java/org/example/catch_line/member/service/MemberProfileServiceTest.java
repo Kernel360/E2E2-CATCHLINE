@@ -49,13 +49,8 @@ class MemberProfileServiceTest {
 
         given(bCryptPasswordEncoder.encode(anyString())).willReturn(encodedPassword);
 
-        defaultMember = MemberEntity.builder()
-                .email(new Email("test@gmail.com"))
-                .password(new Password(encodedPassword))
-                .phoneNumber(new PhoneNumber("010-1212-3434"))
-                .nickname("test nickname")
-                .name("test name")
-                .build();
+        defaultMember = new MemberEntity(new Email("test@gmail.com"), "test name", "test nickname",
+                        new Password(encodedPassword), new PhoneNumber("010-1212-3434"));
 
         given(memberValidator.checkIfMemberPresent(1L))
                 .willReturn(defaultMember);

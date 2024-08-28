@@ -1,5 +1,8 @@
 package org.example.catch_line.user.owner.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +27,13 @@ public class OwnerAuthController {
     private final OwnerAuthService ownerAuthService;
 
     @GetMapping("/login")
-    public String showOwnerLoginForm(Model model) {
-        model.addAttribute("ownerLoginRequest", new OwnerLoginRequest(null, null));
+    public String showOwnerLoginForm() {
         return "owner/ownerLogin";
     }
 
     @GetMapping("/signup")
     public String showOwnerSignUpForm(Model model) {
-        model.addAttribute("ownerSignUpRequest", new OwnerSignUpRequest(null, null, null, null ));
+        model.addAttribute("ownerSignUpRequest", new OwnerSignUpRequest(null, null, null, null));
         return "owner/ownerSignup";
     }
 
@@ -58,35 +60,17 @@ public class OwnerAuthController {
         return "redirect:/owner";
     }
 
-    @PostMapping("/login")
-    public String ownerLogin(
-            @Valid @ModelAttribute OwnerLoginRequest ownerLoginRequest,
-            BindingResult bindingResult,
-            HttpSession httpSession,
-            Model model
-    ) {
-        if (bindingResult.hasErrors()) {
-            return "owner/ownerLogin";
-        }
-
-        OwnerResponse ownerResponse;
-        try {
-            ownerResponse =
-                    ownerAuthService.login(ownerLoginRequest);
-        } catch (CatchLineException e) {
-            model.addAttribute("exception", e.getMessage());
-            return "owner/ownerLogin";
-        }
-
-        httpSession.setAttribute(OWNER_ID, ownerResponse.getOwnerId());
-        httpSession.setAttribute(ROLE, Role.OWNER);
-
-        return "redirect:/owner";
-    }
-
     @PostMapping("/logout")
-    public String logout(HttpSession httpSession) {
-        httpSession.invalidate();
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setValue("");
+                cookie.setPath("/");
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        }
         return "redirect:/owner";
     }
 

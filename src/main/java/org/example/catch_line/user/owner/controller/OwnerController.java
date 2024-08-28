@@ -3,7 +3,6 @@ package org.example.catch_line.user.owner.controller;
 
 import java.util.List;
 import java.util.Objects;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
@@ -14,10 +13,8 @@ import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.exception.booking.BookingErrorException;
 import org.example.catch_line.exception.booking.HistoryException;
-import org.example.catch_line.exception.session.InvalidSessionException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
-import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.user.auth.details.OwnerUserDetails;
 import org.example.catch_line.user.owner.service.OwnerService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -59,11 +56,9 @@ public class OwnerController {
 		}
 	}
 
-	// TODO: session 삭제 필요
 	@GetMapping("/restaurants/{restaurantId}/history")
-	public String showHistory(@PathVariable Long restaurantId, @RequestParam(defaultValue = "SCHEDULED") Status status ,Model model, HttpSession session) {
+	public String showHistory(@PathVariable Long restaurantId, @RequestParam(defaultValue = "SCHEDULED") Status status ,Model model) {
 		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,status);
-		session.setAttribute("historyList",historyResponses);
 		model.addAttribute("history",historyResponses);
 		model.addAttribute("restaurantId",restaurantId);
 
@@ -71,8 +66,9 @@ public class OwnerController {
 	}
 
 	@GetMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
-	public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-		List<HistoryResponse> historyList = (List<HistoryResponse>)session.getAttribute("historyList");
+	public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model, RedirectAttributes redirectAttributes) {
+
+		List<HistoryResponse> historyList = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,Status.SCHEDULED);
 		model.addAttribute("restaurantId", restaurantId);
 
 		if (Objects.nonNull(historyList)) {
@@ -148,8 +144,9 @@ public class OwnerController {
 
 	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
 	public String getReservationDetails(@PathVariable Long restaurantId, @PathVariable Long reservationId,
-										Model model, HttpSession session, RedirectAttributes redirectAttributes) {
-		List<HistoryResponse> historyList = (List<HistoryResponse>) session.getAttribute("historyList");
+										Model model,RedirectAttributes redirectAttributes) {
+
+		List<HistoryResponse> historyList = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,Status.SCHEDULED);
 
 		if (Objects.nonNull(historyList)) {
 			try {
@@ -173,7 +170,7 @@ public class OwnerController {
 			model.addAttribute("restaurantList", restaurantResponseList);
 
 			return "owner/restaurantList";
-		} catch (InvalidSessionException e) {
+		} catch (IllegalAccessError e) {
 			log.info("error : {}", e.getClass());
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 			return "redirect:/owner";

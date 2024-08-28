@@ -27,6 +27,7 @@ public class MyScrapController {
             @AuthenticationPrincipal MemberUserDetails memberUserDetails
             ) {
         Long memberId = memberUserDetails.getMember().getMemberId();
+        log.info("memberUserDetails : {}", memberUserDetails);
         List<RestaurantPreviewResponse> myRestaurants = myScrapService.findMyRestaurants(memberId);
         model.addAttribute("myRestaurants", myRestaurants);
         return "member/my-page/scraps";

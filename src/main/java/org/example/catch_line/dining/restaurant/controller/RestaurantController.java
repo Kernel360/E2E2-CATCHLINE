@@ -49,6 +49,9 @@ public class RestaurantController {
         DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
         DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
 
+
+        log.info("memberUserDetails : {}", memberUserDetails);
+
         Long memberId = Optional.ofNullable(memberUserDetails)
                 .map(MemberUserDetails::getMember)
                 .map(MemberEntity::getMemberId)
@@ -65,6 +68,8 @@ public class RestaurantController {
         KakaoAddressResponse.Document document = kakaoAddressResponse.getDocuments().get(0);
 
         List<RestaurantImageEntity> imageList = restaurantImageService.getImageList(restaurantId);
+
+        log.info("dto : {}", restaurant.isHasScrapped());
 
         model.addAttribute("restaurant", restaurant);
         model.addAttribute("restaurantHours", restaurantHours);

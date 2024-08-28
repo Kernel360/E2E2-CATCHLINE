@@ -16,6 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -25,10 +27,19 @@ public class RestaurantPreviewFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
     private final MemberDataProvider memberDataProvider;
 
+    private static final List<String> BLACKLIST_URLS = Arrays.asList(
+            "/reviews/create",
+            "/scraps",
+            "/waiting",
+            "/reservation"
+    );
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
 
-        if(!request.getRequestURI().equals("/restaurants")) {
+        String requestURI = request.getRequestURI();
+        if(!requestURI.startsWith("/restaurants") && !isBlacklisted(requestURI)) {
             chain.doFilter(request, response);
             return;
         }
@@ -73,4 +84,11 @@ public class RestaurantPreviewFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
+    private boolean isBlacklisted(String requestURI) {
+
+        return BLACKLIST_URLS.stream().anyMatch(url -> {
+            if (requestURI.endsWith(url)) return true;
+            return false;
+        });
+    }
 }

@@ -272,6 +272,8 @@
         })
             .then(response => response.json())
             .then(data => {
+
+                console.log("dddd :{}", data);
                 if (data.error) {
                     showModal(data.error);  // 에러가 있을 경우 모달 창 표시
                     return;

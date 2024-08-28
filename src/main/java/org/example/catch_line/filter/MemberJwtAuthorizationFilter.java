@@ -66,7 +66,7 @@ public class MemberJwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String requestURI = request.getRequestURI();
 
-        if (requestURI.equals("/") || requestURI.startsWith("/restaurants") && !isBlacklisted(requestURI)) {
+        if (requestURI.equals("/") || (requestURI.startsWith("/restaurants") && !isBlacklisted(requestURI))) {
             chain.doFilter(request, response);
             return;
         }

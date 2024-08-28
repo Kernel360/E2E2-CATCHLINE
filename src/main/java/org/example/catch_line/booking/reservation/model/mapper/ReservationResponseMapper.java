@@ -3,7 +3,6 @@ package org.example.catch_line.booking.reservation.model.mapper;
 import org.example.catch_line.booking.reservation.model.dto.ReservationResponse;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
 public class ReservationResponseMapper {

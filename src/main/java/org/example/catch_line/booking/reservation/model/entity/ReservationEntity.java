@@ -2,6 +2,7 @@ package org.example.catch_line.booking.reservation.model.entity;
 
 import java.time.LocalDateTime;
 
+import lombok.AccessLevel;
 import org.example.catch_line.common.model.entity.BaseTimeEntity;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
@@ -25,7 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "reservation")
 public class ReservationEntity extends BaseTimeEntity {
@@ -67,7 +68,12 @@ public class ReservationEntity extends BaseTimeEntity {
 		this.reservationDate = reservationDate;
 	}
 
-	public void changeReservationStatus(Status newStatus) {
-		this.status = newStatus;
+	public void completed() {
+		this.status = Status.COMPLETED;
 	}
+
+	public void canceled() {
+		this.status = Status.CANCELED;
+	}
+
 }

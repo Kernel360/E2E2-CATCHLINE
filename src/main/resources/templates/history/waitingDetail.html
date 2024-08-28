@@ -106,8 +106,18 @@
         fetch(url, {
             method: 'POST'
         })
-            .finally(() => {
-                window.location.href = '/history'; // 취소 후 history 페이지로 리디렉션
+            .then(response => {
+                if (response.ok || response.status === 302) {
+                    alert("웨이팅이 취소되었습니다."); // 성공 메시지 표시
+                    window.location.href = '/history'; // 취소 후 history 페이지로 리디렉션
+                } else {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+            })
+            .catch(error => {
+                alert("웨이팅 취소 중 오류가 발생했습니다: " + error.message); // 에러 메시지 표시
             });
     }
 </script>

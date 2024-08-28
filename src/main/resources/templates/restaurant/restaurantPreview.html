@@ -173,6 +173,29 @@
         </div>
     </div>
 
+    <!-- 일반 회원이 owner 접근 시 실패 모달 창 -->
+    <div th:if="${param['authentication-error']}" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true" style="display: block; background-color: rgba(0, 0, 0, 0.7);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+                <div class="modal-header bg-danger text-white" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                    <h5 class="modal-title mx-auto" id="errorModalLabel">접근 실패</h5>
+                    <button type="button" class="close text-white" aria-label="Close" onclick="this.closest('.modal').style.display='none'">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-exclamation-circle fa-3x text-danger mb-3"></i>
+                    <p class="mb-0" th:text="${param['authentication-error']}">잘못된 접근입니다.</p>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-danger px-4" style="border-radius: 20px;" onclick="this.closest('.modal').style.display='none'">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <hr class="my-4">
 
     <div class="search-container">

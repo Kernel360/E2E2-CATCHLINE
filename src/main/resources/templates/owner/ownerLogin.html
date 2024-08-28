@@ -5,7 +5,7 @@
     <link th:href="@{/css/bootstrap.min.css}" href="css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f3e6f7; /* 라일락 색상으로 변경 */
+            background-color: #f3e6f7;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,7 +23,7 @@
 
         h1 {
             text-align: center;
-            color: #5c4b7d; /* 라일락 톤으로 변경 */
+            color: #5c4b7d;
             margin-bottom: 25px;
             font-family: 'Arial', sans-serif;
         }
@@ -33,12 +33,12 @@
         }
 
         .form-group label {
-            color: #5c4b7d; /* 라일락 톤으로 변경 */
+            color: #5c4b7d;
             font-weight: bold;
         }
 
         .btn-lilac {
-            background-color: #c6a9e2; /* 연한 라일락 색상 */
+            background-color: #c6a9e2;
             color: white;
             border: none;
             width: 100%;
@@ -49,15 +49,15 @@
         }
 
         .btn-lilac:hover {
-            background-color: #b292d1; /* 조금 더 진한 라일락 톤으로 변경 */
+            background-color: #b292d1;
         }
 
         .btn-lilac:focus {
-            box-shadow: 0 0 5px rgba(150, 123, 182, 0.5); /* 라일락 색상으로 포커스 */
+            box-shadow: 0 0 5px rgba(150, 123, 182, 0.5);
         }
 
         .text-danger {
-            color: #d64f91; /* 경고 텍스트 색상 */
+            color: #d64f91;
             font-size: 0.9em;
             margin-top: 10px;
         }
@@ -65,7 +65,7 @@
         .radio-label {
             margin-right: 15px;
             font-weight: bold;
-            color: #5c4b7d; /* 라일락 톤으로 변경 */
+            color: #5c4b7d;
         }
 
         .modal-content {
@@ -74,7 +74,7 @@
         }
 
         .modal-header {
-            background-color: #c6a9e2; /* 라일락 색상 */
+            background-color: #c6a9e2;
             color: white;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
@@ -97,7 +97,7 @@
         .close {
             background-color: white;
             border: none;
-            color: #c6a9e2; /* 라일락 색상 */
+            color: #c6a9e2;
             font-size: 1.5rem;
             font-weight: bold;
             border-radius: 50%;
@@ -111,13 +111,12 @@
         }
 
         .close:hover {
-            background-color: #b292d1; /* 조금 더 진한 라일락 톤으로 변경 */
+            background-color: #b292d1;
             color: white;
         }
 
-        /* 통일된 버튼 스타일 */
         .btn-secondary, .btn-primary {
-            background-color: #c6a9e2; /* 연한 라일락 색상 */
+            background-color: #c6a9e2;
             color: white;
             border: none;
             padding: 8px 16px;
@@ -126,7 +125,7 @@
         }
 
         .btn-secondary:hover, .btn-primary:hover {
-            background-color: #b292d1; /* 조금 더 진한 라일락 톤으로 변경 */
+            background-color: #b292d1;
         }
     </style>
 </head>
@@ -141,30 +140,51 @@
         </div>
     </div>
     <h1>식당 사장님 로그인</h1>
-    <form th:action="@{/owner/login}" th:object="${ownerLoginRequest}" method="post">
+    <form id="loginForm" th:action="@{/owner/login-process}" method="post">
         <div class="form-group">
             <label for="id">아이디:</label>
-            <input type="text" id="id" th:field="*{loginId}" class="form-control" placeholder="아이디를 입력하세요" required/>
+            <input type="text" id="id" name="username" class="form-control" placeholder="아이디를 입력하세요" required/>
         </div>
         <div class="form-group">
             <label for="password">비밀번호:</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요" required/>
+            <input type="password" id="password" name="password" class="form-control" placeholder="비밀번호를 입력하세요" required/>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-lilac">로그인</button>
         </div>
     </form>
 
-    <!-- 모달 -->
-    <div th:if="${exception}" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true" style="display: block; background-color: rgba(0,0,0,0.5);">
+    <!-- 로그인 실패 모달 창 -->
+    <div th:if="${param.error}" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true" style="display: block; background-color: rgba(0,0,0,0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="errorModalLabel">로그인 실패</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="this.closest('.modal').style.display='none'">&times;</button>
+                    <button type="button" class="close" aria-label="Close" onclick="this.closest('.modal').style.display='none'">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <span>사용자를 찾을 수 없거나, 잘못된 비밀번호를 입력하셨습니다.</span>
+                    <span>잘못된 사용자명 또는 비밀번호입니다.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').style.display='none'">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 식당 사장님 로그인 필요 모달 창 -->
+    <div th:if="${param.message}" class="modal fade show" tabindex="-1" role="dialog" aria-labelledby="loginRequiredModalLabel" aria-hidden="true" style="display: block; background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginRequiredModalLabel">로그인 필요</h5>
+                    <button type="button" class="close" aria-label="Close" onclick="this.closest('.modal').style.display='none'">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span th:text="${param.message}">식당 사장님 로그인이 필요합니다.</span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').style.display='none'">닫기</button>

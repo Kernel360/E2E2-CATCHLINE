@@ -17,7 +17,7 @@ public class RestaurantValidator {
 
     public RestaurantEntity checkIfRestaurantPresent(Long restaurantId) {
         return restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 식당이 없습니다."));
+                .orElseThrow(() -> new CatchLineException("해당하는 식당이 없습니다."));
     }
 
     public RestaurantHourEntity checkIfRestaurantHourPresent(Long restaurantHourId) {

@@ -21,7 +21,6 @@ public class HistoryValidator {
 	public ReservationEntity checkIfReservationPresent(Long reservationId) {
 		return reservationRepository.findByReservationId(reservationId)
 			.orElseThrow(() -> new CatchLineException("해당 예약은 존재하지 않습니다"));
-
 	}
 
 	public WaitingEntity checkIfWaitingPresent(Long waitingId) {

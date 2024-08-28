@@ -128,4 +128,9 @@ public class RestaurantEntity extends BaseTimeEntity {
     public void reduceScrapCountByUser() {
         this.scrapCount--;
     }
+
+    public BigDecimal getAverageRating() {
+        return this.rating.getRating();
+    }
+
 }

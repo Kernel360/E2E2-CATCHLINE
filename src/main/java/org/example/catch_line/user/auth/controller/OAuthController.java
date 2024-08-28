@@ -29,6 +29,7 @@ public class OAuthController {
 
     @GetMapping("/login/oauth")
     public String kakaoLogin() {
+        log.info("kakao login 시작");
         return "redirect:/oauth2/authorization/kakao";
     }
 

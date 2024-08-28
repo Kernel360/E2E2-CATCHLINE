@@ -31,6 +31,11 @@ public class RestaurantPreviewService {
 			.collect(Collectors.toList());
 	}
 
+	public Page<RestaurantPreviewResponse> restaurantPreviewSearchAndPaging(Pageable pageable, String criteria, String type, String keyword) {
+		Page<RestaurantEntity> restaurants = restaurantRepository.findRestaurantsByCriteria(pageable, criteria, type, keyword);
+		return restaurants.map(restaurantPreviewMapper::entityToResponse);
+	}
+
 	public Page<RestaurantPreviewResponse> restaurantPreviewPaging(Pageable pageable, String criteria) {
 		int pageLimit = pageable.getPageSize();
 		Sort sort = Sort.by(Sort.Direction.DESC, criteria).and(Sort.by(Sort.Direction.DESC, "restaurantId"));
@@ -42,18 +47,6 @@ public class RestaurantPreviewService {
 
 	}
 
-	public Page<RestaurantPreviewResponse> restaurantPreviewSearchAndPaging(Pageable pageable, String criteria, String type, String keyword) {
-		int pageLimit = pageable.getPageSize();
-		Sort sort = Sort.by(Sort.Direction.DESC, criteria).and(Sort.by(Sort.Direction.DESC, "restaurantId"));
-		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageLimit, sort);
 
-		Page<RestaurantEntity> restaurants = switch (type) {
-            case "name" -> restaurantRepository.findAllByNameContaining(keyword, pageRequest);
-            case "foodType" -> restaurantRepository.findAllByFoodType(FoodType.fromKoreanName(keyword), pageRequest);
-            default -> restaurantRepository.findAll(pageRequest);
-        };
-
-		return restaurants.map(restaurantPreviewMapper::entityToResponse);
-	}
 
 }

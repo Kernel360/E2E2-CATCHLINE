@@ -84,6 +84,17 @@ public class HistoryService {
 			.orElseThrow(HistoryException::new);
 	}
 
+	public HistoryResponse findWaitingDetailByWaitingId(Long waitingId) {
+		WaitingEntity waitingEntity = waitingRepository.findByWaitingId(waitingId).orElseThrow(HistoryException::new);
+		int waitingPosition = calculateMyWaitingPosition(waitingEntity);
+		int waitingRegistrationId = calculateWaitingRegistrationId(waitingEntity, getStartOfDay(), getEndOfDay());
+		return historyMapper.entityToHistoryResponse(waitingEntity,waitingRegistrationId, waitingPosition);
+	}
+	public HistoryResponse findReservationDetailByReservationId(Long reservationId) {
+		ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId).orElseThrow(HistoryException::new);
+		return historyMapper.reservationToHistoryResponse(reservationEntity);
+	}
+
 	private int calculateWaitingRegistrationId(WaitingEntity waiting, LocalDateTime startOfDay, LocalDateTime endOfDay) {
 		long count = waitingRepository.countByRestaurantAndCreatedAtBetweenAndCreatedAtBefore(
 				waiting.getRestaurant(), startOfDay, endOfDay, waiting.getCreatedAt());

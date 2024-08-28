@@ -57,7 +57,8 @@ public class OwnerController {
 	}
 
 	@GetMapping("/restaurants/{restaurantId}/history")
-	public String showHistory(@PathVariable Long restaurantId, @RequestParam(defaultValue = "SCHEDULED") Status status ,Model model) {
+	public String showHistory(@PathVariable Long restaurantId, @RequestParam(defaultValue = "SCHEDULED") Status status ,Model model, @AuthenticationPrincipal OwnerUserDetails ownerUserDetails) {
+
 		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,status);
 		model.addAttribute("history",historyResponses);
 		model.addAttribute("restaurantId",restaurantId);
@@ -66,14 +67,13 @@ public class OwnerController {
 	}
 
 	@GetMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
-	public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model, RedirectAttributes redirectAttributes) {
+	public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId,@AuthenticationPrincipal OwnerUserDetails ownerUserDetails ,@RequestParam(defaultValue = "SCHEDULED") Status status ,Model model, RedirectAttributes redirectAttributes) {
 
-		List<HistoryResponse> historyList = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,Status.SCHEDULED);
+		HistoryResponse historyResponse = historyService.findWaitingDetailByWaitingId(waitingId);
 		model.addAttribute("restaurantId", restaurantId);
 
-		if (Objects.nonNull(historyList)) {
+		if (Objects.nonNull(historyResponse)) {
 			try {
-				HistoryResponse historyResponse = historyService.findWaitingDetailById(historyList, waitingId);
 				model.addAttribute("historyResponse", historyResponse);
 				model.addAttribute("restaurantId",restaurantId);
 				return "owner/waitingDetail";
@@ -83,6 +83,25 @@ public class OwnerController {
 			}
 		}
 
+		return "redirect:/owner";
+	}
+	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
+	public String getReservationDetails(@PathVariable Long restaurantId, @PathVariable Long reservationId,
+										Model model,RedirectAttributes redirectAttributes) {
+
+		HistoryResponse historyResponse = historyService.findReservationDetailByReservationId(reservationId);
+		model.addAttribute("restaurantId", restaurantId);
+		if (Objects.nonNull(historyResponse)) {
+			try {
+				model.addAttribute("historyResponse", historyResponse);
+				model.addAttribute("restaurantId", restaurantId);
+
+				return "owner/reservationDetail";
+			} catch (HistoryException e) {
+				redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+				return "redirect:/owner/reservationDetail";
+			}
+		}
 		return "redirect:/owner";
 	}
  
@@ -142,26 +161,7 @@ public class OwnerController {
 		return "ok";
 	}
 
-	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
-	public String getReservationDetails(@PathVariable Long restaurantId, @PathVariable Long reservationId,
-										Model model,RedirectAttributes redirectAttributes) {
 
-		List<HistoryResponse> historyList = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,Status.SCHEDULED);
-
-		if (Objects.nonNull(historyList)) {
-			try {
-				HistoryResponse historyResponse = historyService.findReservationDetailById(historyList, reservationId);
-				model.addAttribute("historyResponse", historyResponse);
-				model.addAttribute("restaurantId", restaurantId);
-
-				return "owner/reservationDetail";
-			} catch (HistoryException e) {
-				redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-				return "redirect:/owner/reservationDetail";
-			}
-		}
-		return "redirect:/owner";
-	}
 
 	@GetMapping("/restaurants/list")
 	public String showRestaurantListPage(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model, RedirectAttributes redirectAttributes) {

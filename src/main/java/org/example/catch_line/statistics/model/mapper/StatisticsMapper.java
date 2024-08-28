@@ -1,9 +1,8 @@
 package org.example.catch_line.statistics.model.mapper;
 
-import org.example.catch_line.common.constant.ServiceType;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.statistics.model.dto.StatisticsGraphResponse;
 import org.example.catch_line.statistics.model.dto.StatisticsResponse;
-import org.example.catch_line.statistics.model.entity.StatisticsEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,13 +10,10 @@ import java.util.List;
 @Component
 public class StatisticsMapper {
 
-    public StatisticsResponse entityToResponse(StatisticsEntity statisticsEntity) {
+    public StatisticsResponse entityToResponse(RestaurantEntity restaurantEntity) {
         return StatisticsResponse.builder()
-                .statisticsId(statisticsEntity.getStatisticsId())
-                .waitingCount(statisticsEntity.getWaitingCount())
-                .reservationCount(statisticsEntity.getReservationCount())
-                .restaurantId(statisticsEntity.getRestaurant().getRestaurantId())
-                .restaurantName(statisticsEntity.getRestaurant().getName())
+                .restaurantId(restaurantEntity.getRestaurantId())
+                .restaurantName(restaurantEntity.getName())
                 .build();
     }
 

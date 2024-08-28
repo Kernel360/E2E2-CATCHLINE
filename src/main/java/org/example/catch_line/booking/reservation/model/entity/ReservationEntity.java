@@ -68,7 +68,12 @@ public class ReservationEntity extends BaseTimeEntity {
 		this.reservationDate = reservationDate;
 	}
 
-	public void changeReservationStatus(Status newStatus) {
-		this.status = newStatus;
+	public void completed() {
+		this.status = Status.COMPLETED;
 	}
+
+	public void canceled() {
+		this.status = Status.CANCELED;
+	}
+
 }

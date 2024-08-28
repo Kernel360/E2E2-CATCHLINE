@@ -58,17 +58,14 @@ public class WaitingService {
 		MemberEntity member = memberValidator.checkIfMemberPresent(memberId);
 		WaitingEntity waiting = historyValidator.checkIfWaitingPresent(waitingId);
 
-		waiting.changeWaitingStatus(Status.CANCELED);
-		waitingRepository.save(waiting);
+		waiting.canceled();
 		notificationService.sendWaiting(member, waiting, "웨이팅이 취소되었습니다.");
 	}
 
 	@Transactional
 	public void completedWaiting(Long waitingId) {
 		WaitingEntity entity = historyValidator.checkIfWaitingPresent(waitingId);
-
-		entity.changeWaitingStatus(Status.COMPLETED);
-		waitingRepository.save(entity);
+		entity.completed();
 	}
 
 
@@ -77,7 +74,7 @@ public class WaitingService {
 	}
 
 	private WaitingEntity requestToEntity(WaitingRequest waitingRequest, MemberEntity member, RestaurantEntity restaurant) {
-        return new WaitingEntity(waitingRequest.getMemberCount(),Status.SCHEDULED,waitingRequest.getWaitingType(),member,restaurant);
+        return new WaitingEntity(waitingRequest.getMemberCount(), Status.SCHEDULED, waitingRequest.getWaitingType(), member, restaurant);
 	}
 
 }

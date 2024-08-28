@@ -24,24 +24,11 @@ import java.util.stream.Collectors;
 public class StatisticsController {
 
     private final StatisticsService statisticsService;
-    private final RestaurantRepository restaurantRepository;
 
     @GetMapping
     public String statistics(Model model) {
         List<StatisticsResponse> statisticsList = statisticsService.getStatisticsList();
-
-        // 식당 ID를 기준으로 고유한 식당 리스트 추출
-        Set<Long> uniqueRestaurantIds = statisticsList.stream()
-                .map(StatisticsResponse::getRestaurantId)
-                .collect(Collectors.toSet());
-
-        // 고유한 식당 ID로 식당 정보를 가져옴
-        List<RestaurantEntity> uniqueRestaurants = uniqueRestaurantIds.stream()
-                .map(restaurantId -> restaurantRepository.findById(restaurantId).orElse(null))
-                .toList();
-
         model.addAttribute("statisticsList", statisticsList);
-        model.addAttribute("restaurantList", uniqueRestaurants);
         return "statistics/statistics";
     }
 

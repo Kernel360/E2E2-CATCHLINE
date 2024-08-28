@@ -69,9 +69,9 @@
 <select id="restaurantSelect">
     <option value="" disabled selected>식당을 선택해주세요.</option>
     <!-- 서버에서 고유한 식당 리스트를 가져와 옵션을 동적으로 추가 -->
-    <option th:each="restaurant : ${restaurantList}"
+    <option th:each="restaurant : ${statisticsList}"
             th:value="${restaurant.restaurantId}"
-            th:text="${restaurant.name}"></option>
+            th:text="${restaurant.restaurantName}"></option>
 </select>
 
 <!-- 차트를 표시할 컨테이너 -->

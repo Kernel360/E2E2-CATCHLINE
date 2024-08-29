@@ -102,32 +102,35 @@ src
 └── main
     └── java
         └── catch_line
-            ├── commmon
-            │   └── constant
-            ├── config
-            ├── exception
-            │   ├── email
-            │   ├── password
-            │   ├── phone
-            │   └── session
-            ├── history
-            ├── member
+            ├── common
+            │   ├── constant
             │   ├── controller
             │   ├── model
-            │   ├── repository
-            │   ├── service
-            │   └── validate
-            ├── menu
+            │   │   └── session
+            ├── config
+            ├── exception
+            ├── filter
+            ├── booking
+            │   ├── reservation
+            │   └── waiting
+            ├── dining
+            │   ├── menu
+            │   └── restaurant
+            ├── history
             ├── notification
-            ├── reservation
-            ├── restaurant
             ├── review
-            └── waiting
+            ├── scrap
+            ├── statistics
+            ├── kakao
+            └── user
+                ├── auth
+                └── member
 
 ```
 
 - 도메인 계층 구조를 사용했습니다.
-
+- booking 안에 예약(`reservation`), 웨이팅(`waiting`) 관련 기능들이 존재합니다.
+  
 
 <br>
 

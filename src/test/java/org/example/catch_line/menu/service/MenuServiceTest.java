@@ -1,4 +1,4 @@
-package org.example.catch_line.dining.menu.service;
+package org.example.catch_line.menu.service;
 
 import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.model.vo.Password;
@@ -10,6 +10,7 @@ import org.example.catch_line.dining.menu.model.entity.MenuEntity;
 import org.example.catch_line.dining.menu.model.mapper.MenuMapper;
 import org.example.catch_line.dining.menu.model.validation.MenuValidator;
 import org.example.catch_line.dining.menu.repository.MenuRepository;
+import org.example.catch_line.dining.menu.service.MenuService;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;

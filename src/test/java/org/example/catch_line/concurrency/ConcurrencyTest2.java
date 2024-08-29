@@ -143,8 +143,7 @@ public class ConcurrencyTest2 {
 
         for (int i = 0; i < 200; i++) {
             MemberEntity member = new MemberEntity(new Email("abc" + i + "@gmail.com"), "홍길동", "hong", new Password(passwordEncoder.encode("123qwe!@Q")),
-            new PhoneNumber("010-1234-1234"));
-
+                    new PhoneNumber("010-1234-1234"));
 
             memberRepository.save(member);
         }

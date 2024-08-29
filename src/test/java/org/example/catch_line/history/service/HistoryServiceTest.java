@@ -68,7 +68,7 @@ class HistoryServiceTest {
         HistoryResponse waitingHistoryResponse = createMockHistoryResponse(1L, null);
         HistoryResponse reservationHistoryResponse = createMockHistoryResponse(null, 1L);
 
-        when(historyMapper.entityToHistoryResponse(any(WaitingEntity.class), anyInt(), anyInt())).thenReturn(waitingHistoryResponse);
+        when(historyMapper.waitingToHistoryResponse(any(WaitingEntity.class), anyInt(), anyInt())).thenReturn(waitingHistoryResponse);
         when(historyMapper.reservationToHistoryResponse(any(ReservationEntity.class))).thenReturn(reservationHistoryResponse);
 
         List<HistoryResponse> historyResponses = historyService.getAllHistory(1L, Status.SCHEDULED);
@@ -124,7 +124,7 @@ class HistoryServiceTest {
     void findWaitingDetailByWaitingId_success() {
         when(waitingRepository.findByWaitingId(anyLong())).thenReturn(Optional.of(waitingEntity));
         HistoryResponse historyResponse = createMockHistoryResponse(1L, null);
-        when(historyMapper.entityToHistoryResponse(any(WaitingEntity.class), anyInt(), anyInt())).thenReturn(historyResponse);
+        when(historyMapper.waitingToHistoryResponse(any(WaitingEntity.class), anyInt(), anyInt())).thenReturn(historyResponse);
 
         HistoryResponse result = historyService.findWaitingDetailByWaitingId(1L);
 
@@ -177,7 +177,7 @@ class HistoryServiceTest {
         HistoryResponse reservationHistoryResponse = createMockHistoryResponse(null, 1L);
 
         when(historyMapper.reservationToHistoryResponse(any(ReservationEntity.class))).thenReturn(reservationHistoryResponse);
-        when(historyMapper.entityToHistoryResponse(any(WaitingEntity.class), anyInt(), anyInt())).thenReturn(waitingHistoryResponse);
+        when(historyMapper.waitingToHistoryResponse(any(WaitingEntity.class), anyInt(), anyInt())).thenReturn(waitingHistoryResponse);
 
         List<HistoryResponse> historyResponses = historyService.findByRestaurantId(1L, Status.SCHEDULED);
 

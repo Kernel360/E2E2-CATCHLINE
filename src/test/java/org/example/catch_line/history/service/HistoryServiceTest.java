@@ -1,15 +1,5 @@
 package org.example.catch_line.history.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
@@ -17,15 +7,9 @@ import org.example.catch_line.booking.waiting.model.entity.WaitingType;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.exception.booking.HistoryException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
-import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.common.model.vo.Email;
-import org.example.catch_line.common.model.vo.Password;
-import org.example.catch_line.common.model.vo.PhoneNumber;
-import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
+import org.example.catch_line.history.model.mapper.HistoryMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,190 +17,189 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class HistoryServiceTest {
+class HistoryServiceTest {
 
-	@Mock
-	private WaitingRepository waitingRepository;
+    @Mock
+    private WaitingRepository waitingRepository;
 
-	@Mock
-	private ReservationRepository reservationRepository;
+    @Mock
+    private ReservationRepository reservationRepository;
 
-	@InjectMocks
-	private HistoryService historyService;
+    @Mock
+    private HistoryMapper historyMapper;
 
-	private WaitingEntity waitingEntity;
+    @InjectMocks
+    private HistoryService historyService;
 
-	private ReservationEntity reservationEntity;
+    private ReservationEntity reservationEntity;
+    private WaitingEntity waitingEntity;
 
-	private RestaurantEntity restaurantEntity;
+    @BeforeEach
+    void setUp() {
+        reservationEntity = mock(ReservationEntity.class);
+        waitingEntity = mock(WaitingEntity.class);
+    }
 
-	private MemberEntity memberEntity;
+    @Test
+    @DisplayName("모든 이력 조회 테스트")
+    void getAllHistory_success() {
+        List<WaitingEntity> waitingEntities = new ArrayList<>();
+        waitingEntities.add(waitingEntity);
 
-	private LocalDateTime reservationDate;
+        List<ReservationEntity> reservationEntities = new ArrayList<>();
+        reservationEntities.add(reservationEntity);
 
-	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        when(waitingRepository.findByMemberMemberIdAndStatus(anyLong(), any(Status.class))).thenReturn(waitingEntities);
+        when(reservationRepository.findByMemberMemberIdAndStatus(anyLong(), any(Status.class))).thenReturn(reservationEntities);
 
-	@BeforeEach
-	public void setUp() {
-		reservationDate = LocalDateTime.of(2024, 8, 11, 12, 0);
+        // Mock the HistoryResponse for waiting and reservation entities
+        HistoryResponse waitingHistoryResponse = createMockHistoryResponse(1L, null);
+        HistoryResponse reservationHistoryResponse = createMockHistoryResponse(null, 1L);
 
-		restaurantEntity = RestaurantEntity.builder()
-			.name("새마을식당")
-			.description("백종원의 새마을식당")
-			.phoneNumber(new PhoneNumber("02-1234-1234"))
-			.rating(new Rating(BigDecimal.ZERO))
-			.serviceType(ServiceType.WAITING)
-			.foodType(FoodType.KOREAN)
-			.build();
+        when(historyMapper.entityToHistoryResponse(any(WaitingEntity.class), anyInt(), anyInt())).thenReturn(waitingHistoryResponse);
+        when(historyMapper.reservationToHistoryResponse(any(ReservationEntity.class))).thenReturn(reservationHistoryResponse);
 
-		memberEntity = MemberEntity.builder()
-			.email(new Email("abc@gmail.com"))
-			.name("홍길동")
-			.nickname("hong")
-			.password(new Password(passwordEncoder.encode("123qwe!@Q")))
-			.phoneNumber(new PhoneNumber("010-1234-1234"))
-			.build();
+        List<HistoryResponse> historyResponses = historyService.getAllHistory(1L, Status.SCHEDULED);
 
-		waitingEntity = WaitingEntity.builder()
-			.memberCount(3)
-			.status(Status.SCHEDULED)
-			.waitingType(WaitingType.TAKE_OUT)
-			.member(memberEntity)
-			.restaurant(restaurantEntity)
-			.build();
+        assertNotNull(historyResponses);
+        assertEquals(2, historyResponses.size()); // waitingEntity와 reservationEntity 각 1개씩
+    }
 
-		reservationEntity = ReservationEntity.builder()
-			.memberCount(3)
-			.status(Status.SCHEDULED)
-			.reservationDate(reservationDate)
-			.member(memberEntity)
-			.restaurant(restaurantEntity)
-			.build();
+    @Test
+    @DisplayName("예약 ID로 이력 상세 조회 테스트")
+    void findReservationDetailById_success() {
+        List<HistoryResponse> historyResponses = new ArrayList<>();
+        HistoryResponse historyResponse = createMockHistoryResponse(null, 1L);
+        historyResponses.add(historyResponse);
 
-		// RuntimeException으로 예외를 래핑하여 던짐
-		setCreatedAt(waitingEntity, LocalDateTime.now().minusDays(1));
-		setCreatedAt(reservationEntity, LocalDateTime.now());
-	}
+        HistoryResponse result = historyService.findReservationDetailById(historyResponses, 1L);
 
-	private void setCreatedAt(Object entity, LocalDateTime createdAt) {
-		try {
-			// 상속된 필드를 포함하여 "createdAt" 필드를 찾음
-			Field createdAtField = findField(entity.getClass(), "createdAt");
-			if (createdAtField != null) {
-				createdAtField.setAccessible(true);
-				createdAtField.set(entity, createdAt);
-			} else {
-				throw new RuntimeException(
-					"'createdAt'을 찾을 수 없습니다': " + entity.getClass().getName());
-			}
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException("'createdAt'을 찾을 수 없습니다': " + entity.getClass().getName(),
-				e);
-		}
-	}
+        assertNotNull(result);
+        assertEquals(1L, result.getReservationId());
+    }
 
-	private Field findField(Class<?> clazz, String fieldName) {
-		while (clazz != null) {
-			try {
-				return clazz.getDeclaredField(fieldName);
-			} catch (NoSuchFieldException e) {
-				clazz = clazz.getSuperclass(); // 부모 클래스를 검색
-			}
-		}
-		return null;
-	}
+    @Test
+    @DisplayName("예약 ID로 이력 상세 조회 실패 테스트")
+    void findReservationDetailById_notFound() {
+        List<HistoryResponse> historyResponses = new ArrayList<>();
 
-	@Test
-	@DisplayName("History 전체조회 테스트")
-	void getAllHistory_returnsHistoryResponses() {
-		// Given
-		when(waitingRepository.findByMemberMemberIdAndStatusAndCreatedAtBetween(anyLong(), any(Status.class),
-			any(LocalDateTime.class), any(LocalDateTime.class)))
-			.thenReturn(Collections.singletonList(waitingEntity));
+        assertThrows(HistoryException.class, () -> historyService.findReservationDetailById(historyResponses, 1L));
+    }
 
-		when(reservationRepository.findByMemberMemberIdAndStatus(anyLong(), any(Status.class)))
-			.thenReturn(Collections.singletonList(reservationEntity));
+    @Test
+    @DisplayName("웨이팅 ID로 이력 상세 조회 테스트")
+    void findWaitingDetailById_success() {
+        List<HistoryResponse> historyResponses = new ArrayList<>();
+        HistoryResponse historyResponse = createMockHistoryResponse(1L, null);
+        historyResponses.add(historyResponse);
 
-		// When
-		List<HistoryResponse> historyResponses = historyService.getAllHistory(1L, Status.SCHEDULED);
+        HistoryResponse result = historyService.findWaitingDetailById(historyResponses, 1L);
 
-		// Then
-		assertNotNull(historyResponses); // 반환된 리스트가 null이 아님을 확인합니다.
-		assertEquals(2, historyResponses.size()); // 반환된 리스트의 크기가 2인지 확인합니다.
+        assertNotNull(result);
+        assertEquals(1L, result.getWaitingId());
+    }
 
-		// 리스트의 첫 번째 객체의 레스토랑 이름이 예상대로인지 확인합니다.
-		assertEquals("새마을식당", historyResponses.get(0).getRestaurantName());
+    @Test
+    @DisplayName("웨이팅 ID로 이력 상세 조회 실패 테스트")
+    void findWaitingDetailById_notFound() {
+        List<HistoryResponse> historyResponses = new ArrayList<>();
 
-		// waitingRepository와 reservationRepository가 각각 1회 호출되었는지 확인합니다.
-		verify(waitingRepository, times(1)).findByMemberMemberIdAndStatusAndCreatedAtBetween(anyLong(),
-			any(Status.class), any(LocalDateTime.class), any(LocalDateTime.class));
-		verify(reservationRepository, times(1)).findByMemberMemberIdAndStatus(anyLong(), any(Status.class));
-	}
+        assertThrows(HistoryException.class, () -> historyService.findWaitingDetailById(historyResponses, 1L));
+    }
 
-	@Test
-	@DisplayName("상세 예약 조회 테스트")
-	void findReservationDetailById_returnsReservationDetail() {
-		// Given
-		HistoryResponse reservationHistoryResponse = HistoryResponse.builder()
-			.reservationId(1L)
-			.restaurantName("새마을식당")
-			.build();
+    @Test
+    @DisplayName("웨이팅 ID로 웨이팅 상세 조회 성공 테스트")
+    void findWaitingDetailByWaitingId_success() {
+        when(waitingRepository.findByWaitingId(anyLong())).thenReturn(Optional.of(waitingEntity));
+        HistoryResponse historyResponse = createMockHistoryResponse(1L, null);
+        when(historyMapper.entityToHistoryResponse(any(WaitingEntity.class), anyInt(), anyInt())).thenReturn(historyResponse);
 
-		List<HistoryResponse> historyResponses = Collections.singletonList(reservationHistoryResponse);
+        HistoryResponse result = historyService.findWaitingDetailByWaitingId(1L);
 
-		// When
-		HistoryResponse foundReservation = historyService.findReservationDetailById(historyResponses, 1L);
+        assertNotNull(result);
+        assertEquals(1L, result.getWaitingId());
+    }
 
-		// Then
-		assertNotNull(foundReservation);
-		assertEquals(1L, foundReservation.getReservationId());
-	}
+    @Test
+    @DisplayName("웨이팅 ID로 웨이팅 상세 조회 실패 테스트")
+    void findWaitingDetailByWaitingId_notFound() {
+        when(waitingRepository.findByWaitingId(anyLong())).thenReturn(Optional.empty());
 
-	@Test
-	@DisplayName("상세 예약 조회 예외처리 테스트")
-	void findReservationDetailById_throwsException() {
-		// Given
-		List<HistoryResponse> historyResponses = Collections.emptyList();
+        assertThrows(HistoryException.class, () -> historyService.findWaitingDetailByWaitingId(1L));
+    }
 
-		// When / Then
-		assertThrows(HistoryException.class, () -> {
-			historyService.findReservationDetailById(historyResponses, 1L);
-		});
-	}
+    @Test
+    @DisplayName("예약 ID로 예약 상세 조회 성공 테스트")
+    void findReservationDetailByReservationId_success() {
+        when(reservationRepository.findByReservationId(anyLong())).thenReturn(Optional.of(reservationEntity));
+        HistoryResponse historyResponse = createMockHistoryResponse(null, 1L);
+        when(historyMapper.reservationToHistoryResponse(any(ReservationEntity.class))).thenReturn(historyResponse);
 
-	@Test
-	@DisplayName("상세 웨이팅 조회 테스트")
-	void findWaitingDetailById_returnsWaitingDetail() {
-		// Given
-		HistoryResponse waitingHistoryResponse = HistoryResponse.builder()
-			.waitingId(1L)
-			.restaurantName("새마을식당")
-			.build();
+        HistoryResponse result = historyService.findReservationDetailByReservationId(1L);
 
-		List<HistoryResponse> historyResponses = Collections.singletonList(waitingHistoryResponse);
+        assertNotNull(result);
+        assertEquals(1L, result.getReservationId());
+    }
 
-		// When
-		HistoryResponse foundWaiting = historyService.findWaitingDetailById(historyResponses, 1L);
+    @Test
+    @DisplayName("예약 ID로 예약 상세 조회 실패 테스트")
+    void findReservationDetailByReservationId_notFound() {
+        when(reservationRepository.findByReservationId(anyLong())).thenReturn(Optional.empty());
 
-		// Then
-		assertNotNull(foundWaiting);
-		assertEquals(1L, foundWaiting.getWaitingId());
-	}
+        assertThrows(HistoryException.class, () -> historyService.findReservationDetailByReservationId(1L));
+    }
 
-	@Test
-	@DisplayName("상세 웨이팅 조회 예외 처리 테스트")
-	void findWaitingDetailById_throwsException() {
-		// Given
-		List<HistoryResponse> historyResponses = Collections.emptyList();
+    @Test
+    @DisplayName("레스토랑 ID로 이력 조회 테스트")
+    void findByRestaurantId_success() {
+        List<ReservationEntity> reservationEntities = new ArrayList<>();
+        reservationEntities.add(reservationEntity);
 
-		// When / Then
-		assertThrows(HistoryException.class, () -> {
-			historyService.findWaitingDetailById(historyResponses, 1L);
-		});
-	}
+        List<WaitingEntity> waitingEntities = new ArrayList<>();
+        waitingEntities.add(waitingEntity);
+
+        when(reservationRepository.findAllByRestaurantRestaurantIdAndStatus(anyLong(), any(Status.class))).thenReturn(reservationEntities);
+        when(waitingRepository.findAllByRestaurantRestaurantIdAndStatus(anyLong(), any(Status.class))).thenReturn(waitingEntities);
+
+        HistoryResponse waitingHistoryResponse = createMockHistoryResponse(1L, null);
+        HistoryResponse reservationHistoryResponse = createMockHistoryResponse(null, 1L);
+
+        when(historyMapper.reservationToHistoryResponse(any(ReservationEntity.class))).thenReturn(reservationHistoryResponse);
+        when(historyMapper.entityToHistoryResponse(any(WaitingEntity.class), anyInt(), anyInt())).thenReturn(waitingHistoryResponse);
+
+        List<HistoryResponse> historyResponses = historyService.findByRestaurantId(1L, Status.SCHEDULED);
+
+        assertNotNull(historyResponses);
+        assertEquals(2, historyResponses.size());
+    }
+
+    private HistoryResponse createMockHistoryResponse(Long waitingId, Long reservationId) {
+        return HistoryResponse.builder()
+                .restaurantId(1L)
+                .waitingId(waitingId)
+                .reservationId(reservationId)
+                .memberCount(3)
+                .restaurantName("Mock Restaurant")
+                .status(Status.SCHEDULED)
+                .waitingType(WaitingType.TAKE_OUT)
+                .serviceType(ServiceType.WAITING)
+                .reservationDate(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .waitingRegistrationId(1)
+                .myWaitingPosition(1)
+                .build();
+    }
 }
-
-

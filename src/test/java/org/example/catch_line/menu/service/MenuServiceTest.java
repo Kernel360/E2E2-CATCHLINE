@@ -1,166 +1,123 @@
-package org.example.catch_line.menu.service;
-
+package org.example.catch_line.dining.menu.service;
 
 import org.example.catch_line.common.constant.ServiceType;
-import org.example.catch_line.common.model.vo.Rating;
+import org.example.catch_line.common.model.vo.Password;
 import org.example.catch_line.common.model.vo.PhoneNumber;
+import org.example.catch_line.common.model.vo.Rating;
 import org.example.catch_line.dining.menu.model.dto.MenuRequest;
 import org.example.catch_line.dining.menu.model.dto.MenuResponse;
 import org.example.catch_line.dining.menu.model.entity.MenuEntity;
 import org.example.catch_line.dining.menu.model.mapper.MenuMapper;
 import org.example.catch_line.dining.menu.model.validation.MenuValidator;
 import org.example.catch_line.dining.menu.repository.MenuRepository;
-import org.example.catch_line.dining.menu.service.MenuService;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
+import org.example.catch_line.user.owner.model.entity.OwnerEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
-    @Mock MenuRepository menuRepository;
-    @Mock RestaurantValidator restaurantValidator;
-    @Mock MenuValidator menuValidator;
-    @Mock MenuMapper menuMapper;
+    @Mock
+    private MenuRepository menuRepository;
 
-    @InjectMocks MenuService menuService;
+    @Mock
+    private RestaurantValidator restaurantValidator;
 
-    @Test
-    @DisplayName("식당 메뉴 전체 조회 테스트")
-    void restaurant_menu_list_test() {
-        // given
-        Long restaurantId = 1L;
+    @Mock
+    private MenuValidator menuValidator;
 
-        when(menuRepository.findAllByRestaurantRestaurantId(restaurantId)).thenReturn(getMenuList());
+    @Mock
+    private MenuMapper menuMapper;
 
-        // when
-        List<MenuResponse> menuList = menuService.getRestaurantMenuList(restaurantId);
+    @InjectMocks
+    private MenuService menuService;
 
-        // then
-        assertThat(menuList).isNotNull();
-        assertThat(menuList.size()).isGreaterThan(0);
-        assertThat(menuList.size()).isEqualTo(3);
-        assertThat(menuList.get(0).getName()).isEqualTo("삼겹살");
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private RestaurantEntity restaurantEntity;
+    private MenuEntity menuEntity;
+
+    @BeforeEach
+    void setUp() {
+        OwnerEntity owner = new OwnerEntity("qwer1111", "철수", new Password(passwordEncoder.encode("123qwe!@Q")), new PhoneNumber("010-1111-1111"));
+
+        restaurantEntity = new RestaurantEntity("새마을식당", "백종원의 새마을식당", new Rating(BigDecimal.ZERO), new PhoneNumber("010-2111-1111"),
+                FoodType.KOREAN, ServiceType.RESERVATION, owner, new BigDecimal("37.50828251273050000000"), new BigDecimal("127.06548046585200000000"));
+
+        menuEntity = mock(MenuEntity.class);  // MenuEntity 객체를 Mock으로 생성
     }
 
     @Test
-    @DisplayName("메뉴 추가 테스트")
-    void restaurant_create_menu_test() {
-        // given
-        Long restaurantId = 1L;
-        MenuRequest request = getMenuRequest();
-        RestaurantEntity restaurantEntity = getRestaurantEntity();
-        MenuEntity menuEntity = menuMapper.requestToEntity(request, restaurantEntity);
+    @DisplayName("레스토랑 메뉴 목록 조회 테스트")
+    void getRestaurantMenuList_success() {
+        when(menuRepository.findAllByRestaurantRestaurantId(anyLong()))
+                .thenReturn(Arrays.asList(menuEntity));
 
-        when(restaurantValidator.checkIfRestaurantPresent(restaurantId)).thenReturn(restaurantEntity);
+        MenuResponse menuResponse = new MenuResponse(1L, "Menu Name", "10000");
+        when(menuMapper.entityToResponse(any(MenuEntity.class))).thenReturn(menuResponse);
+
+        List<MenuResponse> result = menuService.getRestaurantMenuList(1L);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Menu Name", result.get(0).getName());
+        verify(menuRepository, times(1)).findAllByRestaurantRestaurantId(anyLong());
+    }
+
+    @Test
+    @DisplayName("레스토랑 메뉴 생성 테스트")
+    void createRestaurantMenu_success() {
+        when(restaurantValidator.checkIfRestaurantPresent(anyLong())).thenReturn(restaurantEntity);
+        when(menuMapper.requestToEntity(any(MenuRequest.class), any(RestaurantEntity.class))).thenReturn(menuEntity);
         when(menuRepository.save(any(MenuEntity.class))).thenReturn(menuEntity);
 
-        // when
-        MenuResponse response = menuService.createRestaurantMenu(restaurantId, request);
+        MenuResponse menuResponse = new MenuResponse(1L, "Menu Name", "10000");
+        when(menuMapper.entityToResponse(any(MenuEntity.class))).thenReturn(menuResponse);
 
-        // then
-        assertThat(response).isNotNull();
-        assertThat(response.getName()).isEqualTo(menuEntity.getName());
-        assertThat(response.getPrice()).isEqualTo("10,000");
+        MenuRequest menuRequest = new MenuRequest("Menu Name", 10000L);
+        MenuResponse result = menuService.createRestaurantMenu(1L, menuRequest);
+
+        assertNotNull(result);
+        assertEquals("Menu Name", result.getName());
+        verify(menuRepository, times(1)).save(any(MenuEntity.class));
     }
 
     @Test
-    @DisplayName("메뉴 수정 테스트")
-    void restaurant_update_menu_test() {
-        // given
-        Long restaurantId = 1L;
-        Long menuId = 1L;
-        MenuRequest request = getMenuUpdateRequest();
-        RestaurantEntity restaurantEntity = getRestaurantEntity();
-        MenuEntity menuEntity = menuMapper.requestToEntity(request, restaurantEntity);
+    @DisplayName("레스토랑 메뉴 수정 테스트")
+    void updateRestaurantMenu_success() {
+        when(restaurantValidator.checkIfRestaurantPresent(anyLong())).thenReturn(restaurantEntity);
+        when(menuValidator.checkIfMenuPresent(anyLong())).thenReturn(menuEntity);
 
-        when(restaurantValidator.checkIfRestaurantPresent(restaurantId)).thenReturn(restaurantEntity);
-        when(menuValidator.checkIfMenuPresent(menuId)).thenReturn(menuEntity);
+        MenuRequest menuRequest = new MenuRequest("Updated Menu", 15000L);
+        menuService.updateRestaurantMenu(1L, 1L, menuRequest);
 
-        // when
-        menuService.updateRestaurantMenu(restaurantId, menuId, request);
-
-        // then
-        assertThat(request.getName()).isEqualTo(menuEntity.getName());
-        assertThat(request.getPrice()).isEqualTo(menuEntity.getPrice());
-        assertThat(menuEntity.getPrice()).isEqualTo(20000L);
+        verify(menuEntity, times(1)).updateMenu("Updated Menu", 15000L);
     }
 
     @Test
-    @DisplayName("메뉴 삭제 테스트")
-    void restaurant_delete_menu_test() {
-        // given
-        Long menuId = 1L;
+    @DisplayName("레스토랑 메뉴 삭제 테스트")
+    void deleteRestaurantMenu_success() {
+        doNothing().when(menuRepository).deleteById(anyLong());
 
-        // when
-        menuService.deleteRestaurantMenu(menuId);
+        menuService.deleteRestaurantMenu(1L);
 
-        // then
-        verify(menuRepository, times(1)).deleteById(menuId);
+        verify(menuRepository, times(1)).deleteById(anyLong());
     }
-
-    private RestaurantEntity getRestaurantEntity() {
-        return RestaurantEntity.builder()
-                .name("새마을식당")
-                .description("백종원의 새마을식당")
-                .phoneNumber(new PhoneNumber("02-1234-1234"))
-                .rating(new Rating(BigDecimal.ZERO))
-                .serviceType(ServiceType.WAITING)
-                .foodType(FoodType.KOREAN)
-                .build();
-    }
-
-    private MenuRequest getMenuRequest() {
-        return MenuRequest.builder()
-                .name("불고기")
-                .price(10000L)
-                .build();
-    }
-
-    private MenuRequest getMenuUpdateRequest() {
-        return MenuRequest.builder()
-                .name("불고기")
-                .price(20000L)
-                .build();
-    }
-
-    private List<MenuEntity> getMenuList() {
-        List<MenuEntity> menuList = new ArrayList<>();
-
-        MenuEntity menu1 = MenuEntity.builder()
-                .name("삼겹살")
-                .price(15000L)
-                .restaurant(getRestaurantEntity())
-                .build();
-
-        MenuEntity menu2 = MenuEntity.builder()
-                .name("항정살")
-                .price(16000L)
-                .restaurant(getRestaurantEntity())
-                .build();
-
-        MenuEntity menu3 = MenuEntity.builder()
-                .name("갈비")
-                .price(18000L)
-                .restaurant(getRestaurantEntity())
-                .build();
-
-        menuList.add(menu1); menuList.add(menu2); menuList.add(menu3);
-        return menuList;
-    }
-
 }

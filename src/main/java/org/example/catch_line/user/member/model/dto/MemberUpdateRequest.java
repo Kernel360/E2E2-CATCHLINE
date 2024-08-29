@@ -17,9 +17,11 @@ public class MemberUpdateRequest {
 //    private String email;
 
     @NotBlank
+    @Size(min=2, max = 10)
     private String name;
 
     @NotBlank
+    @Size(min = 4, max = 15)
     private String nickname;
 
     @NotBlank

@@ -45,11 +45,6 @@ public class HistoryController {
 			@AuthenticationPrincipal MemberUserDetails userDetails,
 			@RequestParam(defaultValue = "SCHEDULED") Status status
 	) {
-		for (int i=0; i<200; i++) {
-			log.info("info");
-			log.debug("debug");
-			log.error("please error");
-		}
 
 		Long memberId = userDetails.getMember().getMemberId();
 		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId, status);

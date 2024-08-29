@@ -128,7 +128,11 @@
             <div class="form-group">
                 <label for="nickname">닉네임:</label>
                 <input type="text" id="nickname" th:field="*{nickname}" class="form-control" placeholder="닉네임을 입력하세요" required/>
+                <div th:if="${#fields.hasErrors('nickname')}" class="text-danger mt-2">
+                    <span th:errors="*{nickname}"></span> <!-- 닉네임 길이 검증 오류 메시지 -->
+                </div>
             </div>
+
             <label for="password">비밀번호:</label>
             <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요" required
                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>

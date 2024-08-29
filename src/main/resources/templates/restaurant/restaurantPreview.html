@@ -162,6 +162,7 @@
             </form>
             <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/history}'|" type="button">나의 예약</button>
             <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/members}'|" type="button">내 프로필</button>
+            <button class="btn btn-outline-secondary" id="notificationButton" type="button">알림 연결 창</button>
         </div>
 
         <!-- 로그인 및 회원가입 버튼 -->
@@ -289,6 +290,11 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var selectedType = "name"; // 기본 검색 조건을 '식당 이름'으로 설정
+
+        // 알림 연결 창 버튼 클릭 시 새 탭에서 열기
+        document.getElementById('notificationButton').addEventListener('click', function() {
+            window.open('/notification', '_blank'); // 새 탭에서 '/notification' URL 열기
+        });
 
         // 드롭다운 메뉴 항목 클릭 시 이벤트 처리
         document.querySelectorAll('.dropdown-item').forEach(function(item) {

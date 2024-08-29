@@ -6,6 +6,8 @@ import org.example.catch_line.dining.restaurant.model.entity.RestaurantHourEntit
 import org.example.catch_line.dining.restaurant.repository.RestaurantHourRepository;
 import org.example.catch_line.dining.restaurant.repository.RestaurantRepository;
 import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.dining.RestaurantHourNotFoundException;
+import org.example.catch_line.exception.dining.RestaurantNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,12 +19,12 @@ public class RestaurantValidator {
 
     public RestaurantEntity checkIfRestaurantPresent(Long restaurantId) {
         return restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new CatchLineException("해당하는 식당이 없습니다."));
+                .orElseThrow(() -> new RestaurantNotFoundException(restaurantId));
     }
 
     public RestaurantHourEntity checkIfRestaurantHourPresent(Long restaurantHourId) {
         return restaurantHourRepository.findById(restaurantHourId)
-                .orElseThrow(() -> new CatchLineException("영업 시간이 존재하지 않습니다"));
+                .orElseThrow(() -> new RestaurantHourNotFoundException(restaurantHourId));
     }
 
 }

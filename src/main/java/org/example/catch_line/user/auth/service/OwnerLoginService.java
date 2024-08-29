@@ -16,14 +16,11 @@ import org.springframework.stereotype.Service;
 public class OwnerLoginService implements UserDetailsService {
 
     private final OwnerRepository ownerRepository;
-    private OwnerEntity owner;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         log.info("사장님 로그인 서비스 시작");
         OwnerEntity owner = ownerRepository.findByLoginId(username).orElseThrow(()-> new UsernameNotFoundException(username + "는 존재하지 않는 식당 사장님입니다."));
         return new OwnerUserDetails(owner);
-
     }
 }

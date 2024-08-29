@@ -6,7 +6,6 @@ import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.constant.Status;
 import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.exception.booking.WaitingException;
-import org.example.catch_line.exception.session.InvalidSessionException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,7 +48,7 @@ public class WaitingController {
 			model.addAttribute("restaurantId", restaurantId);
 			model.addAttribute("waitingResponse", waitingResponse);
 			return "redirect:/history";
-		} catch (InvalidSessionException | WaitingException e) {
+		} catch (WaitingException e) {
 			model.addAttribute("error", "Waiting failed: " + e.getMessage());
 			return "waiting/waiting";
 		}

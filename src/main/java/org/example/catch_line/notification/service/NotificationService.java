@@ -11,8 +11,6 @@ import org.example.catch_line.notification.repository.EmitterRepository;
 import org.example.catch_line.notification.repository.NotificationRepository;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.async.WebAsyncManager;
-import org.springframework.web.context.request.async.WebAsyncUtils;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;

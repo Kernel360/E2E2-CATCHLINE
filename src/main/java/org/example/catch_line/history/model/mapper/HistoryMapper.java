@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HistoryMapper {
 
-    //WaitingEntity -> HistoryResponse
-    public HistoryResponse entityToHistoryResponse(WaitingEntity waiting, int waitingRegistrationId, int myWaitingPosition) {
+    public HistoryResponse waitingToHistoryResponse(WaitingEntity waiting, int waitingRegistrationId, int myWaitingPosition) {
         return HistoryResponse.builder()
                 .restaurantId(waiting.getRestaurant().getRestaurantId())
                 .waitingId(waiting.getWaitingId())
@@ -25,7 +24,6 @@ public class HistoryMapper {
                 .build();
     }
 
-    //ReservationEntity -> HistoryResponse
     public HistoryResponse reservationToHistoryResponse(ReservationEntity entity) {
         return HistoryResponse.builder()
                 .restaurantId(entity.getRestaurant().getRestaurantId())
@@ -37,8 +35,8 @@ public class HistoryMapper {
                 .serviceType(entity.getRestaurant().getServiceType())
                 .createdAt(entity.getCreatedAt())
                 .modifiedAt(entity.getModifiedAt())
-                .waitingRegistrationId(1) // 항상 1로 설정
-                .myWaitingPosition(1) // 항상 1로 설정
+                .waitingRegistrationId(1)
+                .myWaitingPosition(1)
                 .build();
     }
 }

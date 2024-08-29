@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -48,13 +49,12 @@ public class MyReviewController {
             RedirectAttributes redirectAttributes,
             Model model
     ) {
-        Long memberId;
         try {
-            memberId = memberUserDetails.getMember().getMemberId();
+            Long memberId = memberUserDetails.getMember().getMemberId();
             ReviewResponse reviewResponse = reviewService.getReviewById(reviewId, memberId);
             model.addAttribute("review", reviewResponse);
             model.addAttribute("reviewId", reviewId);
-        } catch (NullPointerException | UnauthorizedException e) {
+        } catch (UnauthorizedException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/my-page/reviews";
         }

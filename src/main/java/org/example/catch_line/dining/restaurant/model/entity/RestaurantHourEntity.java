@@ -2,6 +2,7 @@ package org.example.catch_line.dining.restaurant.model.entity;
 
 import java.time.LocalTime;
 
+import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.constant.DayOfWeeks;
 import org.example.catch_line.dining.restaurant.model.entity.constant.OpenStatus;
 import org.example.catch_line.exception.CatchLineException;
@@ -22,6 +23,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Slf4j
 @Entity
 @Table(name = "restaurant_hour")
 @Getter
@@ -65,7 +67,7 @@ public class RestaurantHourEntity {
 			this.openStatus = openStatus;
 
 		} catch (CatchLineException e) {
-			System.err.println("Enum 값이 잘못되었습니다: " + e.getMessage());
+            log.info("enum 값이 잘못되었습니다 : {}", e.getMessage());
 		}
 	}
 

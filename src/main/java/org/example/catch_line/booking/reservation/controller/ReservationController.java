@@ -27,7 +27,6 @@ public class ReservationController {
 		return "reservation/reservation";
 	}
 
-
 	@PostMapping("/restaurants/{restaurantId}/reservation")
 	public String addReservation(
 		@ModelAttribute ReservationRequest reservationRequest,
@@ -45,7 +44,7 @@ public class ReservationController {
 			return "redirect:/history";
 		} catch (DuplicateReservationTimeException e) {
 			redirectAttributes.addFlashAttribute("error", "예약 실패: " + e.getMessage());
-			return "redirect:/restaurants/" + restaurantId + "/reservation";
+			return "redirect:/restaurants/{restaurantId}/reservation";
 		}
 	}
 

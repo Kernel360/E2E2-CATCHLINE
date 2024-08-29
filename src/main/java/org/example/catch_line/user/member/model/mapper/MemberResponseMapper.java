@@ -25,7 +25,7 @@ public class MemberResponseMapper {
         return new MemberDeleteResponse(member.getMemberId(), member.isMemberDeleted());
     }
 
-    public  MemberResponse entityToResponse(MemberEntity member) {
+    public MemberResponse entityToResponse(MemberEntity member) {
         return MemberResponse.builder()
                 .memberId(member.getMemberId())
                 .email(member.getEmail().getEmailValue())

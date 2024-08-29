@@ -1,7 +1,7 @@
 package org.example.catch_line.restaurant.controller;
 
 import org.example.catch_line.common.constant.ServiceType;
-import org.example.catch_line.common.session.SessionConst;
+import org.example.catch_line.common.session.RoleConst;
 import org.example.catch_line.dining.restaurant.controller.RestaurantPreviewController;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantPreviewResponse;
 import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
@@ -46,7 +46,7 @@ class RestaurantPreviewControllerTest {
         PageImpl<RestaurantPreviewResponse> restaurantPage = new PageImpl<>(restaurantList, pageable, 10);
 
         MockHttpSession session = new MockHttpSession();
-        session.setAttribute(SessionConst.MEMBER_ID, 1L);
+        session.setAttribute(RoleConst.MEMBER_ID, 1L);
 
         when(restaurantPreviewService.restaurantPreviewPaging(pageable, criteria)).thenReturn(restaurantPage);
 

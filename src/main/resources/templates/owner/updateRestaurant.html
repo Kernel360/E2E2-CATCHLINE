@@ -23,6 +23,11 @@
             background-color: #b08bd7;
             color: white;
         }
+
+        .alert-custom {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -31,6 +36,11 @@
         <div class="col text-center">
             <h2>식당 정보 수정</h2>
         </div>
+    </div>
+
+    <!-- 에러 메시지를 Bootstrap alert 스타일로 표시 -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-custom" role="alert">
+        <p th:text="${errorMessage}"></p>
     </div>
 
     <form th:action="@{/owner/restaurants/{restaurantId}(restaurantId=${restaurant.restaurantId})}" method="post">

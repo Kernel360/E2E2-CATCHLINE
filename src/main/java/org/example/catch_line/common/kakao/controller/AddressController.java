@@ -17,12 +17,12 @@ public class AddressController {
     private final KakaoAddressService kakaoAddressService;
 
     @GetMapping("/get-coordinate")
-    public KakaoCoordinateResponse addressToCoordinate(@RequestParam String query) throws IOException {
+    public KakaoCoordinateResponse addressToCoordinate(@RequestParam String query){
         return kakaoAddressService.addressToCoordinate(query);
     }
 
     @GetMapping("/get-address")
-    public KakaoAddressResponse coordinateToAddress(@RequestParam String x, @RequestParam String y) throws IOException {
+    public KakaoAddressResponse coordinateToAddress(@RequestParam String x, @RequestParam String y){
         return kakaoAddressService.coordinateToAddress(x, y);
     }
 

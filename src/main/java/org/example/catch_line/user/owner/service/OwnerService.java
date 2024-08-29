@@ -48,12 +48,10 @@ public class OwnerService {
 
 	public List<RestaurantResponse> findAllRestaurantByOwnerId(Long ownerId) {
 		List<RestaurantEntity> restaurantEntityList = restaurantRepository.findAllByOwnerOwnerId(ownerId);
-		return restaurantEntityList.stream().map(restaurantMapper::entityToResponse).collect(Collectors.toList());
+		return restaurantEntityList.stream().map(restaurantMapper::entityToResponse).toList();
 	}
 
 	public List<HistoryResponse> findHistoryByRestaurantIdAndStatus(Long restaurantId, Status status) {
-        return historyService.findByRestaurantId(restaurantId,status);
+        return historyService.findByRestaurantId(restaurantId, status);
 	}
-
-
 }

@@ -14,6 +14,7 @@ import org.example.catch_line.dining.restaurant.service.RestaurantHourService;
 import org.example.catch_line.dining.restaurant.service.RestaurantImageService;
 import org.example.catch_line.dining.restaurant.service.RestaurantService;
 import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.dining.RestaurantHourNotFoundException;
 import org.example.catch_line.exception.phone.InvalidPhoneNumberException;
 import org.example.catch_line.review.model.dto.ReviewResponse;
 import org.example.catch_line.review.service.ReviewService;
@@ -82,33 +83,39 @@ public class OwnerRestaurantController {
 
     @PostMapping("/restaurants/{restaurantId}")
     public String updateRestaurant(@PathVariable Long restaurantId, @AuthenticationPrincipal OwnerUserDetails ownerUserDetails,
-                                   @Valid @ModelAttribute("restaurant") RestaurantUpdateRequest request, BindingResult bindingResult) {
+                                   @Valid @ModelAttribute("restaurant") RestaurantUpdateRequest request, BindingResult bindingResult,
+                                   RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "owner/updateRestaurant";
         }
         Long ownerId = ownerUserDetails.getOwner().getOwnerId();
+        try {
+            restaurantService.updateRestaurant(ownerId, restaurantId, request);
+        } catch (InvalidPhoneNumberException e) {
+            log.info("번호 에러 = {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/owner/restaurants/{restaurantId}";
+        }
 
-        restaurantService.updateRestaurant(ownerId, restaurantId, request);
-
-        return "redirect:/owner/restaurants/list/" + restaurantId;
+        return "redirect:/owner/restaurants/list/{restaurantId}";
     }
 
     @PatchMapping("/restaurants/list/{restaurantId}/{hourId}")
     private String updateRestaurantHour(@PathVariable Long restaurantId, @PathVariable Long hourId,
-                                        @Valid @ModelAttribute RestaurantHourRequest request, BindingResult bindingResult, Model model,
+                                        @Valid @ModelAttribute RestaurantHourRequest request, BindingResult bindingResult,
                                         RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", "영업 시간 업데이트 중 오류가 발생했습니다.");
-            return "redirect:/owner/restaurants/list/" + restaurantId;
+            return "redirect:/owner/restaurants/list/{restaurantId}";
         }
 
         try {
             restaurantHourService.updateRestaurantHour(hourId, request);
             redirectAttributes.addFlashAttribute("errorMessage", "영업 시간이 성공적으로 업데이트");
-        } catch (CatchLineException e) {
+        } catch (RestaurantHourNotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "영업 시간 업데이트 중 오류가 발생했습니다.");
         }
-        return "redirect:/owner/restaurants/list/" + restaurantId;
+        return "redirect:/owner/restaurants/list/{restaurantId}";
     }
 
     @GetMapping("/restaurants/list/{restaurantId}")
@@ -135,7 +142,6 @@ public class OwnerRestaurantController {
         model.addAttribute("document", document);
         model.addAttribute("jsKey", jsKey);
         model.addAttribute("dayOfWeek", dayOfWeek.getDescription());
-
         return "owner/restaurant";
     }
 

@@ -3,6 +3,7 @@ package org.example.catch_line.user.owner.controller;
 
 import java.util.List;
 import java.util.Objects;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
@@ -29,156 +30,138 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class OwnerController {
 
+    private final OwnerService ownerService;
+    private final HistoryService historyService;
+    private final WaitingService waitingService;
+    private final ReservationService reservationService;
 
-	private final OwnerService ownerService;
-	private final HistoryService historyService;
-	private final WaitingService waitingService;
-	private final ReservationService reservationService;
+    @GetMapping
+    public String viewOwnerPage(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model) {
+        boolean isLoggedIn = Objects.nonNull(ownerUserDetails); // "user" 세션 속성으로 로그인 상태 확인
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        return "owner/owner";
+    }
 
+    @GetMapping("/restaurants/listHistory")
+    public String showRestaurantListHistory(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model) {
+        Long ownerId = ownerUserDetails.getOwner().getOwnerId();
+        List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(ownerId);
+        model.addAttribute("restaurantList", restaurantResponseList);
+        return "owner/restaurantListHistory";
+    }
 
+    @GetMapping("/restaurants/{restaurantId}/history")
+    public String showHistory(@PathVariable Long restaurantId, @RequestParam(defaultValue = "SCHEDULED") Status status, Model model) {
+        List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId, status);
+        model.addAttribute("history", historyResponses);
+        model.addAttribute("restaurantId", restaurantId);
+        return "owner/history";
+    }
 
-	@GetMapping
-	public String viewOwnerPage(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model) {
-		boolean isLoggedIn = Objects.nonNull(ownerUserDetails); // "user" 세션 속성으로 로그인 상태 확인
-		model.addAttribute("isLoggedIn", isLoggedIn);
-		return "owner/owner";
-	}
+    @GetMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
+    public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId, @RequestParam(defaultValue = "SCHEDULED") Status status, Model model, RedirectAttributes redirectAttributes) {
+        HistoryResponse historyResponse = historyService.findWaitingDetailByWaitingId(waitingId);
+        model.addAttribute("restaurantId", restaurantId);
 
-	@GetMapping("/restaurants/listHistory")
-	public String showRestaurantListPage2(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model) {
-		try {
-			List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(ownerUserDetails.getOwner().getOwnerId());
-			model.addAttribute("restaurantList", restaurantResponseList);
-			return "owner/restaurantListHistory";
-		} catch (NullPointerException e) {
-			model.addAttribute("errorMessage", e.getMessage());
-			return "redirect:/owner";
-		}
-	}
+        if (Objects.nonNull(historyResponse)) {
+            try {
+                model.addAttribute("historyResponse", historyResponse);
+                model.addAttribute("restaurantId", restaurantId);
+                return "owner/waitingDetail";
+            } catch (HistoryException e) {
+                redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+                return "redirect:/owner";
+            }
+        }
+        return "redirect:/owner";
+    }
 
-	@GetMapping("/restaurants/{restaurantId}/history")
-	public String showHistory(@PathVariable Long restaurantId, @RequestParam(defaultValue = "SCHEDULED") Status status ,Model model, @AuthenticationPrincipal OwnerUserDetails ownerUserDetails) {
+    @GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
+    public String getReservationDetails(@PathVariable Long restaurantId, @PathVariable Long reservationId,
+                                        Model model, RedirectAttributes redirectAttributes) {
+        HistoryResponse historyResponse = historyService.findReservationDetailByReservationId(reservationId);
+        model.addAttribute("restaurantId", restaurantId);
+        if (Objects.nonNull(historyResponse)) {
+            try {
+                model.addAttribute("historyResponse", historyResponse);
+                model.addAttribute("restaurantId", restaurantId);
 
-		List<HistoryResponse> historyResponses = ownerService.findHistoryByRestaurantIdAndStatus(restaurantId,status);
-		model.addAttribute("history",historyResponses);
-		model.addAttribute("restaurantId",restaurantId);
+                return "owner/reservationDetail";
+            } catch (HistoryException e) {
+                redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+                return "redirect:/owner/reservationDetail";
+            }
+        }
+        return "redirect:/owner";
+    }
 
-		return "owner/history";
-	}
+    @PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
+    @ResponseBody
+    public String deleteReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, RedirectAttributes redirectAttributes) {
+        try {
+            ReservationEntity reservation = reservationService.findReservationById(reservationId);
+            Long memberId = reservation.getMember().getMemberId();
+            reservationService.cancelReservation(memberId, reservationId);
+        } catch (BookingErrorException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/owner";
+        }
+        return "ok";
+    }
 
-	@GetMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
-	public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId,@AuthenticationPrincipal OwnerUserDetails ownerUserDetails ,@RequestParam(defaultValue = "SCHEDULED") Status status ,Model model, RedirectAttributes redirectAttributes) {
+    @PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}/completed")
+    @ResponseBody
+    public String completedReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, RedirectAttributes redirectAttributes) {
+        try {
+            reservationService.completedReservation(reservationId);
+        } catch (BookingErrorException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/owner";
+        }
+        return "ok";
+    }
 
-		HistoryResponse historyResponse = historyService.findWaitingDetailByWaitingId(waitingId);
-		model.addAttribute("restaurantId", restaurantId);
+    @PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
+    @ResponseBody
+    public String deleteWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, RedirectAttributes redirectAttributes) {
+        try {
+            WaitingEntity waiting = waitingService.getWaitingEntity(waitingId);
+            Long memberId = waiting.getMember().getMemberId();
+            waitingService.cancelWaiting(memberId, waitingId);
+        } catch (BookingErrorException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/owner";
+        }
+        return "ok";
+    }
 
-		if (Objects.nonNull(historyResponse)) {
-			try {
-				model.addAttribute("historyResponse", historyResponse);
-				model.addAttribute("restaurantId",restaurantId);
-				return "owner/waitingDetail";
-			} catch (HistoryException e) {
-				redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-				return "redirect:/owner";
-			}
-		}
+    @PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}/completed")
+    @ResponseBody
+    public String completeWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, RedirectAttributes redirectAttributes) {
+        try {
+            waitingService.completedWaiting(waitingId);
+        } catch (BookingErrorException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/owner";
+        }
+        return "ok";
+    }
 
-		return "redirect:/owner";
-	}
-	@GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
-	public String getReservationDetails(@PathVariable Long restaurantId, @PathVariable Long reservationId,
-										Model model,RedirectAttributes redirectAttributes) {
+    @GetMapping("/restaurants/list")
+    public String showRestaurantListPage(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(ownerUserDetails.getOwner().getOwnerId());
+            model.addAttribute("restaurantList", restaurantResponseList);
+            return "owner/restaurantList";
+        } catch (IllegalAccessError e) {
+            log.info("error : {}", e.getClass());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/owner";
+        }
+    }
 
-		HistoryResponse historyResponse = historyService.findReservationDetailByReservationId(reservationId);
-		model.addAttribute("restaurantId", restaurantId);
-		if (Objects.nonNull(historyResponse)) {
-			try {
-				model.addAttribute("historyResponse", historyResponse);
-				model.addAttribute("restaurantId", restaurantId);
-
-				return "owner/reservationDetail";
-			} catch (HistoryException e) {
-				redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-				return "redirect:/owner/reservationDetail";
-			}
-		}
-		return "redirect:/owner";
-	}
- 
-	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
-	@ResponseBody
-	public String deleteReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model,	RedirectAttributes redirectAttributes) {
-		try {
-			ReservationEntity reservation = reservationService.findReservationById(reservationId);
-			Long memberId = reservation.getMember().getMemberId();
-			reservationService.cancelReservation(memberId, reservationId);
-		} catch (BookingErrorException e) {
-			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-			return "redirect:/owner";
-		}
-
-		return "ok";
-	}
-
-	@PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}/completed")
-	@ResponseBody
-	public String completedReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, Model model, RedirectAttributes redirectAttributes) {
-		try {
-			reservationService.completedReservation(reservationId);
-		} catch (BookingErrorException e) {
-			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-			return "redirect:/owner";
-		}
-
-		return "ok";
-	}
-
-	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
-	@ResponseBody
-	public String deleteWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model,RedirectAttributes redirectAttributes) {
-		try {
-			WaitingEntity waiting = waitingService.getWaitingEntity(waitingId);
-			Long memberId = waiting.getMember().getMemberId();
-			waitingService.cancelWaiting(memberId, waitingId);
-		} catch (BookingErrorException e) {
-			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-			return "redirect:/owner";
-		}
-
-		return "ok";
-	}
-
-	@PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}/completed")
-	@ResponseBody
-	public String completeWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, Model model, RedirectAttributes redirectAttributes) {
-		try {
-			waitingService.completedWaiting(waitingId);
-		} catch (BookingErrorException e) {
-			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-			return "redirect:/owner";
-		}
-
-		return "ok";
-	}
-
-
-
-	@GetMapping("/restaurants/list")
-	public String showRestaurantListPage(@AuthenticationPrincipal OwnerUserDetails ownerUserDetails, Model model, RedirectAttributes redirectAttributes) {
-		try {
-			List<RestaurantResponse> restaurantResponseList = getRestaurantResponseList(ownerUserDetails.getOwner().getOwnerId());
-			model.addAttribute("restaurantList", restaurantResponseList);
-
-			return "owner/restaurantList";
-		} catch (IllegalAccessError e) {
-			log.info("error : {}", e.getClass());
-			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-			return "redirect:/owner";
-		}
-	}
-
-	private List<RestaurantResponse> getRestaurantResponseList(Long ownerId) {
-		return ownerService.findAllRestaurantByOwnerId(ownerId);
-	}
+    private List<RestaurantResponse> getRestaurantResponseList(Long ownerId) {
+        return ownerService.findAllRestaurantByOwnerId(ownerId);
+    }
 
 }

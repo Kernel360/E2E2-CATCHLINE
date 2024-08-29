@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.password.InvalidPasswordException;
+import org.example.catch_line.exception.user.DuplicateOwnerLoginIdException;
 import org.example.catch_line.user.owner.model.dto.OwnerSignUpRequest;
 import org.example.catch_line.user.owner.service.OwnerAuthService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,7 +35,6 @@ public class OwnerAuthController {
         return "owner/ownerSignup";
     }
 
-
     @PostMapping("/signup")
     public String ownerSignup(
             @Valid @ModelAttribute OwnerSignUpRequest ownerSignUpRequest,
@@ -47,10 +48,9 @@ public class OwnerAuthController {
 
         try {
             ownerAuthService.signUp(ownerSignUpRequest);
-        } catch (CatchLineException e) {
+        } catch (DuplicateOwnerLoginIdException | InvalidPasswordException e) {
             model.addAttribute("exception", e.getMessage());
             return "owner/ownerSignup";
-
         }
 
         return "redirect:/owner";

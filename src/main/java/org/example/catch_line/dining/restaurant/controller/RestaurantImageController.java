@@ -57,7 +57,7 @@ public class RestaurantImageController {
 
             RestaurantImageEntity savedImage = restaurantImageService.saveImage(restaurantId, image);
             model.addAttribute("imageId", savedImage.getRestaurantImageId());
-            return String.format("redirect:/owner/restaurants/%d/edit-images", restaurantId);
+            return "redirect:/owner/restaurants/{restaurantId}/edit-images";
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "업로드 오류: " + e.getMessage());

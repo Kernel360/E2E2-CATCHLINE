@@ -41,6 +41,7 @@ public class HistoryController {
 			@AuthenticationPrincipal MemberUserDetails userDetails,
 			@RequestParam(defaultValue = "SCHEDULED") Status status
 	) {
+
 		Long memberId = userDetails.getMember().getMemberId();
 		List<HistoryResponse> allHistory = historyService.getAllHistory(memberId, status);
 		model.addAttribute("history", allHistory);

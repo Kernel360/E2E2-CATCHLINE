@@ -9,7 +9,15 @@
     </appender>
 
     <!--로그 파일 저장 위치-->
-    <property name="LOGS_PATH" value="./logs"/>
+
+    <springProfile name="default">
+        <!-- local log file path -->
+        <property name="LOG_PATH" value="./logs"/>
+    </springProfile>
+    <springProfile name="!default">
+        <!-- dev log file path -->
+        <property name="LOG_PATH" value="/home/ec2-user/log"/>
+    </springProfile>
 
     <!--로그 파일 rolling 저장 -->
     <appender name="DAILY_ROLLING_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">

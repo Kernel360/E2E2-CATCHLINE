@@ -1,30 +1,19 @@
 package org.example.catch_line.booking.waiting.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-
-import java.math.BigDecimal;
-import java.util.Optional;
-
 import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
 import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.model.entity.WaitingType;
 import org.example.catch_line.booking.waiting.model.mapper.WaitingResponseMapper;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
-import org.example.catch_line.common.constant.ServiceType;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.common.model.vo.Rating;
-import org.example.catch_line.exception.booking.ServiceTypeException;
-import org.example.catch_line.user.member.model.entity.MemberEntity;
-import org.example.catch_line.common.model.vo.Email;
-import org.example.catch_line.common.model.vo.Password;
-import org.example.catch_line.common.model.vo.PhoneNumber;
-import org.example.catch_line.user.member.repository.MemberRepository;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
-import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
-import org.example.catch_line.dining.restaurant.repository.RestaurantRepository;
+import org.example.catch_line.dining.restaurant.validation.RestaurantValidator;
+import org.example.catch_line.exception.booking.WaitingException;
+import org.example.catch_line.history.validation.HistoryValidator;
+import org.example.catch_line.notification.service.NotificationService;
+import org.example.catch_line.user.member.model.entity.MemberEntity;
+import org.example.catch_line.user.member.model.provider.validation.MemberValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,175 +21,117 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class WaitingServiceTest {
+class WaitingServiceTest {
 
-	@Mock
-	private WaitingRepository waitingRepository;
+    @Mock
+    private NotificationService notificationService;
 
-	@Mock
-	private WaitingResponseMapper waitingResponseMapper;
+    @Mock
+    private WaitingRepository waitingRepository;
 
-	@Mock
-	private MemberRepository memberRepository;
+    @Mock
+    private WaitingResponseMapper waitingResponseMapper;
 
-	@Mock
-	private RestaurantRepository restaurantRepository;
+    @Mock
+    private HistoryValidator historyValidator;
 
-	@InjectMocks
-	private WaitingService waitingService;
+    @Mock
+    private MemberValidator memberValidator;
 
-	private WaitingEntity waitingEntity;
+    @Mock
+    private RestaurantValidator restaurantValidator;
 
-	private RestaurantEntity restaurantEntity;
+    @InjectMocks
+    private WaitingService waitingService;
 
-	private MemberEntity memberEntity;
+    private MemberEntity memberEntity;
+    private RestaurantEntity restaurantEntity;
+    private WaitingEntity waitingEntity;
 
-	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @BeforeEach
+    void setUp() {
+        memberEntity = mock(MemberEntity.class);
+        restaurantEntity = mock(RestaurantEntity.class);
+        waitingEntity = mock(WaitingEntity.class);
+    }
 
-	@BeforeEach
-	public void setUp() {
-		restaurantEntity = RestaurantEntity.builder()
-			.name("새마을식당")
-			.description("백종원의 새마을식당")
-			.phoneNumber(new PhoneNumber("02-1234-1234"))
-			.rating(new Rating(BigDecimal.ZERO))
-			.serviceType(ServiceType.WAITING)
-			.foodType(FoodType.KOREAN)
-			.build();
+    @Test
+    @DisplayName("웨이팅 등록 성공 테스트")
+    void addWaiting_success() {
+        WaitingRequest waitingRequest = new WaitingRequest(3, WaitingType.TAKE_OUT);
+        WaitingResponse waitingResponse = new WaitingResponse(1L, 3, Status.SCHEDULED,waitingRequest.getWaitingType(), LocalDateTime.now(),LocalDateTime.now());
 
-		memberEntity = MemberEntity.builder()
-			.email(new Email("abc@gmail.com"))
-			.name("홍길동")
-			.nickname("hong")
-			.password(new Password(passwordEncoder.encode("123qwe!@Q")))
-			.phoneNumber(new PhoneNumber("010-1234-1234"))
-			.build();
+        when(memberValidator.checkIfMemberPresent(anyLong())).thenReturn(memberEntity);
+        when(restaurantValidator.checkIfRestaurantPresent(anyLong())).thenReturn(restaurantEntity);
+        when(waitingRepository.save(any(WaitingEntity.class))).thenReturn(waitingEntity);
+        when(waitingResponseMapper.convertToResponse(any(WaitingEntity.class))).thenReturn(waitingResponse);
 
-		waitingEntity = WaitingEntity.builder()
-			.memberCount(3)
-			.status(Status.SCHEDULED)
-			.waitingType(WaitingType.TAKE_OUT)
-			.member(memberEntity)
-			.restaurant(restaurantEntity)
-			.build();
+        WaitingResponse response = waitingService.addWaiting(1L, waitingRequest, 1L);
 
-	}
+        assertNotNull(response);
+        verify(notificationService, times(1)).sendWaiting(any(MemberEntity.class), any(WaitingEntity.class), anyString());
+        verify(waitingRepository, times(1)).save(any(WaitingEntity.class));
+    }
 
-	@Test
-	@DisplayName("웨이팅 등록 테스트")
-	void add_waiting_test() {
+    @Test
+    @DisplayName("웨이팅 취소 테스트")
+    void cancelWaiting_success() {
+        when(memberValidator.checkIfMemberPresent(anyLong())).thenReturn(memberEntity);
+        when(historyValidator.checkIfWaitingPresent(anyLong())).thenReturn(waitingEntity);
 
-		//given
-		Long restaurantId = 1L;
-		Long memberId = 1L;
-		WaitingRequest waitingRequest = WaitingRequest.builder()
-			.memberCount(3)
-			.waitingType(WaitingType.TAKE_OUT)
-			.build();
+        waitingService.cancelWaiting(1L, 1L);
 
-		when(memberRepository.findById(memberId)).thenReturn(Optional.of(memberEntity));
-		when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(restaurantEntity));
+        verify(waitingEntity, times(1)).canceled();
+        verify(notificationService, times(1)).sendWaiting(any(MemberEntity.class), any(WaitingEntity.class), anyString());
+    }
 
-		WaitingEntity savedEntity = WaitingEntity.builder()
-			.memberCount(3)
-			.status(Status.SCHEDULED)
-			.waitingType(WaitingType.TAKE_OUT)
-			.member(memberEntity)
-			.restaurant(restaurantEntity)
-			.build();
+    @Test
+    @DisplayName("웨이팅 완료 테스트")
+    void completedWaiting_success() {
+        when(historyValidator.checkIfWaitingPresent(anyLong())).thenReturn(waitingEntity);
 
-		when(waitingRepository.save(any(WaitingEntity.class))).thenReturn(savedEntity);
+        waitingService.completedWaiting(1L);
 
-		WaitingResponse expectedResponse = WaitingResponse.builder()
-			.waitingId(1L)
-			.memberCount(3)
-			.status(Status.SCHEDULED)
-			.waitingType(WaitingType.TAKE_OUT)
-			.build();
-		when(waitingResponseMapper.convertToResponse(any(WaitingEntity.class))).thenReturn(expectedResponse);
+        verify(waitingEntity, times(1)).completed();
+    }
 
-		//when
-		WaitingResponse waitingResponse = waitingService.addWaiting(restaurantId, waitingRequest, memberId);
+    @Test
+    @DisplayName("웨이팅 존재 여부 확인 테스트")
+    void isExistingWaiting_success() {
+        when(waitingRepository.existsByMemberMemberIdAndStatus(anyLong(), any(Status.class))).thenReturn(true);
 
-		//then
-		assertNotNull(waitingResponse);
-		assertEquals(expectedResponse.getWaitingId(), waitingResponse.getWaitingId());
-		assertEquals(expectedResponse.getMemberCount(), waitingResponse.getMemberCount());
-		assertEquals(expectedResponse.getStatus(), waitingResponse.getStatus());
-		assertEquals(expectedResponse.getWaitingType(), waitingResponse.getWaitingType());
-		verify(memberRepository, times(1)).findById(memberId);
-		verify(restaurantRepository, times(1)).findById(restaurantId);
-		verify(waitingRepository, times(1)).save(any(WaitingEntity.class));
-		verify(waitingResponseMapper, times(1)).convertToResponse(any(WaitingEntity.class));
-	}
+        boolean exists = waitingService.isExistingWaiting(1L, Status.SCHEDULED);
 
-	@Test
-	@DisplayName("웨이팅 등록 예외 처리 테스트")
-	void add_waiting_failure_invalid_service_type() {
-		// given
-		Long restaurantId = 1L;
-		Long memberId = 1L;
-		WaitingRequest waitingRequest = WaitingRequest.builder()
-			.memberCount(3)
-			.waitingType(WaitingType.TAKE_OUT)
-			.build();
+        assertTrue(exists);
+        verify(waitingRepository, times(1)).existsByMemberMemberIdAndStatus(anyLong(), any(Status.class));
+    }
 
-		// Mock the member entity
-		when(memberRepository.findById(memberId)).thenReturn(Optional.of(memberEntity));
+    @Test
+    @DisplayName("웨이팅 엔티티 조회 실패 테스트")
+    void getWaitingEntity_notFound() {
+        when(waitingRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-		// Mock an invalid restaurant entity
-		RestaurantEntity invalidRestaurant = RestaurantEntity.builder()
-			.serviceType(ServiceType.RESERVATION) // Invalid service type
-			.build();
-		when(restaurantRepository.findById(restaurantId)).thenReturn(Optional.of(invalidRestaurant));
+        assertThrows(WaitingException.class, () -> waitingService.getWaitingEntity(1L));
+    }
 
-		// when & then
-		assertThrows(ServiceTypeException.class, () -> {
-			waitingService.addWaiting(restaurantId, waitingRequest, memberId);
-		});
-		verify(memberRepository, times(1)).findById(memberId);
-		verify(restaurantRepository, times(1)).findById(restaurantId);
-		verify(waitingRepository, never()).save(any(WaitingEntity.class));
-		verify(waitingResponseMapper, never()).convertToResponse(any(WaitingEntity.class));
-	}
+    @Test
+    @DisplayName("웨이팅 엔티티 조회 성공 테스트")
+    void getWaitingEntity_success() {
+        when(waitingRepository.findById(anyLong())).thenReturn(Optional.of(waitingEntity));
 
-	@Test
-	@DisplayName("웨이팅 취소 테스트")
-	void cancel_waiting_success() {
-		// given
-		Long id = 1L;
-		WaitingEntity waitingEntity = WaitingEntity.builder()
-			.status(Status.SCHEDULED) // 현재 상태는 SCHEDULED
-			.build();
+        WaitingEntity foundEntity = waitingService.getWaitingEntity(1L);
 
-		// Mock the repository to return the waiting entity
-		when(waitingRepository.findById(id)).thenReturn(Optional.of(waitingEntity));
-
-		// when
-		waitingService.cancelWaiting(id,id);
-
-		// then
-		assertEquals(Status.CANCELED, waitingEntity.getStatus()); // 상태가 CANCELED로 변경되었는지 확인
-		verify(waitingRepository, times(1)).save(waitingEntity); // save 메서드가 호출되었는지 확인
-	}
-
-	@Test
-	@DisplayName("웨이팅 취소 예외 처리 테스트")
-	void cancel_waiting_failure() {
-		// given
-		Long id = 1L;
-
-		// Mock the repository to return an empty Optional
-		when(waitingRepository.findById(id)).thenReturn(Optional.empty());
-
-		// when & then
-		assertThrows(IllegalArgumentException.class, () -> {
-			waitingService.cancelWaiting(id,id);
-		});
-		verify(waitingRepository, never()).save(any(WaitingEntity.class)); // save 메서드가 호출되지 않았는지 확인
-	}
-
+        assertNotNull(foundEntity);
+        assertEquals(waitingEntity, foundEntity);
+    }
 }

@@ -2,13 +2,11 @@ package org.example.catch_line.concurrency;
 
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.example.catch_line.CatchLineApplication;
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.model.dto.WaitingRequest;
-import org.example.catch_line.booking.waiting.model.dto.WaitingResponse;
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.model.entity.WaitingType;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
@@ -19,16 +17,13 @@ import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.dining.restaurant.model.entity.RestaurantEntity;
 import org.example.catch_line.dining.restaurant.repository.RestaurantRepository;
 import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
-import org.example.catch_line.history.service.HistoryService;
 import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.example.catch_line.user.member.repository.MemberRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -98,13 +93,8 @@ public class ConcurrencyTest {
         this.memberEntity6 = memberRepository.findById(6L).orElseThrow();
 
         for (int i = 0; i < 200; i++) {
-            MemberEntity member = MemberEntity.builder()
-                    .email(new Email("abc" + i + "@gmail.com"))
-                    .name("홍길동")
-                    .nickname("hong")
-                    .password(new Password(passwordEncoder.encode("123qwe!@Q")))
-                    .phoneNumber(new PhoneNumber("010-1234-1234"))
-                    .build();
+            MemberEntity member = new MemberEntity(new Email("abc" + i + "@gmail.com"), "홍길동", "hong", new Password(passwordEncoder.encode("123qwe!@Q")),
+                    new PhoneNumber("010-1234-1234"));
 
             memberRepository.save(member);
         }

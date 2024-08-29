@@ -25,7 +25,6 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-
 public class ReservationService {
 
 	private final NotificationService notificationService;
@@ -35,7 +34,6 @@ public class ReservationService {
 	private final MemberValidator memberValidator;
 	private final RestaurantValidator restaurantValidator;
 
-	@Transactional
 	public synchronized ReservationResponse addReservation(Long memberId, Long restaurantId, ReservationRequest reservationRequest) {
 		if(isReservationTimeConflict(restaurantId, reservationRequest.getReservationDate())) {
 			throw new DuplicateReservationTimeException();

@@ -74,6 +74,7 @@
   - 오픈소스 프론트엔드 프레임워크 선택했습니다.
   - CSS + JavaScript
 
+
 ### 브랜치 전략
 
 - 먼저, 각자 fork 한 리포지토리를 삭제했습니다. 멘토링 과정에서 fork 하지 않고 브랜치 전략만 잘 수립해서 개발하기로 결정했습니다.
@@ -151,6 +152,7 @@ src
 - 기능
 
    - 회원가입, 로그인, 페이지네이션, 스크랩
+   - Spring Security, Filter
 
 
 <br>
@@ -243,55 +245,306 @@ src
 #### [스크랩]
 
 - 사용자는 마음에 드는 식당을 스크랩할 수 있습니다.
-- 스크랩 수 확인 필요 ...
 
 
 
 <br>
 
 
-
-## 🔧 남은 기간 . . .
-
+## 🌟 구현 현황
 
 
-- 테스트 코드
-
-   - 현재 통합 테스트 코드만 작성한 상태입니다. ➡️ 단위 테스트로 변경
+<br>
 
 
-- 지도 API
+### 💥 1. 동시성 (상원님, 선우님)
 
-  - 카카오 지도 API에서 식당 정보를 불러오려고 합니다. 이때, 식당 이름, 위치, 영업시간, 전화번호 등의 정보를 불러와야 합니다.
-  - 지금은 db에 식당에 대한 정보들이 임의로 저장되어 있습니다.
+- 하나의 식당에 여러 사용자가 동시에 예약을 하는 상황을 경험해보기 위해 `java.util.concurrent` 패키지를 사용하였습니다. 
+- `CountDownLatch`, `ExecutorService`를 이용하여 동시성 테스트를 진행하였습니다.
+- 동시에 200명, 1000명의 사용자가 동시에 하나의 식당에 예약을 했을 때 한 명의 사용자만 예약이 되어야 합니다.
+- 처음엔 실패를 반복하고, 트랜잭션 격리 수준을 조절해보며 동시성 문제에 대해 경험을 해보았습니다.
+- `synchronized`, `비관적 락`을 통해 동시성 문제를 해결할 수 있었습니다.
+- 최종적으로 `비관적 락`을 이용하여 동시성 문제를 해결하였습니다.
+- 그 이유는 `synchronized`의 경우 메서드 전체에 걸어야 했기 때문에 다른 스레드 혹은 다른 유저가 대기해야 하는 상황이 발생할 것으로 예상했습니다.
+- 그렇기 때문에 `비관적 락`은 조회 시에만 걸어 메서드 전체에 거는 것보다 더 성능이 좋을 것이라 예상했고, 동시성 문제도 완벽히 막을 수 있을 것으로 생각하여 결정하게 되었습니다.
+- 추후 동시성 방지를 위해 `Redis`를 도입할 계획입니다.
 
+
+
+<br>
+
+
+### 🫥 2. 로그인 하지 않고 사용할 수 있는 기능과 로그인을 해야만 사용할 수 있는 기능을 구분
+
+
+
+
+#### [로그인 하지 않아도 사용할 수 있는 기능]
+
+- 메인 페이지(식당 리스트 조회) 접근
+
+&emsp; <img src="https://github.com/user-attachments/assets/e03f1161-0ea7-4c33-a843-0b964bc70595" alt="이미지 설명" width="400"/>
+
+<br>
+
+
+- 식당 리스트 조회
+
+    - 식당 검색 기능
+    - 식당 정렬 기능
+    - 페이지네이션 기능
+
+&emsp; <img src="https://github.com/user-attachments/assets/984fa93c-83e8-40b4-a3cf-cacf66baa423" alt="식당 리스트 조회 기능 화면" width="400"/>
+ 
+
+<br>
+
+
+- 식당 위치, 영업 시간, 메뉴 등을 확인할 수 있는 식당 상세 페이지 조회
+
+&emsp; <img src="https://github.com/user-attachments/assets/6bc5102b-a398-4bad-b57b-e676e4e742d8" width="400"/>
+
+
+#### [로그인해야 사용할 수 있는 기능]
+
+
+- 웨이팅/예약 등록
+
+- 회원 프로필 기능
+
+    - 회원 프로필 수정
+    - 회원 탈퇴
+    - 내 리뷰 조회
+    - 내 스크랩 조회
+
+- 리뷰 작성
   
-- OAuth
+- 스크랩
 
-   - 지금은 학습 목적으로 세션 로그인 방식으로 개발했습니다.
-   - 남은 기간 동안 `OAuth`로 변경하려고 합니다. 
+- 예약 관리 기능
 
-   
-- 로그인, 로그아웃 상태에서 사용할 수 있는 기능 구분 (`filter`, `interceptor`)
-
-
-
-- 사장님, 관리자 구현 (`일반 사용자`, `사장님`, `관리자`으로 level 구분)
+    - 예약 취소 및 수정
+    - 웨이팅 취소
+    - 예약 및 웨이팅 상태별로 조회(방문 전, 방문 완료, 취소)       
 
 
-- 이미지 업로드
-   
-   - 사장님이 식당을 등록할 때 이미지를 업로드할 수 있습니다.
-   - 사장님이 등록한 식당 이미지를 식당 상세 조회 화면에서 사용자가 조회할 수 있습니다. 
 
-   
-- 동시성 경험
+#### 로그인하지 않은 사용자가 인증이 필요한 페이지 접속 시 에러 처리
 
-  - 서비스에 대한 통합 테스트를 만들어 `java.util.concurrent` 패키지를 사용해보기로 했습니다.
-  - 해당 패키지에는 `Semaphore` 및 `CountDownLatch`와 같은 여러 동기화 장치가 포함되어 있다.
-    - 동시성을 경험해보고, 이를 제어하는 코드가 어디에 있는지 찾아보는 것도 좋을 것 같습니다.
 
-  - 실시간으로 DB에서 리뷰 데이터를 업데이트하는 방식에서 특정 시간마다 업데이트하는 방식으로 변경할 예정입니다. ➡️ 배치 처리 혹은 Redis
+- 사용자 인증이 필요한 주소 요청이 오면 BasicAuthenticationFilter를 상속 받은 MemberJwtAuthorizationFilter가 동작합니다.
+- 토큰이 없는 사용자 요청이 올 경우 에러 메시지와 함께 로그인페이지로 리다이렉트됩니다.
+
+
+&emsp; <img src="https://github.com/user-attachments/assets/42d62340-cec5-4a60-9a14-1b49634d79ee" alt="이미지 설명" width="400"/>
+
+
+
+<br>
+
+
+### 🟦 사용자 level 구분
+
+
+- `일반 사용자`와 `식당 사장님`으로 level을 구분했습니다.
+
+    - `일반 사용자`는 식당을 조회하고 마음에 드는 식당을 예약할 수 있습니다.
+    - `식당 사장님`은 식당 정보를 추가 및 수정 삭제가 가능하며, `일반 사용자`의 예약 및 웨이팅 내역을 관리할 수 있습니다. 
+
+
+- 일반 사용자 로그인이 되어 있는 사용자는 /owner 페이지에 접속이 불가능합니다.
+
+    - 일반 사용자와 식당 사장님은 서로의 기능을 사용할 수 없습니다.
+
+&ensp; <img src="https://github.com/user-attachments/assets/3793d615-ab12-4096-8b48-4e572e58baf7" width="400"/>
+
+
+<br>
+
+
+### 👱 OAuth + 일반 로그인 (JWT)
+
+
+OAuth의 경우 카카오 로그인을 사용했습니다.
+
+
+#### [세션 vs JWT 토큰]
+
+- 세션 방식으로 구현 -> Jwt 토큰 방식으로 변경
+- 학습 목적으로 처음에는 세션 방식으로 로그인을 구현했습니다. 멘토링 이후 세션 방식의 단점을 알게 되었고, JWT 토큰 방식으로 변경했습니다.
+- 세션 방식의 단점
+
+  - 서버가 한 대일 경우, 문제가 발생할 여지가 적습니다.
+  - 서버가 여러 대일 경우, 서버마다 세션 메모리 영역을 따로 가지고 있어 확장성이 낮고 관리가 어렵습니다.
+
+- JWT 토큰의 경우 서버가 secret key만 알고 있다면 어느 서버로 요청이 가도 쉽게 처리할 수 있습니다.
+
+
+#### [OAuth + 일반 로그인]
+
+- OAuth 로그인 `OAuth2LoginService` (`DefaultOAuth2UserService` 상속)
+
+    - security config 설정을 통해 oauth 로그인 페이지로 요청이 들어오면 실행됩니다.
+
+    ```
+    .oauth2Login(login -> login
+           .loginPage("/login/oauth")
+           .defaultSuccessUrl("/loginSuccess")
+           .successHandler(oAuth2SuccessHandler) // OAuth2 성공 핸들러 설정
+           .userInfoEndpoint(userInfo->userInfo.userService(oauth2LoginService))
+    )
+    ```                  
+
+
+- 일반 로그인 `MemberDefaultLoginService` (`UserDetailsService` 상속)
+
+    - 아래와 같이 authentication manager에 등록되어 실행됩니다.
+
+    ```
+    @Bean
+    public AuthenticationManager memberAuthenticationManager(HttpSecurity http) throws Exception {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(memberDefaultLoginService);
+        provider.setPasswordEncoder(bCryptPasswordEncoder());
+        return new ProviderManager(provider);
+    }
+    ```
+
+    - 일반 로그인 요청의 경우, `MemberJwtAuthenticationFilter`의 `attemptAuthentication`이 실행됩니다.
+    
+        - `MemberJwtAuthenticationFilter` -> `UsernamePasswordAuthenticationFilter` 상속
+
+
+- 인증이 필요한 페이지의 경우 `MemberJwtAuthorizationFilter`를 거칩니다. (`BasicAuthenticationFilter` 상속)
+
+    - 쿠키에서 JWT TOKEN을 꺼내 검증을 합니다.
+    - 이때 oauth 사용자와 일반 로그인 사용자를 토큰의 username을 기준으로 구분하여 authentication을 설정합니다.
+
+
+#### [JWT 토큰 저장 방식]
+
+
+- JWT 토큰은 쿠키에 저장됩니다.
+- 로그인 요청 성공 이후 success handler에서 처리합니다.
+
+
+#### [Member와 Owner]
+
+- 처음 erd를 보시면, 일반 사용자와 식당 사장님은 같은 테이블에 설계되었습니다.
+- 구현 중간에 일반 사용자의 연관 관계가 복잡해지면서 식당 사장님을 분리하게 되었습니다.
+- 일반 사용자와 식당 사장님의 로그인 페이지도 분리되었고, 다중 로그인 페이지와 관련하여 해결했던 이슈를 아래 WIKI에 정리해뒀습니다.
+  https://github.com/Kernel360/E2E2-CATCHLINE/wiki/%EB%8B%A4%EC%A4%91-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%ED%8E%98%EC%9D%B4%EC%A7%80%EC%99%80-authentication-manager-2%EA%B0%9C%EB%A5%BC-%EB%B9%88%EC%9C%BC%EB%A1%9C-%EB%93%B1%EB%A1%9D%ED%95%98%EC%97%AC-%EC%82%AC%EC%9A%A9%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95
+  
+- 일반 사용자 인증이 필요한 페이지에 접속 시 `MemberJwtAuthorizationFilter` 동작
+
+    - `BasicAuthenticationFilter`를 상속 -> authentication manager에 `MemberDefaultLoginService` 등록
+    
+- 식당 사장님 인증이 필요한 페이지에 접속 시 `OwnerJwtAuthorizationFilter` 동작
+
+    - `BasicAuthenticationFilter`를 상속 -> authentication manager에 `OwnerLoginService` 등록
+
+<br>
+
+
+
+### 🗾 카카오 맵
+
+- 카카오 지도 API를 이용하여 식당 정보를 가져왔습니다.
+- 다음(Daum) 우편번호 서비스 API를 이용하여 주소 검색을 할 수 있도록 하였습니다.
+- 카카오 지도 API를 통해 식당 위치를 보여주고, 식당 주소와 이름에 대한 정보를 가지고 왔습니다.
+- 메뉴, 리뷰 등의 부가 정보도 제공해줄 것으로 예상했으나, 제공되지 않아 제공되는 정보만 활용하였습니다.
+
+
+
+<br>
+
+### 🔴 Custom Exception
+
+<img src = "https://github.com/user-attachments/assets/f0f23cd4-f6d6-4ee0-8566-5de37451b352" width="400"/>
+
+
+- RuntimeException을 상속받은 CatchLineException
+- 모든 custom exception은 CatchLineException을 상속받습니다. 
+- validator 클래스에서 예외를 던지고 있습니다.
+
+    ```java
+    public void checkDuplicateEmail(Email email) {
+        if(memberRepository.findByEmailAndIsMemberDeletedFalse(email).isPresent())
+            throw new DuplicateEmailException(email.toString());
+    }
+    ```
+
+
+<br>
+
+
+### 👨‍💻 로그 패키지
+
+
+
+
+
+<br>
+
+### 🐑 배포
+
+
+
+
+
+
+<br>
+
+### 📆 스케줄러
+
+
+
+
+
+<br>
+
+
+### 🖼️ 이미지 업로드
+- 사장님이 식당을 등록할 때 이미지를 업로드할 수 있습니다.
+- 사장님이 등록한 식당 이미지를 식당 상세 조회 화면에서 사용자가 조회할 수 있습니다.
+- DB에 이미지 경로를 넣는 방식이 아닌 바이너리 형태로 이미지를 그대로 삽입하고 있습니다.
+  - 이 방식을 채택한 이유는 다른 기능 구현에 시간이 더 필요했고, 동시성 테스트에 시간을 더 투자하고자 하였습니다.
+  - 이 방식은 데이터가 많아지면 DB 부하가 상당히 커질 수 있기 때문에 경로를 넣는 방식으로 변경할 예정입니다.
+
+<br>
+
+
+### 🚨 알림
+
+- Polling, Websocket, SSE 방식 중에 알림 기능 구현에 사용할 기술을 고민하였습니다.
+- Polling은 주기적으로 요청을 보내기 때문에 실시간성을 필요로 하는 저희에게는 맞지 않다고 판단했습니다.
+- Websocket의 경우 양방향 통신이고, SSE의 경우 서버에서 클라이언트로 단뱡향 통신입니다.
+- 클라이언트에서 서버로 요청을 보낼 일은 없다고 판단이 되어 SSE를 이용하여 알림 서비스를 구현하였습니다.
+- 알림은 예약 생성, 수정, 취소, 웨이팅 생성, 취소 시에 발생하도록 하였습니다.
+
+<br>
+
+
+### 📊 통계
+
+- 스케줄러를 이용하여 자정마다 전날 예약 인원, 웨이팅 인원 수를 통계 테이블에 기록하였습니다.
+- 통계 테이블에는 날짜, 예약 인원 수, 웨이팅 인원 수, 식당 정보가 담겨있습니다.
+- 관리자 페이지에서 통계 테이블에 담겨 있는 데이터만 볼 수 있는 통계 화면을 제공합니다.
+- `Chart.js`를 이용하여 차트를 그려서 시각적으로 통계를 보여주고자 하였습니다.
+- 전체 식당 리스트를 제공하고, 하나의 식당을 선택하면 전체 날짜에 대한 통계를 제공합니다.
+  - 이 부분은 최근 1주일 혹은 1개월에 대한 데이터만 보여주는 방식으로 변경할 예정입니다.
+
+
+
+## 🍏 추후 구현 사항
+
+
+### 관리자를 만들어 식당 사장님의 기능을 나누고, 일반 사용자의 level을 추가하려고 합니다.
+
+- 현재 식당 사장님이 식당을 추가, 삭제, 수정할 수 있습니다. 실제 상황에서는 관리자에게 요청이 가면 관리자가 수행해야 하는 작업입니다. 이를 관리자 페이지로 분리해 구현하려고 합니다.
+- 일반 사용자의 경우 웨이팅과 예약 횟수 및 결제 금액에 따라 등급을 구분하려고 합니다.
+
+
 
 
 ## 기능 명세서

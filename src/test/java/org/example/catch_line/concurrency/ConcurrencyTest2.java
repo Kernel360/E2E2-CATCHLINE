@@ -87,7 +87,7 @@ public class ConcurrencyTest2 {
             executorService.submit(() -> {
                 long randomMemberId = ThreadLocalRandom.current().nextLong(1, 201); // 1부터 200 사이의 랜덤 ID 선택
                 try {
-                    reservationService.addReservation(randomMemberId, restaurantEntity1.getRestaurantId(), reservationRequest2);
+                    reservationService.addReservation(randomMemberId, restaurantEntity1.getRestaurantId(), reservationRequest1);
                     successfulReservations.incrementAndGet();
                 } catch (DuplicateReservationTimeException e) {
                     failedReservations.incrementAndGet(); // 예약이 실패했을 경우
@@ -143,7 +143,9 @@ public class ConcurrencyTest2 {
 
         for (int i = 0; i < 200; i++) {
             MemberEntity member = new MemberEntity(new Email("abc" + i + "@gmail.com"), "홍길동", "hong", new Password(passwordEncoder.encode("123qwe!@Q")),
-                    new PhoneNumber("010-1234-1234"));
+
+                        new PhoneNumber("010-1234-1234"));
+
 
             memberRepository.save(member);
         }

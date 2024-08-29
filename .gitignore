@@ -43,3 +43,6 @@ out/
 ### VS Code ###
 .vscode/
 .DS_Store
+
+
+LOGS_PATH_IS_UNDEFINED/

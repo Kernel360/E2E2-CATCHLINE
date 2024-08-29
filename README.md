@@ -257,7 +257,7 @@ src
 <br>
 
 
-### 💥 1. 동시성 (상원님, 선우님)
+### 💥 1. 동시성
 
 - 하나의 식당에 여러 사용자가 동시에 예약을 하는 상황을 경험해보기 위해 `java.util.concurrent` 패키지를 사용하였습니다. 
 - `CountDownLatch`, `ExecutorService`를 이용하여 동시성 테스트를 진행하였습니다.
@@ -489,7 +489,7 @@ OAuth의 경우 카카오 로그인을 사용했습니다.
 ### 🐑 배포
 
 
-
+https://velog.io/@i-migi0104/%EC%8A%A4%ED%94%84%EB%A7%81MySQLRDSEC2-%EB%B0%B0%ED%8F%AC%EA%B3%BC%EC%A0%95
 
 
 

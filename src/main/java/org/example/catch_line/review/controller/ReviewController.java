@@ -2,6 +2,7 @@ package org.example.catch_line.review.controller;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -30,24 +31,21 @@ public class ReviewController {
 
 	@GetMapping
 	public String getRestaurantReviews(@PathVariable Long restaurantId, Model model, @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
-		Long memberId;
-		if(Objects.isNull(memberUserDetails)) {
-			 memberId= null;
-		} else memberId = memberUserDetails.getMember().getMemberId();
+		Long memberId = Optional.ofNullable(memberUserDetails)
+				.map(details -> details.getMember().getMemberId())
+				.orElse(null);
 
 		List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurantId);
 		BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();
+
 		model.addAttribute("averageRating", averageRating);
 		model.addAttribute("reviewList", reviewList);
 		model.addAttribute("memberId", memberId);
-
 		return "review/reviews";
 	}
 
 	@GetMapping("/create")
-	public String showReviewForm(@PathVariable Long restaurantId, Model model
-								 ) {
-
+	public String showReviewForm(@PathVariable Long restaurantId, Model model) {
 		model.addAttribute("restaurantId", restaurantId);
 		model.addAttribute("reviewCreateRequest", new ReviewCreateRequest(null, null));
 		return "review/reviewCreateForm";
@@ -68,26 +66,24 @@ public class ReviewController {
 		} else {
 			Long memberId = memberUserDetails.getMember().getMemberId();
 			reviewService.createReview(memberId, restaurantId, reviewCreateRequest);
-
 		}
-		return String.format("redirect:/restaurants/%d/reviews", restaurantId);
+		return "redirect:/restaurants/{restaurantId}/reviews";
 	}
 
 
 	@GetMapping("/{reviewId}/update")
 	public String updateForm(@PathVariable Long restaurantId, @PathVariable Long reviewId,
 							 RedirectAttributes redirectAttributes, Model model, @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
-
-		Long memberId;
 		try {
-			memberId = memberUserDetails.getMember().getMemberId();
+			Long memberId = memberUserDetails.getMember().getMemberId();
 			ReviewResponse reviewResponse = reviewService.getReviewById(reviewId, memberId);
+
 			model.addAttribute("review", reviewResponse);
 			model.addAttribute("reviewId", reviewId);
 			model.addAttribute("restaurantId", restaurantId);
-		} catch (NullPointerException | UnauthorizedException e) {
+		} catch (UnauthorizedException e) {
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-			return String.format("redirect:/restaurants/%d/reviews", restaurantId);
+			return "redirect:/restaurants/{restaurantId}/reviews";
 		}
 
 		return "review/reviewUpdateForm";
@@ -103,29 +99,27 @@ public class ReviewController {
 			return "review/reviewUpdateForm";
 		}
 
-		Long memberId;
 		try {
-			memberId = memberUserDetails.getMember().getMemberId();
+			Long memberId = memberUserDetails.getMember().getMemberId();
 			reviewService.updateReview(reviewId, memberId, reviewUpdateRequest.getRating(), reviewUpdateRequest.getContent());
-		} catch (NullPointerException | UnauthorizedException e) {
+		} catch (UnauthorizedException e) {
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 		}
 
-		return String.format("redirect:/restaurants/%d/reviews", restaurantId);
+		return "redirect:/restaurants/{restaurantId}/reviews";
 	}
 
 	@DeleteMapping("/{reviewId}")
 	public String deleteReview(@PathVariable Long restaurantId, @PathVariable Long reviewId,
 							   RedirectAttributes redirectAttributes, @AuthenticationPrincipal MemberUserDetails memberUserDetails) {
-		Long memberId;
 		try {
-			memberId = memberUserDetails.getMember().getMemberId();
+			Long memberId = memberUserDetails.getMember().getMemberId();
 			reviewService.deleteReview(reviewId, memberId);
-		} catch (NullPointerException | UnauthorizedException e) {
+		} catch (UnauthorizedException e) {
 			log.info("exception");
 			redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
 		}
 
-		return String.format("redirect:/restaurants/%d/reviews", restaurantId);
+		return "redirect:/restaurants/{restaurantId}/reviews";
 	}
 }

@@ -7,12 +7,9 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
 import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
-import org.example.catch_line.booking.reservation.repository.ReservationRepository;
 import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.service.WaitingService;
-import org.example.catch_line.common.session.SessionUtils;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.exception.booking.BookingErrorException;
 import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
@@ -26,7 +23,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -154,7 +150,7 @@ public class HistoryController {
 			redirectAttributes.addFlashAttribute("message", "예약이 업데이트 되었습니다");
 		} catch (DuplicateReservationTimeException e) {
 			redirectAttributes.addFlashAttribute("error", e.getMessage());
-			return "redirect:/history/reservation/" + reservationId + "/edit";
+			return "redirect:/history/reservation/{reservationId}/edit";
 		}
 
 		return "redirect:/history";

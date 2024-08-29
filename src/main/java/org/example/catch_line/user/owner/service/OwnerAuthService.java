@@ -2,11 +2,9 @@ package org.example.catch_line.user.owner.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.exception.CatchLineException;
 import org.example.catch_line.common.model.vo.Password;
 import org.example.catch_line.common.model.vo.PhoneNumber;
 import org.example.catch_line.user.member.model.provider.validation.PasswordValidator;
-import org.example.catch_line.user.owner.model.dto.OwnerLoginRequest;
 import org.example.catch_line.user.owner.model.dto.OwnerResponse;
 import org.example.catch_line.user.owner.model.dto.OwnerSignUpRequest;
 import org.example.catch_line.user.owner.model.entity.OwnerEntity;
@@ -37,24 +35,11 @@ public class OwnerAuthService {
         String encodedPassword = passwordEncoder.encode(validatedPassword);
 
         // VO에는 암호화된 비밀번호가 넘어간다.
-
         OwnerEntity owner = new OwnerEntity(ownerSignUpRequest.getLoginId(), ownerSignUpRequest.getName(),
                 new Password(encodedPassword), new PhoneNumber(ownerSignUpRequest.getPhoneNumber()));
         ownerRepository.save(owner);
 
         return ownerResponseMapper.entityToResponse(owner);
     }
-
-
-//    // 로그인
-//    public OwnerResponse login(OwnerLoginRequest ownerLoginRequest) {
-//
-//        return ownerRepository.findByLoginId(ownerLoginRequest.getLoginId())
-//                .filter(owner -> passwordEncoder.matches(ownerLoginRequest.getPassword(), owner.getPassword().getEncodedPassword())) // 비밀번호 비교
-//                .map(ownerResponseMapper::entityToResponse)
-//                .orElseThrow(() -> new CatchLineException("로그인에 실패하였습니다."));
-//
-//    }
-
 
 }

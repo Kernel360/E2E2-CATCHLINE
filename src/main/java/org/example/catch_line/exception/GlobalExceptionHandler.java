@@ -15,7 +15,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-
         log.error("IllegalArgumentException 발생: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
@@ -23,9 +22,14 @@ public class GlobalExceptionHandler {
     // 모든 커스텀 예외가 `CatchLineException`을 상속 -> 모든 `exception class` 다 적을 필요 없음.
     @ExceptionHandler(CatchLineException.class)
     public ResponseEntity<String> handleCatchLineException(CatchLineException e) {
-
         log.error("캐치라인 커스텀 예외 발생: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        log.error("Exception 예외 발생: {}", e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
 }

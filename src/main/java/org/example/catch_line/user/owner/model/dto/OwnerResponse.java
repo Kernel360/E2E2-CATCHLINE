@@ -11,5 +11,4 @@ public class OwnerResponse {
     private String loginId;
     private String name;
     private String phoneNumber;
-
 }

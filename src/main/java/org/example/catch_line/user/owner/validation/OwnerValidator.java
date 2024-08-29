@@ -2,6 +2,8 @@ package org.example.catch_line.user.owner.validation;
 
 import lombok.RequiredArgsConstructor;
 import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.user.DuplicateOwnerLoginIdException;
+import org.example.catch_line.exception.user.OwnerNotFoundException;
 import org.example.catch_line.user.owner.model.entity.OwnerEntity;
 import org.example.catch_line.user.owner.repository.OwnerRepository;
 import org.springframework.stereotype.Component;
@@ -14,17 +16,12 @@ public class OwnerValidator {
 
     public OwnerEntity checkIfOwnerIdExist(Long ownerId) {
         return ownerRepository.findByOwnerId(ownerId)
-                .orElseThrow(() -> new CatchLineException("해당하는 식당 사장님 사용자가 없습니다."));
-    }
-
-    public OwnerEntity checkIfOwnerPresent(String loginId) {
-        return ownerRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new CatchLineException("해당하는 식당 사장님 사용자가 없습니다."));
+                .orElseThrow(() -> new OwnerNotFoundException(ownerId));
     }
 
     public void checkDuplicateLoginId(String loginId) {
         if(ownerRepository.findByLoginId(loginId).isPresent()) {
-            throw new CatchLineException("이미 존재하는 식당 사장님 로그인 아이디입니다.");
+            throw new DuplicateOwnerLoginIdException(loginId);
         }
     }
 }

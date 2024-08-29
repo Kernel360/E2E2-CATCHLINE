@@ -46,7 +46,6 @@ public class RestaurantPreviewController {
         int startPage = (((int) Math.ceil(((double) (pageable.getPageNumber() + 1) / blockLimit))) - 1) * blockLimit + 1;
         int endPage = Math.min((startPage + blockLimit - 1), restaurantPreviewPage.getTotalPages());
 
-
         model.addAttribute("restaurantPreviewPage", restaurantPreviewPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);

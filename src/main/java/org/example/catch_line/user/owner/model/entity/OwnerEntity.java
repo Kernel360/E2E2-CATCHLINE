@@ -41,7 +41,6 @@ public class OwnerEntity {
     @OneToMany(mappedBy = "owner")
     private List<RestaurantEntity> restaurants = new ArrayList<>();
 
-
     public OwnerEntity(String loginId, String name, Password password, PhoneNumber phoneNumber) {
         this.loginId = loginId;
         this.name = name;

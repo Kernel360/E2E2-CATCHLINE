@@ -33,5 +33,4 @@ public class MyScrapController {
         return "member/my-page/scraps";
     }
 
-
 }

@@ -9,7 +9,6 @@ import lombok.Getter;
 @Getter
 public class MemberDeleteResponse {
 
-
     private Long memberId;
     private boolean isMemberDeleted;
 }

@@ -16,7 +16,6 @@ public class NotificationRestController {
 
     private final NotificationService notificationService;
 
-    // SSE 연결
     @GetMapping(value = "/sse/{id}", produces = "text/event-stream")
     public SseEmitter subscribe(@PathVariable Long id,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {

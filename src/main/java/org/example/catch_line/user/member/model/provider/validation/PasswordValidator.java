@@ -11,7 +11,6 @@ public class PasswordValidator {
     // TODO: static vs @Component vs new 로 생성 .. ?
     public static String validatePassword(String password) {
 
-
         if (!PASSWORD_PATTERN.matcher(password).matches()) {
             throw new InvalidPasswordException(password);
         }

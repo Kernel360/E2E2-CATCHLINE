@@ -33,7 +33,7 @@ public class HistoryService {
 
 		// 각 웨이팅 엔티티를 HistoryResponse로 변환
 		scheduledWaitingEntities.forEach(waiting ->
-			historyResponseList.add(historyMapper.entityToHistoryResponse(waiting, calculateWaitingRegistrationId(waiting, getStartOfDay(), getEndOfDay()), calculateMyWaitingPosition(waiting)))
+			historyResponseList.add(historyMapper.waitingToHistoryResponse(waiting, calculateWaitingRegistrationId(waiting, getStartOfDay(), getEndOfDay()), calculateMyWaitingPosition(waiting)))
 		);
 
 		// 각 예약 엔티티를 HistoryResponse로 변환
@@ -58,7 +58,7 @@ public class HistoryService {
 			.toList();
 
 		List<HistoryResponse> waitingResponses = waitingEntities.stream()
-			.map(waiting -> historyMapper.entityToHistoryResponse(waiting, calculateWaitingRegistrationId(waiting, getStartOfDay(), getEndOfDay()), calculateMyWaitingPosition(waiting)))
+			.map(waiting -> historyMapper.waitingToHistoryResponse(waiting, calculateWaitingRegistrationId(waiting, getStartOfDay(), getEndOfDay()), calculateMyWaitingPosition(waiting)))
 			.toList();
 
 		List<HistoryResponse> allHistoryResponses = new ArrayList<>();
@@ -88,7 +88,7 @@ public class HistoryService {
 		WaitingEntity waitingEntity = waitingRepository.findByWaitingId(waitingId).orElseThrow(HistoryException::new);
 		int waitingPosition = calculateMyWaitingPosition(waitingEntity);
 		int waitingRegistrationId = calculateWaitingRegistrationId(waitingEntity, getStartOfDay(), getEndOfDay());
-		return historyMapper.entityToHistoryResponse(waitingEntity,waitingRegistrationId, waitingPosition);
+		return historyMapper.waitingToHistoryResponse(waitingEntity,waitingRegistrationId, waitingPosition);
 	}
 	public HistoryResponse findReservationDetailByReservationId(Long reservationId) {
 		ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId).orElseThrow(HistoryException::new);

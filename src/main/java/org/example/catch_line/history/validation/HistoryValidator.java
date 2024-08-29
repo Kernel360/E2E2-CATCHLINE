@@ -5,6 +5,9 @@ import org.example.catch_line.booking.reservation.repository.ReservationReposito
 import org.example.catch_line.booking.waiting.model.entity.WaitingEntity;
 import org.example.catch_line.booking.waiting.repository.WaitingRepository;
 import org.example.catch_line.exception.CatchLineException;
+import org.example.catch_line.exception.authorizaion.UnauthorizedException;
+import org.example.catch_line.exception.booking.ReservationException;
+import org.example.catch_line.exception.booking.WaitingException;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -20,29 +23,29 @@ public class HistoryValidator {
 
 	public ReservationEntity checkIfReservationPresent(Long reservationId) {
 		return reservationRepository.findByReservationId(reservationId)
-			.orElseThrow(() -> new CatchLineException("해당 예약은 존재하지 않습니다"));
+			.orElseThrow(() -> new ReservationException("해당 예약은 존재하지 않습니다"));
 	}
 
 	public WaitingEntity checkIfWaitingPresent(Long waitingId) {
 		return waitingRepository.findByWaitingId(waitingId)
-			.orElseThrow(() -> new CatchLineException("해당 웨이팅은 존재하지 않습니다"));
+			.orElseThrow(() -> new WaitingException("해당 웨이팅은 존재하지 않습니다"));
 	}
 
 	public void validateWaitingOwnership(Long memberId, Long waitingId) {
 		WaitingEntity waitingEntity = waitingRepository.findByWaitingId(waitingId)
-				.orElseThrow(() -> new CatchLineException("해당 웨이팅은 존재하지 않습니다"));
+				.orElseThrow(() -> new WaitingException("해당 웨이팅은 존재하지 않습니다"));
 
 		if (!Objects.equals(waitingEntity.getMember().getMemberId(), memberId)) {
-			throw new CatchLineException("해당 대기를 삭제할 권한이 없습니다");
+			throw new UnauthorizedException();
 		}
 	}
 
 	public void validateReservationOwnership(Long memberId, Long reservationId) {
 		ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId)
-				.orElseThrow(() -> new CatchLineException("해당 예약은 존재하지 않습니다"));
+				.orElseThrow(() -> new ReservationException("해당 예약은 존재하지 않습니다"));
 
 		if (!Objects.equals(reservationEntity.getMember().getMemberId(), memberId)) {
-			throw new CatchLineException("해당 예약을 삭제할 권한이 없습니다");
+			throw new UnauthorizedException();
 		}
 	}
 

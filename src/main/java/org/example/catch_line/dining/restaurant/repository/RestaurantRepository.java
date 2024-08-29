@@ -13,12 +13,5 @@ import java.util.Optional;
 @Repository
 public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long>, RestaurantRepositoryCustom {
 
-    Optional<RestaurantEntity> findByName(String name);
-
     List<RestaurantEntity> findAllByOwnerOwnerId(Long ownerId);
-
-    Page<RestaurantEntity> findAllByNameContaining(String name, Pageable pageable);
-
-    Page<RestaurantEntity> findAllByFoodType(FoodType foodType, Pageable pageable);
-
 }

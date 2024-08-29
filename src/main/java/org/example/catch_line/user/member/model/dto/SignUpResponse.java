@@ -9,11 +9,9 @@ import lombok.Getter;
 @Builder
 public class SignUpResponse {
 
-
     private Long memberId;
     private String email;
     private String name;
     private String nickname;
     private String phoneNumber;
-
 }

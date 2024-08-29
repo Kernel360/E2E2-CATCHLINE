@@ -56,19 +56,19 @@ public class ConcurrencyTest2 {
 
     @BeforeAll
     void setup() {
-         reservationRequest1 = ReservationRequest.builder()
+        reservationRequest1 = ReservationRequest.builder()
                 .memberCount(3)
                 .reservationDate(LocalDateTime.of(2024, 8, 22, 15, 0)) // 2024년 8월 22일 오후 3시 00분
                 .build();
-         reservationRequest2 = ReservationRequest.builder()
+        reservationRequest2 = ReservationRequest.builder()
                 .memberCount(3)
                 .reservationDate(LocalDateTime.of(2024, 9, 22, 15, 0)) // 2024년 8월 22일 오후 3시 00분
                 .build();
-         waitingRequest1 = WaitingRequest.builder()
+        waitingRequest1 = WaitingRequest.builder()
                 .memberCount(3)
                 .waitingType(WaitingType.TAKE_OUT)
                 .build();
-         memberSave();
+        memberSave();
     }
 
     @Test
@@ -77,7 +77,9 @@ public class ConcurrencyTest2 {
         // given
         int numberOfThreads = 200;
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+        CountDownLatch startLatch = new CountDownLatch(1); // 모든 스레드가 동시에 시작하게 함
+        CountDownLatch endLatch = new CountDownLatch(numberOfThreads); // 모든 스레드가 완료될 때까지 대기
 
         AtomicInteger successfulReservations = new AtomicInteger(); // 성공한 예약의 수를 카운트
         AtomicInteger failedReservations = new AtomicInteger(); // 실패한 예약의 수를 카운트
@@ -85,18 +87,23 @@ public class ConcurrencyTest2 {
         // when
         for (int i = 1; i <= numberOfThreads; i++) {
             executorService.submit(() -> {
-                long randomMemberId = ThreadLocalRandom.current().nextLong(1, 201); // 1부터 200 사이의 랜덤 ID 선택
                 try {
+                    startLatch.await(); // 모든 스레드가 준비될 때까지 대기
+                    long randomMemberId = ThreadLocalRandom.current().nextLong(1, 201); // 1부터 200 사이의 랜덤 ID 선택
                     reservationService.addReservation(randomMemberId, restaurantEntity1.getRestaurantId(), reservationRequest1);
                     successfulReservations.incrementAndGet();
                 } catch (DuplicateReservationTimeException e) {
                     failedReservations.incrementAndGet(); // 예약이 실패했을 경우
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 } finally {
-                    latch.countDown();
+                    endLatch.countDown();
                 }
             });
         }
-        latch.await(); // 모든 스레드가 완료될 때까지 대기
+
+        startLatch.countDown(); // 모든 스레드가 동시에 시작하게 함
+        endLatch.await(); // 모든 스레드가 완료될 때까지 대기
         executorService.shutdown();
 
         // then
@@ -111,7 +118,7 @@ public class ConcurrencyTest2 {
         // given
         List<WaitingEntity> beforeWaitings = waitingRepository.findAll();
         int size = beforeWaitings.size();
-        int numberOfThreads = 20;
+        int numberOfThreads = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
         CountDownLatch latch = new CountDownLatch(numberOfThreads);
 

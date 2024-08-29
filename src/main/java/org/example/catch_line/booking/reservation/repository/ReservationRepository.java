@@ -25,7 +25,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
 
 	int countByRestaurantAndReservationDateBetween(RestaurantEntity restaurant, LocalDateTime start, LocalDateTime end);
 
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
+//	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	Optional<ReservationEntity> findByRestaurantRestaurantIdAndReservationDate(Long restaurantId, LocalDateTime reservationDate);
 }
 

@@ -1,194 +1,179 @@
 package org.example.catch_line.history.controller;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.Collections;
-import java.util.List;
-
+import org.example.catch_line.booking.reservation.model.dto.ReservationRequest;
+import org.example.catch_line.booking.reservation.model.entity.ReservationEntity;
 import org.example.catch_line.booking.reservation.service.ReservationService;
 import org.example.catch_line.booking.waiting.service.WaitingService;
 import org.example.catch_line.common.constant.Status;
-import org.example.catch_line.exception.booking.HistoryException;
+import org.example.catch_line.exception.booking.DuplicateReservationTimeException;
 import org.example.catch_line.history.model.dto.HistoryResponse;
 import org.example.catch_line.history.service.HistoryService;
+import org.example.catch_line.history.validation.HistoryValidator;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
+import org.example.catch_line.user.member.model.entity.MemberEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class HistoryControllerTest {
 
-	private MockMvc mockMvc;
+    @Mock
+    private ReservationService reservationService;
 
-	@Mock
-	private ReservationService reservationService;
+    @Mock
+    private WaitingService waitingService;
 
-	@Mock
-	private WaitingService waitingService;
+    @Mock
+    private HistoryService historyService;
 
-	@Mock
-	private HistoryService historyService;
+    @Mock
+    private HistoryValidator historyValidator;
 
-	@InjectMocks
-	private HistoryController historyController;
+    @InjectMocks
+    private HistoryController historyController;
 
-	@BeforeEach
-	void setUp() {
-		MockitoAnnotations.openMocks(this);
+    @Mock
+    private Model model;
 
-		// ViewResolver 설정 (thymeleaf 등 사용 시 필요)
-		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-		viewResolver.setPrefix("/WEB-INF/views/");
-		viewResolver.setSuffix(".html");
+    @Mock
+    private RedirectAttributes redirectAttributes;
 
-		mockMvc = MockMvcBuilders.standaloneSetup(historyController)
-			.setViewResolvers(viewResolver)
-			.build();
-	}
+    @Mock
+    private MemberUserDetails userDetails;
 
-	@Test
-	@DisplayName("GET /history - 모든 히스토리 가져오기")
-	void testGetHistories() throws Exception {
-		List<HistoryResponse> historyList = Collections.singletonList(
-			HistoryResponse.builder()
-				.restaurantName("Test Restaurant")
-				.build()
-		);
+    @Mock
+    private MemberEntity member;
 
-		when(historyService.getAllHistory(anyLong(), any(Status.class)))
-			.thenReturn(historyList);
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        // Mocking MemberEntity and setting it to userDetails
+        when(userDetails.getMember()).thenReturn(member);
+        when(member.getMemberId()).thenReturn(1L);
+    }
 
-		mockMvc.perform(get("/history")
-				.sessionAttr("memberId", 1L)
-				.param("status", "SCHEDULED"))
-			.andExpect(status().isOk())
-			.andExpect(view().name("history/history"))
-			.andExpect(model().attribute("history", historyList));  // 모델에 추가된 값 검증
-	}
+    @Test
+    @DisplayName("이력 조회 성공 테스트")
+    void getHistories_success() {
+        List<HistoryResponse> historyResponses = new ArrayList<>();
+        historyResponses.add(mock(HistoryResponse.class));
 
-	@Test
-	@DisplayName("GET /history/waiting/{waitingId} - 웨이팅 상세보기")
-	void testGetWaitingDetail() throws Exception {
-		HistoryResponse historyResponse = HistoryResponse.builder()
-			.restaurantName("Test Restaurant")
-			.build();
+        when(historyService.getAllHistory(anyLong(), any(Status.class))).thenReturn(historyResponses);
 
-		when(historyService.findWaitingDetailById(any(List.class), anyLong()))
-			.thenReturn(historyResponse);
+        String viewName = historyController.getHistories(model, userDetails, Status.SCHEDULED);
 
-		mockMvc.perform(get("/history/waiting/1")
-				.sessionAttr("historyList", Collections.singletonList(historyResponse)))
-			.andExpect(status().isOk())
-			.andExpect(view().name("history/waitingDetail"))
-			.andExpect(model().attributeExists("historyResponse"));
-	}
+        assertEquals("history/history", viewName);
+        verify(model, times(1)).addAttribute("history", historyResponses);
+    }
 
-	@Test
-	@DisplayName("GET /history/waiting/{waitingId} - 세션에 히스토리 리스트가 없는 경우")
-	void testGetWaitingDetail_NoHistoryList() throws Exception {
-		mockMvc.perform(get("/history/waiting/1"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(redirectedUrl("/history"));
-	}
+    @Test
+    @DisplayName("웨이팅 상세 조회 성공 테스트")
+    void getWaitingDetail_success() {
+        List<HistoryResponse> historyResponses = new ArrayList<>();
+        historyResponses.add(mock(HistoryResponse.class));
 
-	@Test
-	@DisplayName("GET /history/waiting/{waitingId} - 잘못된 ID로 인한 예외 발생")
-	void testGetWaitingDetail_InvalidId() throws Exception {
-		when(historyService.findWaitingDetailById(any(List.class), anyLong()))
-			.thenThrow(new IllegalArgumentException("Invalid waiting ID"));
+        when(historyService.getAllHistory(anyLong(), any(Status.class))).thenReturn(historyResponses);
+        when(historyService.findWaitingDetailById(anyList(), anyLong())).thenReturn(mock(HistoryResponse.class));
 
-		mockMvc.perform(get("/history/waiting/1")
-				.sessionAttr("historyList", Collections.emptyList()))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(redirectedUrl("/history"));
-	}
+        String viewName = historyController.getWaitingDetail(1L, model, userDetails, Status.SCHEDULED);
 
-	@Test
-	@DisplayName("GET /history/reservation/{reservationId} - 예약 상세보기")
-	void testGetReservationDetail() throws Exception {
-		HistoryResponse historyResponse = HistoryResponse.builder()
-			.restaurantName("Test Restaurant")
-			.build();
+        assertEquals("history/waitingDetail", viewName);
+        verify(model, times(1)).addAttribute(eq("historyResponse"), any(HistoryResponse.class));
+    }
 
-		when(historyService.findReservationDetailById(any(List.class), anyLong()))
-			.thenReturn(historyResponse);
+    @Test
+    @DisplayName("예약 상세 조회 성공 테스트")
+    void getReservationDetail_success() {
+        List<HistoryResponse> historyResponses = new ArrayList<>();
+        historyResponses.add(mock(HistoryResponse.class));
 
-		mockMvc.perform(get("/history/reservation/1")
-				.sessionAttr("historyList", Collections.singletonList(historyResponse)))
-			.andExpect(status().isOk())
-			.andExpect(view().name("history/reservationDetail"))
-			.andExpect(model().attributeExists("historyResponse"));
-	}
+        when(historyService.getAllHistory(anyLong(), any(Status.class))).thenReturn(historyResponses);
+        when(historyService.findReservationDetailById(anyList(), anyLong())).thenReturn(mock(HistoryResponse.class));
 
-	@Test
-	@DisplayName("GET /history/reservation/{reservationId} - 세션에 히스토리 리스트가 없는 경우")
-	void testGetReservationDetail_NoHistoryList() throws Exception {
-		mockMvc.perform(get("/history/reservation/1"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(redirectedUrl("/history"));
-	}
+        String viewName = historyController.getReservationDetail(1L, model, userDetails, Status.SCHEDULED);
 
-	@Test
-	@DisplayName("GET /history/reservation/{reservationId} - 예외 발생")
-	void testGetReservationDetail_Exception() throws Exception {
-		when(historyService.findReservationDetailById(any(List.class), anyLong()))
-			.thenThrow(new HistoryException());
+        assertEquals("history/reservationDetail", viewName);
+        verify(model, times(1)).addAttribute(eq("historyResponse"), any(HistoryResponse.class));
+    }
 
-		mockMvc.perform(get("/history/reservation/1")
-				.sessionAttr("historyList", Collections.emptyList()))
-			.andExpect(status().isOk())
-			.andExpect(view().name("error"))
-			.andExpect(model().attributeExists("errorMessage"));
-	}
+    @Test
+    @DisplayName("예약 삭제 성공 테스트")
+    void deleteReservation_success() {
+        String result = historyController.deleteReservation(1L, model, userDetails);
 
-	@Test
-	@DisplayName("POST /history/reservation/{reservationId} - 예약 삭제")
-	void testDeleteReservation() throws Exception {
-		doNothing().when(reservationService).cancelReservation(anyLong(), anyLong());
+        assertEquals("ok", result);
+        verify(historyValidator, times(1)).validateReservationOwnership(anyLong(), anyLong());
+        verify(reservationService, times(1)).cancelReservation(anyLong(), anyLong());
+    }
 
-		mockMvc.perform(post("/history/reservation/1"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(redirectedUrl("/history"));
-	}
+    @Test
+    @DisplayName("웨이팅 삭제 성공 테스트")
+    void deleteWaiting_success() {
+        String result = historyController.deleteWaiting(1L, model, userDetails);
 
-	@Test
-	@DisplayName("POST /history/waiting/{waitingId} - 웨이팅 삭제")
-	void testDeleteWaiting() throws Exception {
-		doNothing().when(waitingService).cancelWaiting(anyLong(), anyLong());
+        assertEquals("ok", result);
+        verify(historyValidator, times(1)).validateWaitingOwnership(anyLong(), anyLong());
+        verify(waitingService, times(1)).cancelWaiting(anyLong(), anyLong());
+    }
 
-		mockMvc.perform(post("/history/waiting/1"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(redirectedUrl("/history"));
-	}
+    @Test
+    @DisplayName("예약 업데이트 폼 조회 테스트")
+    void updateForm_success() {
+        when(reservationService.findReservationById(anyLong())).thenReturn(mock(ReservationEntity.class));
 
-	@Test
-	@DisplayName("POST /history/reservation/{reservationId} - 예약 삭제 실패")
-	void testDeleteReservation_Failure() throws Exception {
-		doThrow(new RuntimeException("Deletion failed")).when(reservationService).cancelReservation(anyLong(), anyLong());
+        String viewName = historyController.updateForm(1L, model);
 
-		mockMvc.perform(post("/history/reservation/1"))
-			.andExpect(status().isOk())
-			.andExpect(view().name("error"))
-			.andExpect(model().attributeExists("errorMessage"));
-	}
+        assertEquals("reservation/updateReservation", viewName);
+        verify(model, times(1)).addAttribute(eq("reservationRequest"), any());
+        verify(model, times(1)).addAttribute(eq("reservationId"), anyLong());
+    }
 
-	@Test
-	@DisplayName("POST /history/waiting/{waitingId} - 웨이팅 삭제 실패")
-	void testDeleteWaiting_Failure() throws Exception {
-		doThrow(new RuntimeException("Deletion failed")).when(waitingService).cancelWaiting(anyLong(), anyLong());
+    @Test
+    @DisplayName("예약 업데이트 성공 테스트")
+    void updateReservation_success() {
+        ReservationRequest updateRequest = mock(ReservationRequest.class);
+        when(updateRequest.getMemberCount()).thenReturn(2);
+        when(updateRequest.getReservationDate()).thenReturn(mock(LocalDateTime.class));
 
-		mockMvc.perform(post("/history/waiting/1"))
-			.andExpect(status().isOk())
-			.andExpect(view().name("error"))
-			.andExpect(model().attributeExists("errorMessage"));
-	}
+        String viewName = historyController.updateReservation(1L, updateRequest, redirectAttributes, userDetails);
+
+        assertEquals("redirect:/history", viewName);
+        verify(historyValidator, times(1)).validateReservationOwnership(anyLong(), anyLong());
+        verify(reservationService, times(1)).updateReservation(anyLong(), anyLong(), anyInt(), any(LocalDateTime.class));
+        verify(redirectAttributes, times(1)).addFlashAttribute(eq("message"), anyString());
+    }
+
+    @Test
+    @DisplayName("예약 업데이트 중복 시간 예외 처리 테스트")
+    void updateReservation_duplicateTimeException() {
+        when(userDetails.getMember().getMemberId()).thenReturn(1L);
+
+        // 예외를 던지도록 설정
+        doThrow(new DuplicateReservationTimeException())
+                .when(reservationService).updateReservation(anyLong(), anyLong(), anyInt(), any(LocalDateTime.class));
+
+        ReservationRequest updateRequest = mock(ReservationRequest.class);
+        when(updateRequest.getMemberCount()).thenReturn(2);
+        when(updateRequest.getReservationDate()).thenReturn(mock(LocalDateTime.class));
+
+        String viewName = historyController.updateReservation(1L, updateRequest, redirectAttributes, userDetails);
+
+        assertEquals("redirect:/history/reservation/1/edit", viewName);  // 예상된 리다이렉트 경로 확인
+        verify(redirectAttributes, times(1)).addFlashAttribute(eq("error"), anyString());
+    }
 
 }

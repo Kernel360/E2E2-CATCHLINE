@@ -72,44 +72,6 @@ public class ConcurrencyTest2 {
     }
 
     @Test
-    @DisplayName("식당 동시 예약 200명 - List에 1~200 넣고 Shuffle")
-    void testRestaurantConcurrency100() throws InterruptedException {
-        // given
-        int numberOfThreads = 200;
-        ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
-        CountDownLatch latch = new CountDownLatch(numberOfThreads);
-
-        AtomicInteger successfulReservations = new AtomicInteger(); // 성공한 예약의 수를 카운트
-        AtomicInteger failedReservations = new AtomicInteger(); // 실패한 예약의 수를 카운트
-
-        List<Integer> memberIds = IntStream.rangeClosed(1, 201).boxed().collect(Collectors.toList());
-        Collections.shuffle(memberIds);
-
-        // when
-        for (int i = 1; i <= numberOfThreads; i++) {
-            int randomMemberId = memberIds.get(i);
-            executorService.submit(() -> {
-                try {
-                    reservationService.addReservation((long) randomMemberId, restaurantEntity1.getRestaurantId(), reservationRequest1);
-                    successfulReservations.incrementAndGet();
-                } catch (DuplicateReservationTimeException e) {
-                    failedReservations.incrementAndGet(); // 예약이 실패했을 경우
-                } finally {
-                    latch.countDown();
-                }
-            });
-
-        }
-        latch.await(); // 모든 스레드가 완료될 때까지 대기
-        executorService.shutdown();
-
-        // then
-        // 한 명의 사용자만 성공해야 함을 검증
-        assertThat(successfulReservations.get()).isEqualTo(1);
-        assertThat(failedReservations.get()).isEqualTo(199);
-    }
-
-    @Test
     @DisplayName("식당 동시 예약 - ThreadLocalRandom")
     void testRestaurantConcurrency_not_run() throws InterruptedException {
         // given
@@ -180,13 +142,8 @@ public class ConcurrencyTest2 {
         this.restaurantEntity2 = restaurantRepository.findById(2L).orElseThrow();
 
         for (int i = 0; i < 200; i++) {
-            MemberEntity member = MemberEntity.builder()
-                    .email(new Email("abc" + i + "@gmail.com"))
-                    .name("홍길동")
-                    .nickname("hong")
-                    .password(new Password(passwordEncoder.encode("123qwe!@Q")))
-                    .phoneNumber(new PhoneNumber("010-1234-1234"))
-                    .build();
+            MemberEntity member = new MemberEntity(new Email("abc" + i + "@gmail.com"), "홍길동", "hong", new Password(passwordEncoder.encode("123qwe!@Q")),
+                    new PhoneNumber("010-1234-1234"));
 
             memberRepository.save(member);
         }

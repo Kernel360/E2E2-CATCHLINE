@@ -37,6 +37,10 @@
             font-weight: bold;
         }
 
+        input::placeholder {
+            color: #aaa;
+        }
+
         .btn-orange {
             background-color: orange;
             color: white;
@@ -122,19 +126,19 @@
         </div>
         <div class="form-group">
             <label for="name">이름:</label>
-            <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요" required/>
+            <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="이름을 입력하세요 (2-10자)" required/>
         </div>
         <div class="form-group">
             <div class="form-group">
                 <label for="nickname">닉네임:</label>
-                <input type="text" id="nickname" th:field="*{nickname}" class="form-control" placeholder="닉네임을 입력하세요" required/>
+                <input type="text" id="nickname" th:field="*{nickname}" class="form-control" placeholder="닉네임을 입력하세요 (4-15자)" required/>
                 <div th:if="${#fields.hasErrors('nickname')}" class="text-danger mt-2">
                     <span th:errors="*{nickname}"></span> <!-- 닉네임 길이 검증 오류 메시지 -->
                 </div>
             </div>
 
             <label for="password">비밀번호:</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호를 입력하세요" required
+            <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="비밀번호(8-15자, 영어 대소문자/숫자/특수문자를 모두 포함해주세요.))" required
                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>
             <div th:if="${#fields.hasErrors('password')}" class="text-danger mt-2">
                 <span th:errors="*{password}"></span> <!-- 비밀번호 검증 오류 메시지 -->
@@ -142,7 +146,7 @@
         </div>
         <div class="form-group">
             <label for="phoneNumber">전화번호:</label>
-            <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" placeholder="전화번호를 입력하세요" required
+            <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" placeholder="전화번호를 입력하세요 (11-14자, -를 넣어서 입력해주세요.)" required
                    th:classappend="${#fields.hasErrors('phoneNumber')} ? 'is-invalid'"/>
             <div th:if="${#fields.hasErrors('phoneNumber')}" class="text-danger mt-2">
                 <span th:errors="*{phoneNumber}"></span> <!-- 전화번호 검증 오류 메시지 -->

@@ -46,4 +46,10 @@
     <logger name="org.springframework.web.client" level="trace">
         <appender-ref ref="DAILY_ROLLING_FILE_APPENDER"/>
     </logger>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="DAILY_ROLLING_FILE_APPENDER"/>
+    </root>
+    
 </configuration>

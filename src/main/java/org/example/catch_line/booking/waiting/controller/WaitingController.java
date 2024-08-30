@@ -39,7 +39,7 @@ public class WaitingController {
 
 			boolean isExisting = waitingService.isExistingWaiting(memberId, Status.SCHEDULED);
 			if (isExisting) {
-				model.addAttribute("error", "이미 예약이 존재합니다");
+				model.addAttribute("error", "이미 웨이팅이 존재합니다");
 				return "waiting/waiting";
 			}
 

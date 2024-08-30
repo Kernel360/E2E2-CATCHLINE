@@ -55,7 +55,7 @@ public class RestaurantPreviewService {
 	}
 
 	@Scheduled(cron = "0 0 0/1 * * *")
-//	@Scheduled(cron = "0 39 13 * * ?")
+//	@Scheduled(cron = "0 0 0 * * ?")
 	public void scheduleUpdateRestaurantPreview() {
 		List<RestaurantEntity> restaurantList = restaurantRepository.findAll();
 		restaurantList.forEach(restaurant -> {

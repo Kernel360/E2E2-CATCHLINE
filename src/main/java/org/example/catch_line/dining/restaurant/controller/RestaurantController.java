@@ -2,8 +2,8 @@ package org.example.catch_line.dining.restaurant.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
-import org.example.catch_line.common.kakao.service.KakaoAddressService;
+import org.example.catch_line.kakao.model.dto.KakaoAddressResponse;
+import org.example.catch_line.kakao.service.KakaoAddressService;
 import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;

@@ -1,7 +1,8 @@
 package org.example.catch_line.common.kakao.service;
 
-import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
-import org.example.catch_line.common.kakao.model.dto.KakaoCoordinateResponse;
+import org.example.catch_line.kakao.model.dto.KakaoAddressResponse;
+import org.example.catch_line.kakao.model.dto.KakaoCoordinateResponse;
+import org.example.catch_line.kakao.service.KakaoApiService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -1,4 +1,4 @@
-package org.example.catch_line.common.kakao.model.dto;
+package org.example.catch_line.kakao.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,8 +1,8 @@
-package org.example.catch_line.common.kakao.service;
+package org.example.catch_line.kakao.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
-import org.example.catch_line.common.kakao.model.dto.KakaoCoordinateResponse;
+import org.example.catch_line.kakao.model.dto.KakaoAddressResponse;
+import org.example.catch_line.kakao.model.dto.KakaoCoordinateResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

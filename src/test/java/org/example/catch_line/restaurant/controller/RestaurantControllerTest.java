@@ -2,8 +2,8 @@ package org.example.catch_line.restaurant.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.constant.ServiceType;
-import org.example.catch_line.common.kakao.model.dto.KakaoAddressResponse;
-import org.example.catch_line.common.kakao.service.KakaoAddressService;
+import org.example.catch_line.kakao.model.dto.KakaoAddressResponse;
+import org.example.catch_line.kakao.service.KakaoAddressService;
 import org.example.catch_line.dining.restaurant.controller.RestaurantController;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
@@ -22,10 +22,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;

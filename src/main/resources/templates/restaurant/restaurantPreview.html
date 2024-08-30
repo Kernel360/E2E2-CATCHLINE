@@ -140,6 +140,10 @@
         #radioButtonsContainer .form-check-label {
             margin-left: 5px; /* 라벨과 라디오 버튼 사이의 간격 */
         }
+        .highlighted {
+            font-weight: bold;
+            color: darkorange;
+        }
     </style>
 </head>
 <body>
@@ -162,7 +166,9 @@
             </form>
             <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/history}'|" type="button">나의 예약</button>
             <button class="btn btn-outline-secondary" th:onclick="|location.href='@{/members}'|" type="button">내 프로필</button>
-            <button class="btn btn-outline-secondary" id="notificationButton" type="button">알림 연결 창</button>
+            <a href="/notification" target="_blank">
+                <button class="btn btn-outline-secondary" id="notificationButton" type="button">알림 연결 창</button>
+            </a>
         </div>
 
         <!-- 로그인 및 회원가입 버튼 -->
@@ -255,9 +261,20 @@
                      th:onclick="|location.href='@{/restaurants/{restaurantId}(restaurantId=${preview.restaurantId})}'|">
                     <div>
                         <span th:text="${preview.name}">식당 이름</span><br>
-                        <span th:text="'평점: ' + ${preview.averageRating}">평점</span><br>
-                        <span th:text="'리뷰 수: ' + ${preview.reviewCount}">리뷰 수</span><br>
-                        <span th:text="'스크랩 수: ' + ${preview.scrapCount}">스크랩 수</span><br>
+
+                        <!-- 별점 강조 -->
+                        <span th:classappend="${criteria == 'rating'} ? 'highlighted' : ''"
+                              th:text="'평점: ' + ${preview.averageRating}">평점</span><br>
+
+                        <!-- 스크랩 수 강조 -->
+                        <span th:classappend="${criteria == 'scrapCount'} ? 'highlighted' : ''"
+                              th:text="'스크랩 수: ' + ${preview.scrapCount}">스크랩 수</span><br>
+
+                        <!-- 리뷰 수 강조 -->
+                        <span th:classappend="${criteria == 'reviewCount'} ? 'highlighted' : ''"
+                              th:text="'리뷰 수: ' + ${preview.reviewCount}">리뷰 수</span><br>
+
+
                         <span th:text="'음식 종류: ' + ${preview.foodType}">음식 종류</span><br>
                         <span th:text="'서비스 종류: ' + ${preview.serviceType}">서비스 종류</span>
                     </div>
@@ -290,11 +307,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var selectedType = "name"; // 기본 검색 조건을 '식당 이름'으로 설정
-
-        // 알림 연결 창 버튼 클릭 시 새 탭에서 열기
-        document.getElementById('notificationButton').addEventListener('click', function() {
-            window.open('/notification', '_blank'); // 새 탭에서 '/notification' URL 열기
-        });
 
         // 드롭다운 메뉴 항목 클릭 시 이벤트 처리
         document.querySelectorAll('.dropdown-item').forEach(function(item) {

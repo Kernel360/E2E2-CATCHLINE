@@ -50,10 +50,6 @@ public class RestaurantPreviewController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("criteria", criteria);
-        model.addAttribute("restaurantPreviewPage",restaurantPreviewPage);
-        model.addAttribute("startPage",startPage);
-        model.addAttribute("endPage",endPage);
-        model.addAttribute("criteria",criteria);
         model.addAttribute("type", type);
         model.addAttribute("keyword", keyword);
 

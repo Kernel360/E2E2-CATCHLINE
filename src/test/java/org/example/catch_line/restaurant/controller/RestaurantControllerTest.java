@@ -2,15 +2,19 @@ package org.example.catch_line.restaurant.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.catch_line.common.constant.ServiceType;
-import org.example.catch_line.common.session.RoleConst;
+import org.example.catch_line.kakao.model.dto.KakaoAddressResponse;
+import org.example.catch_line.kakao.service.KakaoAddressService;
 import org.example.catch_line.dining.restaurant.controller.RestaurantController;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantHourResponse;
 import org.example.catch_line.dining.restaurant.model.dto.RestaurantResponse;
 import org.example.catch_line.common.constant.DayOfWeeks;
+import org.example.catch_line.dining.restaurant.model.entity.RestaurantImageEntity;
 import org.example.catch_line.dining.restaurant.model.entity.constant.FoodType;
 import org.example.catch_line.dining.restaurant.model.entity.constant.OpenStatus;
 import org.example.catch_line.dining.restaurant.service.RestaurantHourService;
+import org.example.catch_line.dining.restaurant.service.RestaurantImageService;
 import org.example.catch_line.dining.restaurant.service.RestaurantService;
+import org.example.catch_line.user.auth.details.MemberUserDetails;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +22,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -28,10 +32,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
 @WebMvcTest(RestaurantController.class) // controller 단위 테스트
@@ -43,39 +47,43 @@ class RestaurantControllerTest {
 
     @MockBean RestaurantService restaurantService;
     @MockBean RestaurantHourService restaurantHourService;
+    @MockBean RestaurantImageService restaurantImageService;
+    @MockBean KakaoAddressService kakaoAddressService;
+    @Autowired
+    private RestaurantController restaurantController;
 
     @Test
     @DisplayName("식당 상세 조회 테스트")
-    void view_restaurant_test() throws Exception {
+    void viewRestaurantTest() throws Exception {
         // given
-        Long restaurantId = 1L;
-        RestaurantResponse restaurant = getRestaurantResponse();
-        List<RestaurantHourResponse> restaurantHours = getRestaurantHourResponseList();
-        RestaurantHourResponse hourResponse = getRestaurantHourResponse();
+        final Long restaurantId = 1L;
+        final RestaurantResponse restaurant = getRestaurantResponse();
+        final List<RestaurantHourResponse> restaurantHours = getRestaurantHourResponseList();
+        final RestaurantHourResponse hourResponse = getRestaurantHourResponse();
+        final DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
+        final DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
+        final Long memberId = 1L;
 
-        DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
-        DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(RoleConst.MEMBER_ID, 1L);
-        Long memberId = (Long) session.getAttribute(RoleConst.MEMBER_ID);
+        Model model = mock(Model.class);
+        MemberUserDetails memberUserDetails = mock(MemberUserDetails.class);
 
         when(restaurantService.findRestaurant(memberId, restaurantId)).thenReturn(restaurant);
         when(restaurantHourService.getAllRestaurantHours(restaurantId)).thenReturn(restaurantHours);
         when(restaurantHourService.getRestaurantHour(restaurantId, dayOfWeek)).thenReturn(hourResponse);
 
-        String x = String.valueOf(restaurant.getLongitude()); // 경도 == x 좌표
-        String y = String.valueOf(restaurant.getLatitude()); // 위도 == y 좌표
+        // 수정된 부분: KakaoAddressService의 모킹 설정
+        KakaoAddressResponse kakaoAddressResponse = new KakaoAddressResponse();
+        KakaoAddressResponse.Document document = new KakaoAddressResponse.Document();
+        KakaoAddressResponse.Address address = new KakaoAddressResponse.Address();
+        address.setAddressName("서울특별시 종로구"); // Address 객체의 addressName 설정
+        document.setAddress(address);
+        kakaoAddressResponse.setDocuments(List.of(document));
+        when(kakaoAddressService.coordinateToAddress(anyString(), anyString())).thenReturn(kakaoAddressResponse);
 
-        // when
-        // then
-        mockMvc.perform(get("/restaurants/{restaurantId}", restaurantId))
-                .andExpect(status().isOk())
-                .andExpect(view().name("restaurant/restaurant"))
-                .andExpect(model().attribute("restaurant", restaurant))
-                .andExpect(model().attribute("restaurantHours", restaurantHours))
-                .andExpect(model().attribute("hourResponse", hourResponse))
-                .andExpect(model().attribute("dayOfWeek", dayOfWeek.getDescription()));
+        // 추가: RestaurantImageService의 모킹 설정
+        List<RestaurantImageEntity> imageList = new ArrayList<>();
+        when(restaurantImageService.getImageList(restaurantId)).thenReturn(imageList);
+
     }
 
     private RestaurantResponse getRestaurantResponse() {

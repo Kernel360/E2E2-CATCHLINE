@@ -25,6 +25,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -78,26 +80,55 @@ class RestaurantHourServiceTest {
 
     @Test
     @DisplayName("오늘 영업 시간 조회 및 상태 업데이트 테스트")
-    void getRestaurantHour_success() {
+    void getRestaurantHour_success() throws Exception {
+        // given
         DayOfWeeks dayOfWeek = DayOfWeeks.MONDAY;
-        RestaurantHourEntity mockRestaurantHourEntity = mock(RestaurantHourEntity.class);
+        LocalTime openTime = LocalTime.of(9, 0);
+        LocalTime closeTime = LocalTime.of(18, 0);
 
-        // openTime과 closeTime을 명시적으로 설정
-        when(mockRestaurantHourEntity.getOpenTime()).thenReturn(LocalTime.of(9, 0));
-        when(mockRestaurantHourEntity.getCloseTime()).thenReturn(LocalTime.of(18, 0));
+        // 기본 생성자가 없는 경우, 리플렉션을 사용하여 인스턴스를 생성
+        RestaurantHourEntity mockRestaurantHourEntity = createRestaurantHourEntity(openTime, closeTime);
 
+        // Repository에서 반환할 엔티티 설정
         when(restaurantHourRepository.findByRestaurant_RestaurantIdAndDayOfWeek(anyLong(), eq(dayOfWeek)))
                 .thenReturn(mockRestaurantHourEntity);
 
-        when(restaurantHourMapper.entityToResponse(any(RestaurantHourEntity.class)))
-                .thenReturn(new RestaurantHourResponse(1L, "월요일", LocalTime.of(9, 0), LocalTime.of(18, 0), "OPEN"));
+        // Mapper에서 반환할 DTO 설정
+        when(restaurantHourMapper.entityToResponse(mockRestaurantHourEntity))
+                .thenReturn(new RestaurantHourResponse(1L, dayOfWeek.getDescription(), openTime, closeTime, OpenStatus.OPEN.getDescription()));
 
+        // when
         RestaurantHourResponse response = restaurantHourService.getRestaurantHour(1L, dayOfWeek);
 
+        // then
         assertThat(response).isNotNull();
         assertThat(response.getDayOfWeek()).isEqualTo(dayOfWeek.getDescription());
+        assertThat(response.getOpenStatus()).isIn(OpenStatus.OPEN.getDescription(), OpenStatus.CLOSE.getDescription());
+
         verify(restaurantHourRepository, times(1)).findByRestaurant_RestaurantIdAndDayOfWeek(anyLong(), eq(dayOfWeek));
+        verify(restaurantHourMapper, times(1)).entityToResponse(mockRestaurantHourEntity);
     }
+
+    // 리플렉션을 사용하여 RestaurantHourEntity 인스턴스를 생성하고 필드 값을 설정하는 메서드
+    private RestaurantHourEntity createRestaurantHourEntity(LocalTime openTime, LocalTime closeTime) throws Exception {
+        // 리플렉션을 통해 RestaurantHourEntity 인스턴스 생성
+        Constructor<RestaurantHourEntity> constructor = RestaurantHourEntity.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        RestaurantHourEntity entity = constructor.newInstance();
+
+        // openTime 필드 설정
+        Field openTimeField = RestaurantHourEntity.class.getDeclaredField("openTime");
+        openTimeField.setAccessible(true);
+        openTimeField.set(entity, openTime);
+
+        // closeTime 필드 설정
+        Field closeTimeField = RestaurantHourEntity.class.getDeclaredField("closeTime");
+        closeTimeField.setAccessible(true);
+        closeTimeField.set(entity, closeTime);
+
+        return entity;
+    }
+
 
     @Test
     @DisplayName("식당 영업 시간 생성 테스트")

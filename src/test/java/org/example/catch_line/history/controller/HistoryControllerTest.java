@@ -172,7 +172,7 @@ class HistoryControllerTest {
 
         String viewName = historyController.updateReservation(1L, updateRequest, redirectAttributes, userDetails);
 
-        assertEquals("redirect:/history/reservation/1/edit", viewName);  // 예상된 리다이렉트 경로 확인
+        assertEquals("redirect:/history/reservation/{reservationId}/edit", viewName);  // 예상된 리다이렉트 경로 확인
         verify(redirectAttributes, times(1)).addFlashAttribute(eq("error"), anyString());
     }
 

@@ -496,64 +496,6 @@ OAuth의 경우 카카오 로그인을 사용했습니다.
 
 
 
-### 🗾 5. 카카오 맵
-
-- 카카오 지도 API를 이용하여 식당 정보를 가져왔습니다.
-- 다음(Daum) 우편번호 서비스 API를 이용하여 주소 검색을 할 수 있도록 하였습니다.
-- 카카오 지도 API를 통해 식당 위치를 보여주고, 식당 주소와 이름에 대한 정보를 가지고 왔습니다.
-- 메뉴, 리뷰 등의 부가 정보도 제공해줄 것으로 예상했으나, 제공되지 않아 제공되는 정보만 활용하였습니다.
-
-
-
-<br>
-
-### 🔴 6. Custom Exception
-
-<img src = "https://github.com/user-attachments/assets/f0f23cd4-f6d6-4ee0-8566-5de37451b352" width="400"/>
-
-
-- RuntimeException을 상속받은 CatchLineException
-- 모든 custom exception은 CatchLineException을 상속받습니다. 
-- validator 클래스에서 예외를 던지고 있습니다.
-
-    ```java
-    public void checkDuplicateEmail(Email email) {
-        if(memberRepository.findByEmailAndIsMemberDeletedFalse(email).isPresent())
-            throw new DuplicateEmailException(email.toString());
-    }
-    ```
-
-
-<br>
-
-
-### 👨‍💻 7. 로그 패키지
-
-
-
-
-
-<br>
-
-### 🐑 8. 배포
-
-
-https://velog.io/@i-migi0104/%EC%8A%A4%ED%94%84%EB%A7%81MySQLRDSEC2-%EB%B0%B0%ED%8F%AC%EA%B3%BC%EC%A0%95
-
-
-
-<br>
-
-### 📆 9. 스케줄러
-- 자entication manager에 `MemberDefaultLoginService` 등록
-    
-- 식당 사장님 인증이 필요한 페이지에 접속 시 `OwnerJwtAuthorizationFilter` 동작
-
-    - `BasicAuthenticationFilter`를 상속 -> authentication manager에 `OwnerLoginService` 등록
-
-<br>
-
-
 
 ### 🗾 5. 카카오 맵
 

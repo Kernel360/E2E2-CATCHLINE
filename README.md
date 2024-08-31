@@ -105,8 +105,7 @@ src
             ├── common
             │   ├── constant
             │   ├── controller
-            │   ├── model
-            │   │   └── session
+            │   └── model
             ├── config
             ├── exception
             ├── filter
@@ -156,6 +155,9 @@ src
 - 기능
 
    - 웨이팅, 예약, 페이지네이션
+   - 식당 사장님 기능 (식당 추가, 조회, 수정)
+   - 스케줄러
+   - JPA → QueryDSL (페이지네이션, 검색)
 
 - 배포, 로그 패키지, 동시성 테스트
 
@@ -543,7 +545,67 @@ https://velog.io/@i-migi0104/%EC%8A%A4%ED%94%84%EB%A7%81MySQLRDSEC2-%EB%B0%B0%ED
 <br>
 
 ### 📆 9. 스케줄러
+- 자entication manager에 `MemberDefaultLoginService` 등록
+    
+- 식당 사장님 인증이 필요한 페이지에 접속 시 `OwnerJwtAuthorizationFilter` 동작
 
+    - `BasicAuthenticationFilter`를 상속 -> authentication manager에 `OwnerLoginService` 등록
+
+<br>
+
+
+
+### 🗾 5. 카카오 맵
+
+- 카카오 지도 API를 이용하여 식당 정보를 가져왔습니다.
+- 다음(Daum) 우편번호 서비스 API를 이용하여 주소 검색을 할 수 있도록 하였습니다.
+- 카카오 지도 API를 통해 식당 위치를 보여주고, 식당 주소와 이름에 대한 정보를 가지고 왔습니다.
+- 메뉴, 리뷰 등의 부가 정보도 제공해줄 것으로 예상했으나, 제공되지 않아 제공되는 정보만 활용하였습니다.
+
+
+
+<br>
+
+### 🔴 6. Custom Exception
+
+<img src = "https://github.com/user-attachments/assets/f0f23cd4-f6d6-4ee0-8566-5de37451b352" width="400"/>
+
+
+- RuntimeException을 상속받은 CatchLineException
+- 모든 custom exception은 CatchLineException을 상속받습니다. 
+- validator 클래스에서 예외를 던지고 있습니다.
+
+    ```java
+    public void checkDuplicateEmail(Email email) {
+        if(memberRepository.findByEmailAndIsMemberDeletedFalse(email).isPresent())
+            throw new DuplicateEmailException(email.toString());
+    }
+    ```
+
+
+<br>
+
+
+### 👨‍💻 7. 로그 패키지
+
+
+
+
+
+<br>
+
+### 🐑 8. 배포
+
+
+https://velog.io/@i-migi0104/%EC%8A%A4%ED%94%84%EB%A7%81MySQLRDSEC2-%EB%B0%B0%ED%8F%AC%EA%B3%BC%EC%A0%95
+
+
+
+<br>
+
+### 📆 9. 스케줄러
+- 매일 자정에 식당의 예약, 웨이팅 상태가 예정으로 되어있는 경우 취소 상태로 변경합니다.
+- 매시 정각에 홈 화면, 식당 프리뷰의 리뷰 수, 평점, 스크랩 수를 업데이트합니다.
 
 
 
@@ -592,12 +654,14 @@ https://velog.io/@i-migi0104/%EC%8A%A4%ED%94%84%EB%A7%81MySQLRDSEC2-%EB%B0%B0%ED
 - 일반 사용자의 경우 웨이팅과 예약 횟수 및 결제 금액에 따라 등급을 구분하려고 합니다.
 
 
+## ERD
+![캐치테이블](https://github.com/user-attachments/assets/246135c9-05c7-495b-ab24-96a96777a1ed)
 
 
 ## 기능 명세서
 
-https://www.notion.so/1bf8cb5517d2472ba5707ace267e778b
+[https://www.notion.so/1bf8cb5517d2472ba5707ace267e778b](https://www.notion.so/d983a9dbb2f347abafbd29f9f9ae0a95)
 
 ## API 명세서
 
-https://www.notion.so/API-fd90ef95833046b491d87f67da412cfd
+[https://www.notion.so/API-fd90ef95833046b491d87f67da412cfd](https://www.notion.so/API-dc70a2025fd54019b08cf665e453cc67)

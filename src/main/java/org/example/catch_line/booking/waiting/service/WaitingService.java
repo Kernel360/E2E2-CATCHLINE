@@ -41,6 +41,7 @@ public class WaitingService {
 				.orElseThrow(() -> new WaitingException("웨이팅이 존재하지 않습니다."));
 	}
 
+	// 다른 사이트의 코드들을 참고해보면 서비스 메소드들에 트랜잭션을 붙이지 않은 메소드들도 많던데 트랜잭션을 붙여야 하는 경우와 붙히지 않는 경우의 차이가 궁금합니다
 	@Transactional(isolation = Isolation.SERIALIZABLE)
 	public WaitingResponse addWaiting(Long restaurantId, WaitingRequest waitingRequest, Long memberId) {
 		MemberEntity member = memberValidator.checkIfMemberPresent(memberId);

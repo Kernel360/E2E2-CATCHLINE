@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-
+    <!-- ec2 서버에서 실행할 때 로그 파일을 따로 만들기 위해 logback-spring.xml 파일을 작성했는데 디렉터님께서 말씀하신 로그 파일이 이런 형식으로 작성하는 것이 맞는지 궁금합니다.-->
     <!-- 로그 console 출력 설정 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

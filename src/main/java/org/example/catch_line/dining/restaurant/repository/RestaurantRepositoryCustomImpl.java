@@ -21,6 +21,7 @@ public class RestaurantRepositoryCustomImpl implements RestaurantRepositoryCusto
 
     private final JPAQueryFactory queryFactory;
 
+    // querydsl gradle 후 Q 클래스들이 제가 사용하려는 클래스들만이 아니라 모든 클래스들에 대한 Q 클래스가 생성되는데 다른 방법은 없는 것인지 궁금합니다!
     @Override
     public Page<RestaurantEntity> findRestaurantsByCriteria(Pageable pageable, String criteria, String type, String keyword) {
         QRestaurantEntity restaurant = QRestaurantEntity.restaurantEntity; // Q 클래스 사용

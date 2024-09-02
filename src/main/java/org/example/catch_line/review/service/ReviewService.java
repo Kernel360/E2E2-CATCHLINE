@@ -32,6 +32,7 @@ public class ReviewService {
 	private final ReviewValidator reviewValidator;
 	private final ReviewMapper reviewMapper;
 
+	@Transactional(readOnly = true)
 	public List<ReviewResponse> getRestaurantReviewList(Long restaurantId) {
 		List<ReviewEntity> reviewList = reviewRepository.findAllByRestaurantRestaurantIdOrderByCreatedAtDesc(restaurantId);
 
@@ -40,6 +41,7 @@ public class ReviewService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	public ReviewResponse getReviewById(Long reviewId, Long memberId) {
 		ReviewEntity reviewEntity = reviewValidator.checkIfReviewPresent(reviewId);
 		isMemberOfReview(reviewEntity, memberId);

@@ -15,6 +15,8 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ScrapId {
 
+    // 현재 복합키를 이용해서 scrapId를 구현했습니다.
+    // 실무에서 복합키를 사용하는지, 사용한다면 사용하는 경우가 궁금합니다.
     private Long memberId;
 
     private Long restaurantId;

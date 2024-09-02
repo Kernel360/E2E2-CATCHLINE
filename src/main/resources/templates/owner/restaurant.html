@@ -120,7 +120,7 @@
         <!-- 이미지 편집 버튼 추가 (우측 상단) -->
         <div class="top-right-buttons">
             <button class="btn btn-orange btn-icon"
-                    th:onclick="|location.href='@{/owner/restaurants/{restaurantId}/edit-images(restaurantId=${restaurant.restaurantId})}'|"
+                    th:onclick="|location.href='@{/owner/restaurants/{restaurantId}/images(restaurantId=${restaurant.restaurantId})}'|"
                     type="button">이미지 편집
             </button>
         </div>

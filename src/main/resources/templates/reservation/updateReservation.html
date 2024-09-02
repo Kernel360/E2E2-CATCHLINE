@@ -145,7 +145,7 @@
     </div>
 
     <!-- 예약 수정 폼 -->
-    <form th:action="@{/history/reservation/{reservationId}(reservationId=${reservationId})}" method="post" th:object="${reservationRequest}">
+    <form th:action="@{/history/reservations/{reservationId}(reservationId=${reservationId})}" method="post" th:object="${reservationRequest}">
         <!-- Thymeleaf를 사용하여 기존 예약 정보를 폼에 채우기 -->
         <div class="form-group">
             <label for="memberCount" class="form-label">인원 수:</label>

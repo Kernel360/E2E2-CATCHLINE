@@ -101,7 +101,7 @@
 <script>
     function cancelWaiting() {
         const waitingId = document.getElementById('waitingId').innerText;
-        const url = `/history/waiting/${waitingId}`;
+        const url = `/history/waitings/${waitingId}`;
 
         fetch(url, {
             method: 'POST'

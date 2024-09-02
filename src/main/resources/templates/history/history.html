@@ -126,9 +126,9 @@
         const status = row.getAttribute('data-status')
 
         if (serviceType === 'WAITING') {
-            location.href = `/history/waiting/${waitingId}?status=${status}`;
+            location.href = `/history/waitings/${waitingId}?status=${status}`;
         } else {
-            location.href = `/history/reservation/${reservationId}?status=${status}`;
+            location.href = `/history/reservations/${reservationId}?status=${status}`;
         }
     }
 </script>

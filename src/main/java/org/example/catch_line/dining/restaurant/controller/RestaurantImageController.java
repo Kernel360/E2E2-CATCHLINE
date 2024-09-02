@@ -57,7 +57,7 @@ public class RestaurantImageController {
 
             RestaurantImageEntity savedImage = restaurantImageService.saveImage(restaurantId, image);
             model.addAttribute("imageId", savedImage.getRestaurantImageId());
-            return "redirect:/owner/restaurants/{restaurantId}/edit-images";
+            return "redirect:/owner/restaurants/{restaurantId}/images";
         } catch (IOException e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "업로드 오류: " + e.getMessage());
@@ -65,7 +65,7 @@ public class RestaurantImageController {
         }
     }
 
-    @GetMapping("/owner/restaurants/{restaurantId}/edit-images")
+    @GetMapping("/owner/restaurants/{restaurantId}/images")
     public String editImages(@PathVariable Long restaurantId, Model model) {
         List<RestaurantImageEntity> imageList = restaurantImageService.getImageList(restaurantId);
         model.addAttribute("imageList", imageList);
@@ -73,9 +73,9 @@ public class RestaurantImageController {
         return "owner/edit-images";
     }
 
-    @DeleteMapping("/restaurants/{restaurantId}/images/delete")
+    @DeleteMapping("/restaurants/{restaurantId}/images")
     public String deleteImage(@PathVariable Long restaurantId, @RequestParam Long imageId) {
         restaurantImageService.deleteImage(imageId);
-        return "redirect:/owner/restaurants/{restaurantId}/edit-images";
+        return "redirect:/owner/restaurants/{restaurantId}/images";
     }
 }

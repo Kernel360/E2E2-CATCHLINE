@@ -49,7 +49,7 @@ public class HistoryController {
 		return "history/history";
 	}
 
-	@GetMapping("/history/waiting/{waitingId}")
+	@GetMapping("/history/waitings/{waitingId}")
 	public String getWaitingDetail(@PathVariable Long waitingId,Model model, @AuthenticationPrincipal MemberUserDetails userDetails, @RequestParam(defaultValue = "SCHEDULED") Status status
 	) {
 
@@ -65,14 +65,14 @@ public class HistoryController {
 			} catch (HistoryException e) {
 				log.info("log :{}",e.getMessage());
 				model.addAttribute("errorMessage", "지금은 상세정보를 조회할 수 없습니다");
-				return "/history/waiting/" + waitingId;
+				return "/history/waitings/" + waitingId;
 			}
 		}
 
 		return "redirect:/history";
 	}
 
-	@GetMapping("/history/reservation/{reservationId}")
+	@GetMapping("/history/reservations/{reservationId}")
 	public String getReservationDetail(
 			@PathVariable Long reservationId,
 			Model model,@AuthenticationPrincipal MemberUserDetails userDetails,@RequestParam(defaultValue = "SCHEDULED") Status status
@@ -91,13 +91,13 @@ public class HistoryController {
 				log.info("log :{}",e.getMessage());
 
 				model.addAttribute("errorMessage", e.getMessage());
-				return "/history/reservation/" + reservationId;
+				return "/history/reservations/" + reservationId;
 			}
 		}
 		return "redirect:/history";
 	}
 
-	@PostMapping("/history/reservation/{reservationId}")
+	@PostMapping("/history/reservations/{reservationId}")
 	@ResponseBody
 	public String deleteReservation(@PathVariable Long reservationId, Model model, @AuthenticationPrincipal MemberUserDetails userDetails
 	) {
@@ -111,7 +111,7 @@ public class HistoryController {
 		return "ok";
 	}
 
-	@PostMapping("/history/waiting/{waitingId}")
+	@PostMapping("/history/waitings/{waitingId}")
 	@ResponseBody
 	public String deleteWaiting(@PathVariable Long waitingId, Model model, @AuthenticationPrincipal MemberUserDetails userDetails) {
 		Long memberId = userDetails.getMember().getMemberId();
@@ -125,7 +125,7 @@ public class HistoryController {
 		return "ok";
 	}
 
-	@GetMapping("/history/reservation/{reservationId}/edit")
+	@GetMapping("/history/reservations/{reservationId}/edit")
 	public String updateForm(@PathVariable Long reservationId, Model model) {
 		ReservationEntity reservationEntity = reservationService.findReservationById(reservationId);
 
@@ -140,7 +140,7 @@ public class HistoryController {
 		return "reservation/updateReservation";
 	}
 
-	@PutMapping("/history/reservation/{reservationId}")
+	@PutMapping("/history/reservations/{reservationId}")
 	public String updateReservation(@PathVariable Long reservationId, @Valid @ModelAttribute ReservationRequest updateRequest,
 									RedirectAttributes redirectAttributes, @AuthenticationPrincipal MemberUserDetails userDetails) {
 		Long memberId = userDetails.getMember().getMemberId();
@@ -150,7 +150,7 @@ public class HistoryController {
 			redirectAttributes.addFlashAttribute("message", "예약이 업데이트 되었습니다");
 		} catch (DuplicateReservationTimeException e) {
 			redirectAttributes.addFlashAttribute("error", e.getMessage());
-			return "redirect:/history/reservation/{reservationId}/edit";
+			return "redirect:/history/reservations/{reservationId}/edit";
 		}
 
 		return "redirect:/history";

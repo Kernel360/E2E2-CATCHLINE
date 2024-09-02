@@ -21,13 +21,13 @@ public class ReservationController {
 
 	private final ReservationService reservationService;
 
-	@GetMapping("/restaurants/{restaurantId}/reservation")
+	@GetMapping("/restaurants/{restaurantId}/reservations")
 	public String addReservationForm(@PathVariable Long restaurantId, Model model) {
 		model.addAttribute("restaurantId", restaurantId);
 		return "reservation/reservation";
 	}
 
-	@PostMapping("/restaurants/{restaurantId}/reservation")
+	@PostMapping("/restaurants/{restaurantId}/reservations")
 	public String addReservation(
 		@ModelAttribute ReservationRequest reservationRequest,
 		@PathVariable Long restaurantId,

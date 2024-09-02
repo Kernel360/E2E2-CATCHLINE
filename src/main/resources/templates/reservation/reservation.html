@@ -149,7 +149,7 @@
         예약이 성공적으로 완료되었습니다!
     </div>
 
-    <form th:action="@{/restaurants/{restaurantId}/reservation(restaurantId=${restaurantId})}" method="post">
+    <form th:action="@{/restaurants/{restaurantId}/reservations(restaurantId=${restaurantId})}" method="post">
         <div class="form-group">
             <label for="memberCount" class="form-label">인원 수:</label>
             <input type="number" id="memberCount" name="memberCount" class="form-control" min="1" required>

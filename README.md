@@ -105,8 +105,7 @@ src
             ├── common
             │   ├── constant
             │   ├── controller
-            │   ├── model
-            │   │   └── session
+            │   └── model
             ├── config
             ├── exception
             ├── filter
@@ -156,6 +155,9 @@ src
 - 기능
 
    - 웨이팅, 예약, 페이지네이션
+   - 식당 사장님 기능 (식당 추가, 조회, 수정)
+   - 스케줄러
+   - JPA → QueryDSL (페이지네이션, 검색)
 
 - 배포, 로그 패키지, 동시성 테스트
 
@@ -494,6 +496,7 @@ OAuth의 경우 카카오 로그인을 사용했습니다.
 
 
 
+
 ### 🗾 5. 카카오 맵
 
 - 카카오 지도 API를 이용하여 식당 정보를 가져왔습니다.
@@ -543,7 +546,8 @@ https://velog.io/@i-migi0104/%EC%8A%A4%ED%94%84%EB%A7%81MySQLRDSEC2-%EB%B0%B0%ED
 <br>
 
 ### 📆 9. 스케줄러
-
+- 매일 자정에 식당의 예약, 웨이팅 상태가 예정으로 되어있는 경우 취소 상태로 변경합니다.
+- 매시 정각에 홈 화면, 식당 프리뷰의 리뷰 수, 평점, 스크랩 수를 업데이트합니다.
 
 
 
@@ -592,12 +596,14 @@ https://velog.io/@i-migi0104/%EC%8A%A4%ED%94%84%EB%A7%81MySQLRDSEC2-%EB%B0%B0%ED
 - 일반 사용자의 경우 웨이팅과 예약 횟수 및 결제 금액에 따라 등급을 구분하려고 합니다.
 
 
+## ERD
+![캐치테이블](https://github.com/user-attachments/assets/246135c9-05c7-495b-ab24-96a96777a1ed)
 
 
 ## 기능 명세서
 
-https://www.notion.so/1bf8cb5517d2472ba5707ace267e778b
+[https://www.notion.so/1bf8cb5517d2472ba5707ace267e778b](https://www.notion.so/d983a9dbb2f347abafbd29f9f9ae0a95)
 
 ## API 명세서
 
-https://www.notion.so/API-fd90ef95833046b491d87f67da412cfd
+[https://www.notion.so/API-fd90ef95833046b491d87f67da412cfd](https://www.notion.so/API-dc70a2025fd54019b08cf665e453cc67)

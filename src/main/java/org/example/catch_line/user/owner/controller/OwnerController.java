@@ -58,7 +58,7 @@ public class OwnerController {
         return "owner/history";
     }
 
-    @GetMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
+    @GetMapping("/restaurants/{restaurantId}/history/waitings/{waitingId}")
     public String getWaitingDetails(@PathVariable Long restaurantId, @PathVariable Long waitingId, @RequestParam(defaultValue = "SCHEDULED") Status status, Model model, RedirectAttributes redirectAttributes) {
         HistoryResponse historyResponse = historyService.findWaitingDetailByWaitingId(waitingId);
         model.addAttribute("restaurantId", restaurantId);
@@ -76,7 +76,7 @@ public class OwnerController {
         return "redirect:/owner";
     }
 
-    @GetMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
+    @GetMapping("/restaurants/{restaurantId}/history/reservations/{reservationId}")
     public String getReservationDetails(@PathVariable Long restaurantId, @PathVariable Long reservationId,
                                         Model model, RedirectAttributes redirectAttributes) {
         HistoryResponse historyResponse = historyService.findReservationDetailByReservationId(reservationId);
@@ -109,7 +109,7 @@ public class OwnerController {
         return "ok";
     }
 
-    @PostMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}/completed")
+    @PutMapping("/restaurants/{restaurantId}/history/reservation/{reservationId}")
     @ResponseBody
     public String completedReservation(@PathVariable Long restaurantId, @PathVariable Long reservationId, RedirectAttributes redirectAttributes) {
         try {
@@ -135,7 +135,7 @@ public class OwnerController {
         return "ok";
     }
 
-    @PostMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}/completed")
+    @PutMapping("/restaurants/{restaurantId}/history/waiting/{waitingId}")
     @ResponseBody
     public String completeWaiting(@PathVariable Long restaurantId, @PathVariable Long waitingId, RedirectAttributes redirectAttributes) {
         try {

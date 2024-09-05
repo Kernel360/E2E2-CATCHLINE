@@ -73,7 +73,7 @@ public class OwnerRestaurantController {
         return "redirect:/owner";
     }
 
-    @GetMapping("/restaurants/{restaurantId}")
+    @GetMapping("/restaurants/{restaurantId}/edit")
     public String updateRestaurantForm(@PathVariable Long restaurantId, Model model) {
         RestaurantResponse restaurant = restaurantService.findRestaurant(null, restaurantId);
         model.addAttribute("restaurant", restaurant);
@@ -96,16 +96,16 @@ public class OwnerRestaurantController {
             return "redirect:/owner/restaurants/{restaurantId}";
         }
 
-        return "redirect:/owner/restaurants/list/{restaurantId}";
+        return "redirect:/owner/restaurants/{restaurantId}";
     }
 
-    @PatchMapping("/restaurants/list/{restaurantId}/{hourId}")
+    @PatchMapping("/restaurants/{restaurantId}/{hourId}")
     private String updateRestaurantHour(@PathVariable Long restaurantId, @PathVariable Long hourId,
                                         @Valid @ModelAttribute RestaurantHourRequest request, BindingResult bindingResult,
                                         RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", "영업 시간 업데이트 중 오류가 발생했습니다.");
-            return "redirect:/owner/restaurants/list/{restaurantId}";
+            return "redirect:/owner/restaurants/{restaurantId}";
         }
 
         try {
@@ -114,10 +114,10 @@ public class OwnerRestaurantController {
         } catch (RestaurantHourNotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "영업 시간 업데이트 중 오류가 발생했습니다.");
         }
-        return "redirect:/owner/restaurants/list/{restaurantId}";
+        return "redirect:/owner/restaurants/{restaurantId}";
     }
 
-    @GetMapping("/restaurants/list/{restaurantId}")
+    @GetMapping("/restaurants/{restaurantId}")
     public String showRestaurant(@PathVariable Long restaurantId, Model model) {
         DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
         DayOfWeeks dayOfWeek = DayOfWeeks.from(currentDayOfWeek);
@@ -144,7 +144,7 @@ public class OwnerRestaurantController {
         return "owner/restaurant";
     }
 
-    @GetMapping("/restaurants/list/{restaurantId}/reviews")
+    @GetMapping("/restaurants/{restaurantId}/reviews")
     public String getReviews(@PathVariable Long restaurantId, Model model) {
         List<ReviewResponse> reviewList = reviewService.getRestaurantReviewList(restaurantId);
         BigDecimal averageRating = reviewService.getAverageRating(restaurantId).getRating();

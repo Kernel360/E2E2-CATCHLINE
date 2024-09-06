@@ -135,10 +135,10 @@
 
     function completedReservation(restaurantId) {
         const reservationId = document.getElementById('reservationId').innerText;
-        const url = `/owner/restaurants/${restaurantId}/history/reservation/${reservationId}/completed`;
+        const url = `/owner/restaurants/${restaurantId}/history/reservation/${reservationId}`;
 
         fetch(url, {
-            method: 'POST'
+            method: 'PUT'
         })
             .then(response => {
                 if (response.ok || response.status === 302) {

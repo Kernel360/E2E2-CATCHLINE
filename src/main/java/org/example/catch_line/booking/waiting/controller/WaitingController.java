@@ -21,13 +21,13 @@ public class WaitingController {
 
 	private final WaitingService waitingService;
 
-	@GetMapping("/restaurants/{restaurantId}/waiting")
+	@GetMapping("/restaurants/{restaurantId}/waitings")
 	public String addWaitingForm(@PathVariable Long restaurantId, Model model) {
 		model.addAttribute("restaurantId", restaurantId);
 		return "waiting/waiting";
 	}
 
-	@PostMapping("/restaurants/{restaurantId}/waiting")
+	@PostMapping("/restaurants/{restaurantId}/waitings")
 	public String addWaiting(
 		@PathVariable Long restaurantId,
 		@ModelAttribute WaitingRequest waitingRequest,

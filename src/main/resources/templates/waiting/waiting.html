@@ -115,7 +115,7 @@
         웨이팅 등록이 성공적으로 완료되었습니다!
     </div>
 
-    <form th:action="@{/restaurants/{restaurantId}/waiting(restaurantId=${restaurantId})}" method="post">
+    <form th:action="@{/restaurants/{restaurantId}/waitings(restaurantId=${restaurantId})}" method="post">
         <!-- Hidden field for memberId -->
         <input type="hidden" th:value="${memberId}" name="memberId"/>
 

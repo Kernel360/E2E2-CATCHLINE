@@ -24,7 +24,7 @@ public class OwnerMenuController {
     @Value("${kakao.maps.js-key}")
     private String jsKey;
 
-    @GetMapping("/restaurants/list/{restaurantId}/menus")
+    @GetMapping("/restaurants/{restaurantId}/menus")
     public String getMenus(@PathVariable Long restaurantId, Model model) {
         List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
 
@@ -33,39 +33,39 @@ public class OwnerMenuController {
         return "owner/menus";
     }
 
-    @PostMapping("/restaurants/list/{restaurantId}/menus")
+    @PostMapping("/restaurants/{restaurantId}/menus")
     public String addMenu(@PathVariable Long restaurantId, @Valid @ModelAttribute MenuRequest menuRequest, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage","입력한 값이 유효하지 않습니다");
-            return "redirect:/owner/restaurants/list/{restaurantId}/menus";
+            return "redirect:/owner/restaurants/{restaurantId}/menus";
         }
 
         menuService.createRestaurantMenu(restaurantId, menuRequest);
         List<MenuResponse> restaurantMenuList = menuService.getRestaurantMenuList(restaurantId);
 
         model.addAttribute("restaurantMenuList", restaurantMenuList);
-        return "redirect:/owner/restaurants/list/{restaurantId}/menus";
+        return "redirect:/owner/restaurants/{restaurantId}/menus";
     }
 
-    @PutMapping("/restaurants/list/{restaurantId}/menus")
+    @PutMapping("/restaurants/{restaurantId}/menus")
     public String updateMenu(@PathVariable Long restaurantId, @RequestParam Long menuId,
                              @Valid @ModelAttribute MenuRequest menuRequest, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", "입력한 값이 유효하지 않습니다");
-            return "redirect:/owner/restaurants/list/{restaurantId}/menus";
+            return "redirect:/owner/restaurants/{restaurantId}/menus";
         }
 
         menuService.updateRestaurantMenu(restaurantId, menuId, menuRequest);
         List<MenuResponse> menuResponseList = menuService.getRestaurantMenuList(restaurantId);
 
         model.addAttribute("restaurantMenuList", menuResponseList);
-        return "redirect:/owner/restaurants/list/{restaurantId}/menus";
+        return "redirect:/owner/restaurants/{restaurantId}/menus";
     }
 
-    @DeleteMapping("/restaurants/list/{restaurantId}/menus")
+    @DeleteMapping("/restaurants/{restaurantId}/menus")
     public String deleteMenu(@PathVariable Long restaurantId, @RequestParam Long menuId) {
         menuService.deleteRestaurantMenu(menuId);
-        return "redirect:/owner/restaurants/list/{restaurantId}/menus";
+        return "redirect:/owner/restaurants/{restaurantId}/menus";
     }
 
 }

@@ -51,7 +51,7 @@ public class ReviewController {
 		return "review/reviewCreateForm";
 	}
 
-	@PostMapping("/create")
+	@PostMapping
 	public String addReview(@PathVariable Long restaurantId,
 							@Valid @ModelAttribute ReviewCreateRequest reviewCreateRequest,
 							BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes,

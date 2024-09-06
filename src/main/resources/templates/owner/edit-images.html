@@ -31,7 +31,7 @@
     <div class="image-container">
         <div th:each="image : ${imageList}">
             <img th:src="@{'/images/' + ${image.restaurantImageId}}" th:alt="${image.fileName}">
-            <form th:action="@{/restaurants/{restaurantId}/images/delete(restaurantId=${restaurantId})}" method="post" style="display:inline;">
+            <form th:action="@{/restaurants/{restaurantId}/images(restaurantId=${restaurantId})}" method="post" style="display:inline;">
                 <input type="hidden" name="_method" value="delete">
                 <input type="hidden" name="imageId" th:value="${image.restaurantImageId}">
                 <button type="submit" class="btn btn-danger">삭제</button>
@@ -50,7 +50,7 @@
     <div class="row mt-4">
         <div class="col">
             <button class="btn btn-secondary btn-block"
-                    th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}(restaurantId=${restaurantId})}'|"
+                    th:onclick="|location.href='@{/owner/restaurants/{restaurantId}(restaurantId=${restaurantId})}'|"
                     type="button">뒤로
             </button>
         </div>

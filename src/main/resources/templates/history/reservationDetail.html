@@ -112,7 +112,7 @@
 <script>
     function deleteReservation() {
         const reservationId = document.getElementById('reservationId').innerText;
-        const url = `/history/reservation/${reservationId}`; // 새로운 경로로 수정
+        const url = `/history/reservations/${reservationId}`; // 새로운 경로로 수정
 
         fetch(url, {
             method: 'POST'
@@ -134,7 +134,7 @@
 
     function editReservation() {
         const reservationId = document.getElementById('reservationId').innerText;
-        const url = `/history/reservation/${reservationId}/edit`;
+        const url = `/history/reservations/${reservationId}/edit`;
 
         fetch(url, {
             method: 'GET'

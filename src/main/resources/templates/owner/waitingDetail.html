@@ -118,10 +118,10 @@
 
     function completedWaiting(restaurantId) {
         const waitingId = document.getElementById('waitingId').innerText;
-        const url = `/owner/restaurants/${restaurantId}/history/waiting/${waitingId}/completed`;
+        const url = `/owner/restaurants/${restaurantId}/history/waiting/${waitingId}`;
 
         fetch(url, {
-            method: 'POST'
+            method: 'PUT'
         })
             .then(response => {
                 if (response.ok || response.status === 302) {

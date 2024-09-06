@@ -82,7 +82,7 @@
     <div class="row mt-4">
         <div class="col">
             <button class="w-100 btn btn-secondary btn-lg"
-                    th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}(restaurantId=${restaurant.restaurantId})}'|"
+                    th:onclick="|location.href='@{/owner/restaurants/{restaurantId}(restaurantId=${restaurant.restaurantId})}'|"
                     type="button">취소
             </button>
         </div>

@@ -64,7 +64,7 @@
         </div>
     </div>
     <h1>리뷰 작성</h1>
-    <form th:action="@{/restaurants/{restaurantId}/reviews/create(restaurantId=${restaurantId})}" th:object="${reviewCreateRequest}" method="post">
+    <form th:action="@{/restaurants/{restaurantId}/reviews(restaurantId=${restaurantId})}" th:object="${reviewCreateRequest}" method="post">
         <div class="form-group">
             <label for="rating">평점</label>
             <input type="number" id="rating" th:field="*{rating}" class="form-control" min="1" max="5" placeholder="1에서 5 사이의 점수를 입력하세요" required>

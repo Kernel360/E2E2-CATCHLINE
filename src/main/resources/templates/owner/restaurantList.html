@@ -100,7 +100,7 @@
             <div class="list-group">
                 <!-- 식당 정보 리스트 -->
                 <div class="list-group-item" th:each="restaurant : ${restaurantList}"
-                     th:onclick="|location.href='@{/owner/restaurants/list/{restaurantId}(restaurantId=${restaurant.restaurantId})}'|">
+                     th:onclick="|location.href='@{/owner/restaurants/{restaurantId}(restaurantId=${restaurant.restaurantId})}'|">
                     <div>
                         <span th:text="${restaurant.name}">식당 이름</span><br>
                         <span th:text="'평점: ' + ${restaurant.averageRating}">평점</span><br>

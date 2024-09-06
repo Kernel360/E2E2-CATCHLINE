@@ -93,10 +93,6 @@
 <div class="container">
     <h1>SSE 연결</h1>
     <div class="form-group">
-        <label for="id">ID:</label>
-        <input type="text" id="id" class="form-control" placeholder="ID를 입력하세요" required/>
-    </div>
-    <div class="form-group">
         <button type="button" class="btn btn-orange" onclick="login()">연결</button>
     </div>
     <div class="form-group">
@@ -109,13 +105,11 @@
     let eventSource = null;
 
     function login() {
-        const id = document.getElementById('id').value;
-
         if (eventSource) {
             eventSource.close(); // 기존 연결이 있다면 끊기
         }
 
-        eventSource = new EventSource(`/sse/` + id);
+        eventSource = new EventSource(`/notifications/sse`);
 
         eventSource.onopen = function () {
             document.getElementById('status').innerText = "연결되었습니다.";

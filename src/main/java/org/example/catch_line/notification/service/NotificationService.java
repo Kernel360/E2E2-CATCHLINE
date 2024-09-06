@@ -34,12 +34,10 @@ public class NotificationService {
         SseEmitter emitter = emitterRepository.save(id, new SseEmitter(DEFAULT_TIMEOUT));
 
         emitter.onCompletion(() -> {
-            log.info("연결이 완료되었습니다. ID: {}", id);
             emitterRepository.deleteById(id);
         });
 
         emitter.onTimeout(() -> {
-            log.info("연결이 타임아웃되었습니다. ID: {}", id);
             emitterRepository.deleteById(id);
         });
 

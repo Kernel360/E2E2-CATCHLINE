@@ -7,6 +7,7 @@ import org.example.catch_line.review.model.mapper.ReviewMapper;
 import org.example.catch_line.review.repository.ReviewRepository;
 import org.example.catch_line.user.member.model.dto.MyReviewResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,7 @@ public class MyReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewMapper reviewMapper;
 
+    @Transactional(readOnly = true)
     public List<MyReviewResponse> getMyReviewList(Long memberId) {
         List<ReviewEntity> reviewList = reviewRepository.findAllByMemberMemberIdOrderByCreatedAtDesc(memberId);
 

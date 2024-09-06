@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
+
 @Slf4j
 // TODO: RestControllerAdvice vs ControllerAdvice 어노테이션
 @RestControllerAdvice
@@ -24,6 +26,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleCatchLineException(CatchLineException e) {
         log.error("캐치라인 커스텀 예외 발생: {}", e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<String> handleIOException(IOException e) {
+        log.error("IOException 예외 발생: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

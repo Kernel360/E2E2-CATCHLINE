@@ -36,6 +36,7 @@ public class WaitingService {
 	private final MemberValidator memberValidator;
 	private final RestaurantValidator restaurantValidator;
 
+	@Transactional(readOnly = true)
 	public WaitingEntity getWaitingEntity(Long waitingId) {
 		return waitingRepository.findById(waitingId)
 				.orElseThrow(() -> new WaitingException("웨이팅이 존재하지 않습니다."));
